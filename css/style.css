@@ -167,31 +167,71 @@ button.random:hover{
   animation:blink 2.5s infinite alternate;
 }
 
-.site-header{
-  width:100%;
-  background:linear-gradient(90deg,#ff7a00,#ff3c00);
-  color:white;
-  text-align:center;
-  padding:10px 0;
+/* ===== PRO HEADER ===== */
 
-  font-family:Arial, sans-serif;
-  font-size:14px;
-  font-weight:600;
+.pro-header{
+  width:100%;
+  height:64px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 28px;
+
+  background:rgba(5,5,20,0.85);
+  backdrop-filter:blur(10px);
+
+  border-bottom:1px solid rgba(0,255,255,.15);
+  box-shadow:0 4px 25px rgba(0,0,0,.5);
 
   position:sticky;
   top:0;
   z-index:9999;
-
-  box-shadow:0 2px 15px rgba(0,0,0,.35);
 }
 
-.site-header a{
+/* logo links */
+.logo{
+  font-family:'Press Start 2P', monospace;
+  font-size:14px;
+  color:#00ffff;
+  letter-spacing:2px;
+  text-shadow:0 0 8px #00ffff;
+}
+
+/* rechter knop */
+.afvl-btn{
+  padding:10px 16px;
+  background:linear-gradient(90deg,#ff7a00,#ff3c00);
   color:white;
   text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  border-radius:8px;
+  transition:.2s;
+  box-shadow:0 0 12px rgba(255,100,0,.5);
 }
 
-.site-header a:hover{
-  text-decoration:underline;
+.afvl-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 18px rgba(255,100,0,.9);
+}
+
+/* mobile */
+@media(max-width:600px){
+
+  .logo{
+    font-size:10px;
+  }
+
+  .afvl-btn{
+    font-size:11px;
+    padding:8px 12px;
+  }
+
+  .pro-header{
+    padding:0 14px;
+  }
 }
 
 @keyframes blink{
@@ -207,4 +247,5 @@ button.random:hover{
   }
 
 }
+
 
