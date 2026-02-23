@@ -1,30 +1,71 @@
-// ================= RANDOM GAME =================
+/* ================= RANDOM ENGINE ================= */
+
 function randomGame(){
 
-  // 1 op 20 secret game
-  if(Math.random() < 0.05){
-    window.location.href="games/secret/";
+  // 1% rare page
+  if(Math.random() < 0.01){
+    window.location.href="games/rare/";
     return;
   }
 
+  // 5% secret meme/update chaos
+  if(Math.random() < 0.05){
+    const chaos = [
+      "games/meme/",
+      "games/memes/",
+      "games/update/"
+    ];
+    window.location.href = chaos[Math.floor(Math.random()*chaos.length)];
+    return;
+  }
+
+  // 20% meme chance
+  if(Math.random() < 0.2){
+    const memePool=[
+      "games/meme/",
+      "games/memes/",
+      "games/update/"
+    ];
+    window.location.href=memePool[Math.floor(Math.random()*memePool.length)];
+    return;
+  }
+
+  // normale games
   const games=[
-    "games/pong/",
-    "games/dvd/",
     "games/aim/",
-    "games/clicker/"
+    "games/avoid/",
+    "games/breakout/",
+    "games/dodge/",
+    "games/dontpress/",
+    "games/dvd/",
+    "games/flappy/",
+    "games/hacker/",
+    "games/idle/",
+    "games/maze/",
+    "games/memory/",
+    "games/mystery/",
+    "games/pong/",
+    "games/rageclick/",
+    "games/reaction/",
+    "games/runner/",
+    "games/simon/",
+    "games/snake/",
+    "games/space/",
+    "games/stack/",
+    "games/whack/"
   ];
 
   const random = games[Math.floor(Math.random()*games.length)];
   window.location.href = random;
 }
 
-// button click koppelen
+/* ================= BUTTON ================= */
 const randomBtn = document.getElementById("randomBtn");
 if(randomBtn){
   randomBtn.addEventListener("click", randomGame);
 }
 
-// ================= 1. TITLE 5x CLICK =================
+/* ================= TITLE CHAOS ================= */
 let titleClicks = 0;
 let titleTimer;
 const title = document.getElementById("title");
@@ -53,7 +94,7 @@ function chaosMode(){
   },700);
 }
 
-// ================= 2. RAGE CLICK =================
+/* ================= RAGE CLICK ================= */
 let rageClicks = 0;
 
 if(randomBtn){
@@ -71,7 +112,7 @@ randomBtn.addEventListener("click",()=>{
 });
 }
 
-// ================= 3. HOLD SCREEN (MOBILE) =================
+/* ================= HOLD SCREEN ================= */
 let holdTimer;
 
 document.addEventListener("touchstart",()=>{
@@ -92,7 +133,7 @@ function ghostMode(){
   },600);
 }
 
-// ================= 4. KONAMI CODE =================
+/* ================= KONAMI ================= */
 let konami = [
   "ArrowUp","ArrowUp",
   "ArrowDown","ArrowDown",
@@ -118,12 +159,12 @@ document.addEventListener("keydown",(e)=>{
 function devMode(){
   document.body.style.filter="invert(1)";
   setTimeout(()=>{
-    alert("DEV MODE UNLOCKED 😈");
+    alert("DEV MODE 😈");
     randomGame();
   },400);
 }
 
-// ================= 5. RANDOM COIN SPAWN =================
+/* ================= COIN SPAWN ================= */
 setInterval(()=>{
   spawnCoin();
 },30000);
@@ -147,7 +188,7 @@ function spawnCoin(){
   document.body.appendChild(coin);
 
   coin.onclick=()=>{
-    window.location.href="games/secret/";
+    window.location.href="games/rare/";
   };
 
   coin.onmouseover=()=>{
@@ -159,7 +200,7 @@ function spawnCoin(){
   },6000);
 }
 
-// ================= SHAKE CSS INJECT =================
+/* ================= SHAKE ================= */
 const style=document.createElement("style");
 style.innerHTML=`
 @keyframes shake{
@@ -170,7 +211,3 @@ style.innerHTML=`
   100%{transform:translate(0)}
 }`;
 document.head.appendChild(style);
-
-if(Math.random()<0.01){
-  location.href="games/rare/";
-}
