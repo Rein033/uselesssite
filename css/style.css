@@ -167,40 +167,31 @@ button.random:hover{
   animation:blink 2.5s infinite alternate;
 }
 
-.global-header{
-  position:fixed;
-  top:0;
-  left:0;
+.site-header{
   width:100%;
-  height:42px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
   background:linear-gradient(90deg,#ff7a00,#ff3c00);
   color:white;
+  text-align:center;
+  padding:10px 0;
 
   font-family:Arial, sans-serif;
-  font-size:13px;
+  font-size:14px;
   font-weight:600;
 
+  position:sticky;
+  top:0;
   z-index:9999;
-  box-shadow:0 2px 14px rgba(0,0,0,.4);
+
+  box-shadow:0 2px 15px rgba(0,0,0,.35);
 }
 
-.global-header a{
+.site-header a{
   color:white;
   text-decoration:none;
 }
 
-.global-header a:hover{
+.site-header a:hover{
   text-decoration:underline;
-}
-
-/* zodat content niet onder header zit */
-body{
-  padding-top:42px;
 }
 
 @keyframes blink{
@@ -216,3 +207,4 @@ body{
   }
 
 }
+
