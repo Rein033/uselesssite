@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEON MAZE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ffff;
+  font-family:'Press Start 2P',cursive;
+  overflow:hidden;
+}
+#hud{
+  position:fixed;
+  top:14px;
+  left:14px;
+  font-size:12px;
+  opacity:.85;
+  z-index:10;
+}
+.back{
+  position:fixed;
+  top:14px;
+  right:14px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+  z-index:10;
+}
+canvas{
+  display:block;
+  margin:auto;
+  background:#050510;
+  box-shadow:0 0 40px rgba(0,255,255,.25);
+}
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.82);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:14px;
+  display:none;
+}
+button{
+  font-family:'Press Start 2P',cursive;
+  padding:14px 18px;
+  background:#ff00ff;
+  border:none;
+  color:black;
+  cursor:pointer;
+}
+.small{font-size:10px; opacity:.75; text-align:center; padding:0 18px;}
+</style>
+</head>
+
+<body>
+
+<div id="hud">TIME: <span id="t">0</span>s</div>
+<a href="../../index.html" class="back">EXIT</a>
+
+<canvas id="c" width="420" height="640"></canvas>
+
+<div class="overlay" id="win">
+  <div style="font-size:18px;color:#ff00ff">YOU WIN</div>
+  <div class="small" id="final"></div>
+  <button onclick="newMaze()">NEW MAZE</button>
+</div>
+
+<script>
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
+const tEl=document.getElementById("t");
+const win=document.getElementById("win");
+const final=document.getElementById("final");
+
+function fit(){
+  const maxW=Math.min(innerWidth, 520);
+  const scale=maxW/c.width;
+  c.style.width=(c.width*scale)+"px";
+  c.style.height=(c.height*scale)+"px";
+}
+addEventListener("resize",fit); fit();
+
+const cols=15;
+const rows=23;
+const cell=24; // visual size (we scale canvas anyway)
+
+c.width=cols*cell;
+c.height=rows*cell;
+
+let grid=[];
+let stack=[];
+let startTime=Date.now();
+let playing=true;
+
+const player={cx:0, cy:0};
+const goal={cx:cols-1, cy:rows-1};
+
+function idx(x,y){ return y*cols+x; }
+
+function initGrid(){
+  grid=[];
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      grid.push({
+        x,y,
+        v:false,
+        // walls: top right bottom left
+        w:[true,true,true,true]
+      });
+    }
+  }
+}
+
+function neighbors(cell){
+  const res=[];
+  const {x,y}=cell;
+  if(y>0) res.push(grid[idx(x,y-1)]);
+  if(x<cols-1) res.push(grid[idx(x+1,y)]);
+  if(y<rows-1) res.push(grid[idx(x,y+1)]);
+  if(x>0) res.push(grid[idx(x-1,y)]);
+  return res.filter(n=>!n.v);
+}
+
+function removeWall(a,b){
+  const dx=b.x-a.x;
+  const dy=b.y-a.y;
+  if(dx===1){ a.w[1]=false; b.w[3]=false; }
+  if(dx===-1){ a.w[3]=false; b.w[1]=false; }
+  if(dy===1){ a.w[2]=false; b.w[0]=false; }
+  if(dy===-1){ a.w[0]=false; b.w[2]=false; }
+}
+
+function generateMaze(){
+  initGrid();
+  const current=grid[0];
+  current.v=true;
+  stack=[current];
+
+  while(stack.length){
+    const cur=stack[stack.length-1];
+    const n=neighbors(cur);
+    if(n.length){
+      const next=n[(Math.random()*n.length)|0];
+      next.v=true;
+      removeWall(cur,next);
+      stack.push(next);
+    }else{
+      stack.pop();
+    }
+  }
+
+  // reset player/goal
+  player.cx=0; player.cy=0;
+  goal.cx=cols-1; goal.cy=rows-1;
+  startTime=Date.now();
+  playing=true;
+  win.style.display="none";
+}
+
+function draw(){
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="#050510";
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // draw walls
+  ctx.strokeStyle="rgba(0,255,255,.65)";
+  ctx.lineWidth=3;
+  ctx.shadowBlur=12;
+  ctx.shadowColor="#00ffff";
+
+  for(const cellObj of grid){
+    const x=cellObj.x*cell;
+    const y=cellObj.y*cell;
+    const w=cellObj.w;
+
+    ctx.beginPath();
+    if(w[0]){ ctx.moveTo(x,y); ctx.lineTo(x+cell,y); }
+    if(w[1]){ ctx.moveTo(x+cell,y); ctx.lineTo(x+cell,y+cell); }
+    if(w[2]){ ctx.moveTo(x+cell,y+cell); ctx.lineTo(x,y+cell); }
+    if(w[3]){ ctx.moveTo(x,y+cell); ctx.lineTo(x,y); }
+    ctx.stroke();
+  }
+
+  ctx.shadowBlur=0;
+
+  // goal
+  ctx.fillStyle="#ff00ff";
+  ctx.shadowBlur=14;
+  ctx.shadowColor="#ff00ff";
+  ctx.fillRect(goal.cx*cell+6, goal.cy*cell+6, cell-12, cell-12);
+
+  // player
+  ctx.fillStyle="#00ffff";
+  ctx.shadowColor="#00ffff";
+  ctx.shadowBlur=14;
+  ctx.beginPath();
+  ctx.arc(player.cx*cell+cell/2, player.cy*cell+cell/2, cell/3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur=0;
+}
+
+function canMove(nx,ny){
+  if(nx<0||ny<0||nx>=cols||ny>=rows) return false;
+  const cur=grid[idx(player.cx, player.cy)];
+  // determine direction and check wall
+  const dx=nx-player.cx;
+  const dy=ny-player.cy;
+  if(dx===1 && cur.w[1]) return false;
+  if(dx===-1 && cur.w[3]) return false;
+  if(dy===1 && cur.w[2]) return false;
+  if(dy===-1 && cur.w[0]) return false;
+  return true;
+}
+
+function move(dx,dy){
+  if(!playing) return;
+  const nx=player.cx+dx;
+  const ny=player.cy+dy;
+  if(canMove(nx,ny)){
+    player.cx=nx; player.cy=ny;
+    if(player.cx===goal.cx && player.cy===goal.cy){
+      playing=false;
+      const secs=Math.floor((Date.now()-startTime)/1000);
+      final.textContent="time " + secs + "s";
+      win.style.display="flex";
+    }
+  }
+}
+
+/* keyboard */
+addEventListener("keydown",(e)=>{
+  if(e.key==="ArrowUp"||e.key==="w") move(0,-1);
+  if(e.key==="ArrowDown"||e.key==="s") move(0,1);
+  if(e.key==="ArrowLeft"||e.key==="a") move(-1,0);
+  if(e.key==="ArrowRight"||e.key==="d") move(1,0);
+});
+
+/* swipe mobile */
+let sx=0, sy=0;
+addEventListener("touchstart",(e)=>{
+  sx=e.touches[0].clientX;
+  sy=e.touches[0].clientY;
+},{passive:true});
+
+addEventListener("touchend",(e)=>{
+  const dx=e.changedTouches[0].clientX - sx;
+  const dy=e.changedTouches[0].clientY - sy;
+  if(Math.abs(dx) > Math.abs(dy)){
+    if(dx>18) move(1,0);
+    else if(dx<-18) move(-1,0);
+  }else{
+    if(dy>18) move(0,1);
+    else if(dy<-18) move(0,-1);
+  }
+},{passive:true});
+
+/* timer */
+setInterval(()=>{
+  if(!playing) return;
+  tEl.textContent = Math.floor((Date.now()-startTime)/1000);
+},250);
+
+function newMaze(){
+  generateMaze();
+  draw();
+}
+
+generateMaze();
+function loop(){
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+
+</body>
+</html>

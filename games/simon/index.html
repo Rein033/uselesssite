@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SIMON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ffff;
+  font-family:'Press Start 2P',cursive;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  text-align:center;
+}
+
+.back{
+  position:fixed;
+  top:15px;
+  right:20px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+}
+
+#hud{
+  margin-bottom:18px;
+  font-size:12px;
+  opacity:.9;
+}
+
+.padwrap{
+  width:320px;
+  height:320px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.pad{
+  border-radius:18px;
+  background:#050510;
+  border:3px solid rgba(0,255,255,.35);
+  box-shadow:0 0 18px rgba(0,255,255,.15);
+  cursor:pointer;
+  transition:.08s;
+  user-select:none;
+  touch-action: manipulation;
+}
+
+.pad:active{
+  transform:scale(0.98);
+}
+
+.pad.glow{
+  box-shadow:0 0 35px currentColor;
+  filter:brightness(1.8);
+}
+
+#msg{
+  margin-top:18px;
+  font-size:10px;
+  opacity:.75;
+  max-width:340px;
+  line-height:1.5;
+}
+
+button{
+  margin-top:14px;
+  padding:14px 18px;
+  font-family:'Press Start 2P';
+  background:#ff00ff;
+  border:none;
+  color:black;
+  cursor:pointer;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  display:none;
+  gap:14px;
+}
+
+.small{font-size:10px;opacity:.75;max-width:340px;line-height:1.5}
+</style>
+</head>
+
+<body>
+
+<a href="../../index.html" class="back">EXIT</a>
+
+<div id="hud">LEVEL: <span id="lvl">0</span></div>
+
+<div class="padwrap">
+  <div class="pad" id="p0" style="color:#ff00ff;"></div>
+  <div class="pad" id="p1" style="color:#00ffff;"></div>
+  <div class="pad" id="p2" style="color:#00ff00;"></div>
+  <div class="pad" id="p3" style="color:#ffff00;"></div>
+</div>
+
+<div id="msg">tap START</div>
+<button id="start">START</button>
+
+<div class="overlay" id="over">
+  <div style="font-size:18px;color:#ff0033;">WRONG</div>
+  <div class="small" id="final"></div>
+  <button onclick="restart()">RETRY</button>
+</div>
+
+<script>
+const pads=[...Array(4)].map((_,i)=>document.getElementById("p"+i));
+const startBtn=document.getElementById("start");
+const msg=document.getElementById("msg");
+const lvlEl=document.getElementById("lvl");
+const over=document.getElementById("over");
+const final=document.getElementById("final");
+
+let seq=[];
+let inputIndex=0;
+let playing=false;
+let showing=false;
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function flash(i){
+  const p=pads[i];
+  p.classList.add("glow");
+  p.style.background=p.style.color;
+  setTimeout(()=>{
+    p.classList.remove("glow");
+    p.style.background="#050510";
+  },220);
+}
+
+async function showSequence(){
+  showing=true;
+  msg.textContent="watch...";
+  for(const n of seq){
+    await sleep(350);
+    flash(n);
+    await sleep(250);
+  }
+  showing=false;
+  msg.textContent="your turn";
+  inputIndex=0;
+  playing=true;
+}
+
+function nextLevel(){
+  playing=false;
+  seq.push(Math.floor(Math.random()*4));
+  lvlEl.textContent=seq.length;
+  showSequence();
+}
+
+function fail(){
+  playing=false;
+  over.style.display="flex";
+  final.textContent="you reached level "+seq.length;
+}
+
+pads.forEach((p,i)=>{
+  p.addEventListener("click",()=>{
+    if(showing || !playing) return;
+
+    flash(i);
+
+    if(i===seq[inputIndex]){
+      inputIndex++;
+      if(inputIndex===seq.length){
+        msg.textContent="nice.";
+        setTimeout(nextLevel,600);
+      }
+    }else{
+      fail();
+    }
+  });
+});
+
+startBtn.addEventListener("click",()=>{
+  seq=[];
+  over.style.display="none";
+  lvlEl.textContent="0";
+  msg.textContent="get ready...";
+  setTimeout(nextLevel,500);
+});
+
+function restart(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>

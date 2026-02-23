@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AVOID</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:'Press Start 2P',cursive;
+  color:#00ffff;
+}
+
+canvas{
+  display:block;
+  margin:auto;
+  background:#050510;
+  box-shadow:0 0 40px #00ffff30;
+}
+
+#hud{
+  position:fixed;
+  top:15px;
+  left:20px;
+  font-size:12px;
+}
+
+.back{
+  position:fixed;
+  top:15px;
+  right:20px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  display:none;
+}
+
+button{
+  margin-top:20px;
+  padding:15px 25px;
+  font-family:'Press Start 2P';
+  background:#ff00ff;
+  border:none;
+  color:black;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="hud">TIME: <span id="time">0</span></div>
+<a href="../../index.html" class="back">EXIT</a>
+
+<canvas id="game" width="420" height="640"></canvas>
+
+<div class="overlay" id="over">
+  <div style="font-size:18px;color:#ff0033">GAME OVER</div>
+  <div id="final" style="margin-top:10px;font-size:12px"></div>
+  <button onclick="restart()">RETRY</button>
+</div>
+
+<script>
+const c=document.getElementById("game");
+const ctx=c.getContext("2d");
+
+let player={x:200,y:500,size:16};
+let lasers=[];
+let running=true;
+let time=0;
+
+function spawnLaser(){
+  if(!running) return;
+
+  const type=Math.random();
+
+  if(type<0.5){
+    // vertical laser
+    lasers.push({
+      x:Math.random()*400,
+      y:-50,
+      w:8,
+      h:80,
+      dy:4+time*0.02
+    });
+  }else{
+    // horizontal
+    lasers.push({
+      x:-80,
+      y:Math.random()*500,
+      w:80,
+      h:8,
+      dx:4+time*0.02
+    });
+  }
+}
+
+setInterval(spawnLaser,900);
+
+function draw(){
+  ctx.fillStyle="#050510";
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // player
+  ctx.fillStyle="#00ffff";
+  ctx.shadowBlur=15;
+  ctx.shadowColor="#00ffff";
+  ctx.fillRect(player.x,player.y,player.size,player.size);
+
+  // lasers
+  ctx.fillStyle="#ff0033";
+  ctx.shadowColor="#ff0033";
+
+  for(let l of lasers){
+    ctx.fillRect(l.x,l.y,l.w,l.h);
+  }
+
+  ctx.shadowBlur=0;
+}
+
+function update(){
+  if(!running) return;
+
+  time+=0.016;
+  document.getElementById("time").innerText=Math.floor(time);
+
+  for(let l of lasers){
+
+    if(l.dy) l.y+=l.dy;
+    if(l.dx) l.x+=l.dx;
+
+    // collision
+    if(
+      player.x < l.x+l.w &&
+      player.x+player.size > l.x &&
+      player.y < l.y+l.h &&
+      player.y+player.size > l.y
+    ){
+      gameOver();
+    }
+  }
+
+  lasers=lasers.filter(l=>l.y<700 && l.x<500);
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+function gameOver(){
+  running=false;
+  document.getElementById("over").style.display="flex";
+  document.getElementById("final").innerText="survived "+Math.floor(time)+"s";
+}
+
+function restart(){
+  location.reload();
+}
+
+/* controls */
+document.addEventListener("mousemove",e=>{
+  player.x=e.clientX-8;
+  player.y=e.clientY-8;
+});
+
+document.addEventListener("touchmove",e=>{
+  player.x=e.touches[0].clientX-8;
+  player.y=e.touches[0].clientY-8;
+});
+
+draw();
+update();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MEMORY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ffff;
+  font-family:'Press Start 2P',cursive;
+  text-align:center;
+}
+
+.back{
+  position:fixed;
+  top:15px;
+  right:20px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+}
+
+#hud{
+  margin-top:20px;
+  font-size:12px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,80px);
+  gap:15px;
+  justify-content:center;
+  margin-top:40px;
+}
+
+.card{
+  width:80px;
+  height:80px;
+  background:#050510;
+  border:3px solid #00ffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  cursor:pointer;
+  box-shadow:0 0 15px #00ffff40;
+}
+
+.card.open{
+  background:#ff00ff;
+  color:black;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  display:none;
+}
+
+button{
+  margin-top:20px;
+  padding:15px 25px;
+  font-family:'Press Start 2P';
+  background:#ff00ff;
+  border:none;
+  color:black;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<a href="../../index.html" class="back">EXIT</a>
+
+<div id="hud">
+TIME: <span id="time">0</span>s
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="win">
+  <div style="font-size:18px;color:#ff00ff">YOU WIN</div>
+  <div id="final" style="margin-top:10px;font-size:12px"></div>
+  <button onclick="restart()">PLAY AGAIN</button>
+</div>
+
+<script>
+const icons=["🚀","👾","🔥","💎","⚡","🎮","🧠","👑"];
+let cards=[...icons,...icons];
+cards.sort(()=>Math.random()-0.5);
+
+const grid=document.getElementById("grid");
+let first=null;
+let second=null;
+let lock=false;
+let matches=0;
+
+let time=0;
+setInterval(()=>{
+  time++;
+  document.getElementById("time").innerText=time;
+},1000);
+
+cards.forEach(icon=>{
+  const div=document.createElement("div");
+  div.className="card";
+  div.dataset.icon=icon;
+  div.innerHTML="?";
+
+  div.onclick=()=>{
+    if(lock||div.classList.contains("open")) return;
+
+    div.classList.add("open");
+    div.innerHTML=icon;
+
+    if(!first){
+      first=div;
+      return;
+    }
+
+    second=div;
+    lock=true;
+
+    if(first.dataset.icon===second.dataset.icon){
+      matches++;
+      first=null;
+      second=null;
+      lock=false;
+
+      if(matches===icons.length){
+        winGame();
+      }
+    }else{
+      setTimeout(()=>{
+        first.classList.remove("open");
+        second.classList.remove("open");
+        first.innerHTML="?";
+        second.innerHTML="?";
+        first=null;
+        second=null;
+        lock=false;
+      },700);
+    }
+  };
+
+  grid.appendChild(div);
+});
+
+function winGame(){
+  document.getElementById("win").style.display="flex";
+  document.getElementById("final").innerText="time "+time+"s";
+}
+
+function restart(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
