@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MEME</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  text-align:center;
+  flex-direction:column;
+}
+button{
+  padding:15px 20px;
+  margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<h1 id="meme"></h1>
+<button onclick="randomMeme()">another one</button>
+<a href="../../index.html" style="margin-top:20px;color:white;">exit</a>
+
+<script>
+const memes=[
+"you clicked random again.",
+"bro it's 3am.",
+"touch grass.",
+"why are you still here?",
+"this site does nothing.",
+"you expected a game?",
+"this is peak entertainment.",
+"press alt+f4 for bonus."
+];
+
+function randomMeme(){
+  meme.innerText=memes[Math.floor(Math.random()*memes.length)];
+}
+
+randomMeme();
+</script>
+</body>
+</html>

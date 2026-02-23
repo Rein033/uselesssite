@@ -170,3 +170,7 @@ style.innerHTML=`
   100%{transform:translate(0)}
 }`;
 document.head.appendChild(style);
+
+if(Math.random()<0.01){
+  location.href="games/rare/";
+}

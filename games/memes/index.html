@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MEME CHAOS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  flex-direction:column;
+  text-align:center;
+  font-family:Arial;
+}
+
+.meme-container{
+  position:relative;
+  max-width:90vw;
+  max-height:70vh;
+}
+
+img{
+  max-width:100%;
+  max-height:70vh;
+  border-radius:10px;
+}
+
+.caption{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  color:white;
+  font-family:Impact, sans-serif;
+  font-size:clamp(18px,4vw,40px);
+  text-shadow:
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;
+}
+
+.top{ top:10px; }
+.bottom{ bottom:10px; }
+
+button{
+  margin-top:20px;
+  padding:15px 20px;
+  background:#ff00ff;
+  border:none;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.back{
+  margin-top:15px;
+  color:white;
+  opacity:.6;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="meme-container">
+  <img id="memeImage">
+  <div class="caption top" id="topText"></div>
+  <div class="caption bottom" id="bottomText"></div>
+</div>
+
+<button onclick="newMeme()">ANOTHER ONE</button>
+<a href="../../index.html" class="back">exit</a>
+
+<script>
+const memes = [
+{img:"https://i.imgflip.com/30b1gx.jpg",top:"WHEN YOU CLICK RANDOM",bottom:"AND IT'S NOT A GAME"},
+{img:"https://i.imgflip.com/1bij.jpg",top:"ME AT 3AM",bottom:"PLAYING USELESS ARCADE"},
+{img:"https://i.imgflip.com/26am.jpg",top:"WHEN WIFI DROPS",bottom:"RAGE MODE ACTIVATED"},
+{img:"https://i.imgflip.com/1otk96.jpg",top:"EXPECTATIONS",bottom:"REALITY"},
+{img:"https://i.imgflip.com/345v97.jpg",top:"BRO",bottom:"WHY ARE YOU STILL HERE"},
+{img:"https://i.imgflip.com/2wifvo.jpg",top:"YOU SAID ONE GAME",bottom:"IT'S BEEN 3 HOURS"},
+{img:"https://i.imgflip.com/1g8my4.jpg",top:"TOP 10",bottom:"ANIME BETRAYALS"},
+{img:"https://i.imgflip.com/43a45p.jpg",top:"WHEN THE BOSS WALKS IN",bottom:"ALT+TAB SPEED"},
+{img:"https://i.imgflip.com/2kbn1e.jpg",top:"WHEN CODE WORKS",bottom:"FIRST TRY"},
+{img:"https://i.imgflip.com/3vzej.jpg",top:"SERVER DOWN",bottom:"PANIC"},
+{img:"https://i.imgflip.com/4acd7j.jpg",top:"ME TRYING TO FIX BUG",bottom:"MAKES IT WORSE"},
+{img:"https://i.imgflip.com/1ur9b0.jpg",top:"NO WIFI",bottom:"NO LIFE"},
+{img:"https://i.imgflip.com/2gnnjh.jpg",top:"FRIEND: ONE MATCH",bottom:"3AM LATER"},
+{img:"https://i.imgflip.com/3si4.jpg",top:"WHEN YOU WIN",bottom:"FINALLY"},
+{img:"https://i.imgflip.com/9ehk.jpg",top:"FIRST DAY MOTIVATION",bottom:"DAY 2 DEAD"},
+{img:"https://i.imgflip.com/1jwhww.jpg",top:"WHEN IT WORKS",bottom:"DON'T TOUCH IT"},
+{img:"https://i.imgflip.com/2896ro.jpg",top:"ME CODING",bottom:"STACK OVERFLOW"},
+{img:"https://i.imgflip.com/2fm6x.jpg",top:"MONDAY",bottom:"WHY"},
+{img:"https://i.imgflip.com/1h7in3.jpg",top:"WHEN GAME LAGS",bottom:"BLAME WIFI"},
+{img:"https://i.imgflip.com/3pnmg.jpg",top:"TRY AGAIN",bottom:"RAGE"},
+{img:"https://i.imgflip.com/2za3u1.jpg",top:"JUST ONE CLICK",bottom:"ADDICTED"},
+{img:"https://i.imgflip.com/4t0m5.jpg",top:"WHEN YOU DEBUG",bottom:"IT BREAKS MORE"},
+{img:"https://i.imgflip.com/24y43o.jpg",top:"WHEN BOSS SPAWNS",bottom:"RUN"},
+{img:"https://i.imgflip.com/1yxkcp.jpg",top:"LOW BATTERY",bottom:"PANIC"},
+{img:"https://i.imgflip.com/3lmzyx.jpg",top:"NEW GAME",bottom:"SKILL ISSUE"},
+{img:"https://i.imgflip.com/46hhvr.jpg",top:"FRIEND ONLINE",bottom:"JOIN"},
+{img:"https://i.imgflip.com/2z4ehx.jpg",top:"TRY HARD MODE",bottom:"REGRET"},
+{img:"https://i.imgflip.com/1wz1x.jpg",top:"WHEN IT COMPILES",bottom:"DON'T ASK WHY"},
+{img:"https://i.imgflip.com/3oevdk.jpg",top:"ME WAITING",bottom:"FOR LOADING"},
+{img:"https://i.imgflip.com/4u0m.jpg",top:"JUST ONE GAME",bottom:"3AM"},
+{img:"https://i.imgflip.com/2cp1.jpg",top:"MISSION FAILED",bottom:"WE TRY AGAIN"},
+{img:"https://i.imgflip.com/1bgw.jpg",top:"WHEN YOU WIN",bottom:"SCREENSHOT"},
+{img:"https://i.imgflip.com/2hgfw.jpg",top:"BRAIN: SLEEP",bottom:"ME: GAMING"},
+{img:"https://i.imgflip.com/9vct.jpg",top:"WHEN WIFI RETURNS",bottom:"JOY"},
+{img:"https://i.imgflip.com/3v5p.jpg",top:"WHEN UPDATE DROPS",bottom:"DOWNLOADING"},
+{img:"https://i.imgflip.com/4k9o.jpg",top:"PATCH NOTES",bottom:"NERFED"},
+{img:"https://i.imgflip.com/2ybua0.jpg",top:"WHEN YOU MISS",bottom:"RAGE"},
+{img:"https://i.imgflip.com/3kwh.jpg",top:"PRO MODE",bottom:"ACTIVATED"},
+{img:"https://i.imgflip.com/1bh3.jpg",top:"WHEN YOU LOSE",bottom:"BLAME LAG"},
+{img:"https://i.imgflip.com/1w7ygt.jpg",top:"ONE MORE TRY",bottom:"LAST TRY"},
+{img:"https://i.imgflip.com/3oevdk.jpg",top:"ME THINKING",bottom:"ABOUT NOTHING"},
+{img:"https://i.imgflip.com/2zfp6.jpg",top:"WHEN GAME CRASHES",bottom:"NOOO"},
+{img:"https://i.imgflip.com/4/4t0m5.jpg",top:"UPGRADE TIME",bottom:"BROKE"},
+{img:"https://i.imgflip.com/1tkjq9.jpg",top:"WHEN IT LOADS",bottom:"FINALLY"},
+{img:"https://i.imgflip.com/2kbn1e.jpg",top:"CODING NIGHT",bottom:"NO SLEEP"},
+{img:"https://i.imgflip.com/26am.jpg",top:"WHEN YOU RETURN",bottom:"STILL HERE"},
+{img:"https://i.imgflip.com/345v97.jpg",top:"YOU AGAIN?",bottom:"WELCOME BACK"},
+{img:"https://i.imgflip.com/30b1gx.jpg",top:"RANDOM BUTTON",bottom:"AGAIN"},
+{img:"https://i.imgflip.com/1bij.jpg",top:"THIS SITE",bottom:"DOES NOTHING"},
+{img:"https://i.imgflip.com/2wifvo.jpg",top:"WHY STOP",bottom:"KEEP CLICKING"}
+];
+
+function newMeme(){
+  const rareChance = Math.random();
+
+  if(rareChance < 0.02){
+    document.body.style.background = "gold";
+    document.getElementById("memeImage").src = "https://i.imgflip.com/1g8my4.jpg";
+    document.getElementById("topText").innerText = "LEGENDARY MEME";
+    document.getElementById("bottomText").innerText = "1% DROP";
+    return;
+  }
+
+  const meme = memes[Math.floor(Math.random()*memes.length)];
+  document.getElementById("memeImage").src = meme.img;
+  document.getElementById("topText").innerText = meme.top;
+  document.getElementById("bottomText").innerText = meme.bottom;
+}
+
+newMeme();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Updating...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  background:#001122;
+  color:#00ffff;
+  font-family:monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  text-align:center;
+}
+.bar{
+  width:80%;
+  height:20px;
+  border:2px solid #00ffff;
+  margin-top:20px;
+}
+.fill{
+  height:100%;
+  width:0%;
+  background:#00ffff;
+}
+</style>
+</head>
+<body>
+<div>
+  <div>Installing useless update...</div>
+  <div class="bar"><div class="fill" id="f"></div></div>
+</div>
+
+<script>
+let p=0;
+let f=document.getElementById("f");
+let i=setInterval(()=>{
+  p+=Math.random()*8;
+  f.style.width=p+"%";
+  if(p>=100){
+    clearInterval(i);
+    setTimeout(()=>location.href="../../index.html",1000);
+  }
+},300);
+</script>
+</body>
+</html>
