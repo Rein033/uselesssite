@@ -34,7 +34,6 @@
 <body>
 
 <header class="pro-header">
-
   <div class="header-left">
     <div class="logo">USELESS ARCADE</div>
   </div>
@@ -44,21 +43,18 @@
       🟠 Amersfoort voor Vrijheid
     </a>
   </div>
-
 </header>
 
-<main>
-  <div class="cabinet">
+<main class="main-wrapper">
 
+  <div class="cabinet">
     <div class="screen-bezel">
       <h1 id="title">USELESS ARCADE</h1>
       <div class="sub">tap the button. regret instantly.</div>
     </div>
 
     <div class="controls">
-      <button 
-        class="random" 
-        id="randomBtn">
+      <button class="random" id="randomBtn">
         🎲 RANDOM GAME
       </button>
     </div>
@@ -68,20 +64,21 @@
       <div class="lamp"></div>
       <div class="lamp"></div>
     </div>
-
   </div>
 
-  <!-- Main JS -->
-  <script src="js/main.js"></script>
 </main>
-</body>
 
-<footer style="position:fixed;bottom:10px;width:100%;text-align:center;font-size:12px;opacity:.5;">
-<a href="/privacy.html">privacy</a> |
-<a href="/terms.html">terms</a>
+<footer class="site-footer">
+  <a href="/privacy.html">privacy</a> |
+  <a href="/terms.html">terms</a>
 </footer>
+
+<script src="js/main.js"></script>
+
+</body>
   
 </html>
+
 
 
 
