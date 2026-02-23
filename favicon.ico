@@ -1,0 +1,17 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <!-- Created with ImageBot - http://www.imagebot.com/ -->
+ <defs>
+  <linearGradient id="imagebot_80" y2="1">
+   <stop offset="0" stop-color="#e92d28"/>
+   <stop offset="1" stop-color="#6d0018"/>
+  </linearGradient>
+ </defs>
+ <g id="imagebot_1">
+  <title>Layer 1</title>
+  <image transform="translate(-6 -7) matrix(3.03606 0 0 3.03606 -450.888 -401.814)" height="133" width="126" y="133.5" x="191" xlink:href="https://s-media-cache-ak0.pinimg.com/736x/e3/e4/6b/e3e46b27b7b303e8bb8ce64d6497258e.jpg" id="imagebot_74"/>
+  <line transform="translate(2 22) matrix(1 0 0 1 0 -106)" id="imagebot_75" y2="314" x2="243" y1="318" x1="359" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" stroke="#000000" fill="none"/>
+  <circle id="imagebot_82" r="0" cy="146" cx="268" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" stroke="#000000" fill="url(#imagebot_80)"/>
+  <ellipse fill-opacity="0" ry="4.56396" rx="4.74296" id="imagebot_83" cy="196.7379" cx="267.47939" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" stroke="#000000" fill="url(#imagebot_80)"/>
+  <ellipse id="imagebot_84" fill-opacity="0" ry="4.56396" rx="4.74296" cy="200.7379" cx="344.47939" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" stroke="#000000" fill="url(#imagebot_80)"/>
+ </g>
+</svg>
