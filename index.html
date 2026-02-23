@@ -1,45 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Useless Arcade — Random Games & Chaos</title>
-
-  <meta name="description" content="Random arcade games, memes and chaos. Click and regret instantly.">
-  <meta name="keywords" content="arcade, random games, useless web, online games, meme site">
-  <meta name="author" content="uselesssite.nl">
-  
-  <meta property="og:title" content="Useless Arcade">
-  <meta property="og:description" content="Random games & chaos generator">
-  <meta property="og:image" content="https://uselesssite.nl/preview.png">
-  <meta property="og:type" content="website">
-  
-  <meta name="theme-color" content="#000000">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Phone Save -->
-  <link rel="manifest" href="/site.webmanifest">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/favicon.ico">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="css/style.css">
-</head>
-
-
-<body>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Useless Arcade</title>
+
+<title>Useless Arcade — Random Games & Chaos</title>
+
+<meta name="description" content="Random arcade games, memes and chaos. Click and regret instantly.">
+<meta name="keywords" content="arcade, random games, useless web, online games, meme site">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/favicon.ico">
 
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -47,10 +18,10 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  margin:0;
   background: radial-gradient(circle at center,#12002e 0%,#000 75%);
   font-family:'Press Start 2P',cursive;
   color:#00ffff;
+  overflow-x:hidden;
 }
 
 /* ===== HEADER ===== */
@@ -86,13 +57,68 @@ header{
   font-family:Arial;
 }
 
-/* ===== PAGE CENTER ===== */
+/* ===== CENTER PAGE ===== */
 .page{
   min-height:calc(100vh - 120px);
   display:flex;
   justify-content:center;
   align-items:center;
   padding:40px 20px;
+}
+
+/* ===== ARCADE ===== */
+.cabinet{
+  width:100%;
+  max-width:520px;
+  background:linear-gradient(#0d0d18,#000,#0d0d18);
+  border:8px solid #111;
+  border-radius:20px 20px 40px 40px;
+  box-shadow:
+    0 0 60px rgba(0,255,255,.25),
+    inset 0 0 40px rgba(255,0,255,.15),
+    0 25px 80px rgba(0,0,0,.9);
+  padding:32px 22px 70px;
+  position:relative;
+}
+
+.screen-bezel{
+  background:#060612;
+  border:12px solid #1b1b2f;
+  border-radius:12px;
+  padding:24px 16px 32px;
+  margin-bottom:40px;
+  box-shadow: inset 0 0 40px #000;
+}
+
+h1{
+  font-size:clamp(1.8rem,6vw,2.6rem);
+  color:#ff00ff;
+  text-shadow:0 0 12px #ff00ff;
+  margin-bottom:14px;
+  letter-spacing:4px;
+}
+
+.sub{
+  font-size:.9rem;
+  color:#00ffff;
+  opacity:.8;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+}
+
+button.random{
+  font-family:'Press Start 2P',cursive;
+  font-size:1rem;
+  padding:20px 40px;
+  background:#000;
+  border:4px solid #ff00ff;
+  color:#ff00ff;
+  cursor:pointer;
+  text-shadow:0 0 10px currentColor;
+  box-shadow:0 0 25px rgba(255,0,255,.5);
 }
 
 /* ===== FOOTER ===== */
@@ -131,15 +157,7 @@ footer a{
     </div>
 
     <div class="controls">
-      <button class="random" id="randomBtn">
-        🎲 RANDOM GAME
-      </button>
-    </div>
-
-    <div class="decor">
-      <div>COIN SLOT</div>
-      <div class="lamp"></div>
-      <div class="lamp"></div>
+      <button class="random" id="randomBtn">🎲 RANDOM GAME</button>
     </div>
   </div>
 
@@ -150,12 +168,7 @@ footer a{
   <a href="/terms.html">terms</a>
 </footer>
 
+<script src="js/main.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-
-
