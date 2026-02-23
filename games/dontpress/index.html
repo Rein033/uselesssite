@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DON'T PRESS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;height:100vh;background:#000;color:#ff0044;font-family:'Press Start 2P',cursive;display:flex;justify-content:center;align-items:center;text-align:center}
+.container{padding:20px}
+h1{font-size:clamp(1rem,4vw,2rem);margin-bottom:40px}
+button{padding:25px 50px;font-size:clamp(.8rem,3vw,1.2rem);background:#ff0044;border:none;color:#000;cursor:pointer;box-shadow:0 0 30px #ff0044;transition:.15s}
+button:active{transform:scale(1.08)}
+a.back{position:fixed;top:16px;left:16px;font-size:10px;color:#fff;text-decoration:none;opacity:.8}
+</style>
+</head>
+<body>
+<a href="../../" class="back">← BACK</a>
+<div class="container">
+<h1 id="text">DON'T PRESS THE BUTTON</h1>
+<button id="btn">DON'T PRESS</button>
+</div>
+<script>
+let clicks=0;
+const btn=document.getElementById("btn");
+const text=document.getElementById("text");
+btn.addEventListener("click",()=>{
+  clicks++;
+  const msgs=[
+    "I SAID DON'T.",
+    "ARE YOU SERIOUS?",
+    "STOP.",
+    "LAST WARNING.",
+    "OK FINE.",
+    "YOU BROKE IT.",
+    "GOODBYE."
+  ];
+  if(clicks<=msgs.length){ text.textContent=msgs[clicks-1]; }
+  if(clicks===3) document.body.style.background="#220000";
+  if(clicks===5){ document.body.style.background="#fff"; document.body.style.color="#000"; btn.style.boxShadow="0 0 30px #000"; }
+  if(clicks===6){ document.body.style.background="#000"; document.body.style.color="lime"; }
+  if(clicks===7){ document.body.style.filter="invert(1)"; }
+  if(clicks>=8){ location.href="../../"; }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MICRO RUNNER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:black;overflow:hidden;font-family:'Press Start 2P',cursive;color:white;}
+#hud{position:fixed;top:15px;left:15px;font-size:12px;opacity:.85;z-index:10;}
+.back{position:fixed;top:15px;right:15px;font-size:12px;color:white;text-decoration:none;opacity:.7;z-index:10;}
+#game{position:relative;width:100vw;height:100vh;}
+#ground{position:absolute;left:0;right:0;bottom:90px;height:4px;background:#00ffff;box-shadow:0 0 16px #00ffff;}
+#player{position:absolute;left:60px;bottom:94px;width:44px;height:44px;background:#ff00ff;border-radius:10px;box-shadow:0 0 22px #ff00ff;}
+.ob{position:absolute;bottom:94px;width:28px;height:52px;background:#00ff00;box-shadow:0 0 18px #00ff00;}
+#msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;background:rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:.2s;}
+#msg.show{opacity:1;}
+.small{font-size:10px;opacity:.7;margin-top:10px;}
+</style>
+</head>
+<body>
+<div id="hud">SCORE: <span id="score">0</span></div>
+<a href="../../index.html" class="back">EXIT</a>
+<div id="game">
+  <div id="ground"></div>
+  <div id="player"></div>
+</div>
+<div id="msg"><div id="msgText"></div></div>
+<script>
+const player=document.getElementById("player");
+const scoreEl=document.getElementById("score");
+const msg=document.getElementById("msg");
+const msgText=document.getElementById("msgText");
+
+let y=0, vy=0, jumping=false;
+let score=0, speed=5, alive=true;
+const gravity=0.8;
+const jumpV=14;
+
+function jump(){
+  if(!alive) { location.reload(); return; }
+  if(jumping) return;
+  jumping=true;
+  vy=jumpV;
+}
+
+function spawnObstacle(){
+  if(!alive) return;
+  const ob=document.createElement("div");
+  ob.className="ob";
+  ob.style.left=(window.innerWidth+40)+"px";
+  document.body.appendChild(ob);
+  let x=window.innerWidth+40;
+
+  function tick(){
+    if(!alive){ ob.remove(); return; }
+    x-=speed;
+    ob.style.left=x+"px";
+
+    // collision
+    const pr=player.getBoundingClientRect();
+    const br=ob.getBoundingClientRect();
+    if(br.left < pr.right && br.right > pr.left && br.bottom > pr.top && br.top < pr.bottom){
+      gameOver();
+      return;
+    }
+
+    if(x<-60){
+      ob.remove();
+      score++;
+      scoreEl.textContent=score;
+      if(score%8===0) speed+=0.7;
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function physics(){
+  if(!alive) return;
+  if(jumping){
+    y+=vy;
+    vy-=gravity;
+    if(y<=0){ y=0; vy=0; jumping=false; }
+    player.style.transform="translateY("+(-y)+"px)";
+  }
+  requestAnimationFrame(physics);
+}
+
+function gameOver(){
+  alive=false;
+  msg.classList.add("show");
+  msgText.innerHTML="GAME OVER<br>SCORE: "+score+"<div class='small'>tap to restart</div>";
+}
+
+document.addEventListener("keydown",(e)=>{ if(e.code==="Space") jump(); });
+document.addEventListener("click", jump);
+document.addEventListener("touchstart", (e)=>{ e.preventDefault(); jump(); }, {passive:false});
+
+setInterval(()=>spawnObstacle(), 1300);
+physics();
+</script>
+</body>
+</html>

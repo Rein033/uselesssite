@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIM TRAINER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000;color:#fff;font-family:'Press Start 2P',cursive;overflow:hidden}
+#score{position:fixed;top:14px;left:14px;font-size:12px;opacity:.85}
+#timer{position:fixed;top:14px;right:14px;font-size:12px;opacity:.85}
+a.back{position:fixed;bottom:14px;left:14px;font-size:10px;color:#fff;text-decoration:none;opacity:.65}
+.target{position:absolute;width:70px;height:70px;border-radius:50%;background:#ff00ff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px #ff00ff;cursor:pointer;user-select:none}
+.target:active{transform:scale(.85)}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.75);gap:12px}
+.overlay h2{font-size:18px;margin:0}
+.overlay p{font-size:12px;opacity:.85;margin:0}
+</style>
+</head>
+<body>
+<div id="score">HITS: 0</div>
+<div id="timer">30</div>
+<a href="../../" class="back">EXIT</a>
+<script>
+let hits=0, time=30, playing=true;
+const scoreEl=document.getElementById("score");
+const timerEl=document.getElementById("timer");
+
+function spawn(){
+  if(!playing) return;
+  const t=document.createElement("div");
+  t.className="target";
+  t.textContent="●";
+  t.style.left=Math.random()*(innerWidth-80)+"px";
+  t.style.top=Math.random()*(innerHeight-120)+"px";
+  document.body.appendChild(t);
+
+  const ttl=setTimeout(()=>{ if(t.parentNode){ t.remove(); spawn(); } }, 1100);
+
+  t.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    clearTimeout(ttl);
+    hits++; scoreEl.textContent="HITS: "+hits;
+    t.remove();
+    spawn();
+  });
+}
+spawn();
+
+const tick=setInterval(()=>{
+  time--; timerEl.textContent=time;
+  if(time<=0){
+    playing=false;
+    clearInterval(tick);
+    end();
+  }
+},1000);
+
+function end(){
+  document.querySelectorAll(".target").forEach(n=>n.remove());
+  const o=document.createElement("div");
+  o.className="overlay";
+  o.innerHTML=`<h2>SCORE</h2><p>${hits} hits</p><p>tap to retry</p>`;
+  document.body.appendChild(o);
+  o.addEventListener("click",()=>location.reload());
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>REACTION TEST</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111;color:#fff;font-family:'Press Start 2P',cursive;display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;user-select:none}
+a.back{position:fixed;top:16px;left:16px;font-size:10px;color:#fff;text-decoration:none;opacity:.65}
+.big{font-size:18px;margin-bottom:18px}
+.small{font-size:12px;opacity:.7}
+</style>
+</head>
+<body>
+<a href="../../" class="back">EXIT</a>
+<div>
+<div class="big" id="t">TAP TO START</div>
+<div class="small" id="s">wait for green</div>
+</div>
+<script>
+let state="idle", startTime=0, timer=null;
+const t=document.getElementById("t"), s=document.getElementById("s");
+document.body.addEventListener("click",()=>{
+  if(state==="idle"){
+    state="waiting";
+    document.body.style.background="#550000";
+    t.textContent="WAIT...";
+    s.textContent="";
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      if(state==="waiting"){
+        state="go";
+        document.body.style.background="#003300";
+        t.textContent="TAP!";
+        startTime=Date.now();
+      }
+    }, Math.random()*3000+1400);
+  } else if(state==="waiting"){
+    state="idle";
+    document.body.style.background="#111";
+    t.textContent="TOO EARLY";
+    s.textContent="tap to retry";
+  } else if(state==="go"){
+    const ms=Date.now()-startTime;
+    state="idle";
+    document.body.style.background="#111";
+    t.textContent=ms+" ms";
+    s.textContent="tap to retry";
+  }
+});
+</script>
+</body>
+</html>

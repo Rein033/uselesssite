@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEON BREAKOUT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:'Press Start 2P',cursive;
+  color:#00ffff;
+}
+
+canvas{
+  display:block;
+  margin:auto;
+  background:#050510;
+  box-shadow:0 0 40px #00ffff40;
+}
+
+.top{
+  position:fixed;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:14px;
+}
+
+.back{
+  position:fixed;
+  top:15px;
+  right:20px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+SCORE: <span id="score">0</span>
+</div>
+
+<a href="../../index.html" class="back">EXIT</a>
+
+<canvas id="game" width="600" height="400"></canvas>
+
+<script>
+const c=document.getElementById("game");
+const ctx=c.getContext("2d");
+
+let paddleX=260;
+let ballX=300;
+let ballY=300;
+let dx=4;
+let dy=-4;
+let score=0;
+
+const bricks=[];
+const rows=5;
+const cols=8;
+const brickW=60;
+const brickH=20;
+
+for(let r=0;r<rows;r++){
+  for(let c2=0;c2<cols;c2++){
+    bricks.push({
+      x:60+c2*(brickW+10),
+      y:50+r*(brickH+10),
+      alive:true
+    });
+  }
+}
+
+function draw(){
+
+  ctx.fillStyle="#050510";
+  ctx.fillRect(0,0,600,400);
+
+  // paddle
+  ctx.fillStyle="#00ffff";
+  ctx.shadowBlur=15;
+  ctx.shadowColor="#00ffff";
+  ctx.fillRect(paddleX,360,80,12);
+
+  // ball
+  ctx.fillStyle="#ffffff";
+  ctx.shadowColor="#ffffff";
+  ctx.beginPath();
+  ctx.arc(ballX,ballY,8,0,Math.PI*2);
+  ctx.fill();
+
+  // bricks
+  bricks.forEach(b=>{
+    if(b.alive){
+      ctx.fillStyle="#ff00ff";
+      ctx.shadowColor="#ff00ff";
+      ctx.fillRect(b.x,b.y,brickW,brickH);
+    }
+  });
+
+  ctx.shadowBlur=0;
+}
+
+function update(){
+
+  // paddle move
+  document.onmousemove=e=>{
+    paddleX=e.clientX-40;
+  };
+
+  document.ontouchmove=e=>{
+    paddleX=e.touches[0].clientX-40;
+  };
+
+  ballX+=dx;
+  ballY+=dy;
+
+  // walls
+  if(ballX<0||ballX>600) dx*=-1;
+  if(ballY<0) dy*=-1;
+
+  // paddle collision
+  if(ballY>350 && ballX>paddleX && ballX<paddleX+80){
+    dy*=-1;
+  }
+
+  // brick collision
+  bricks.forEach(b=>{
+    if(b.alive &&
+      ballX>b.x &&
+      ballX<b.x+brickW &&
+      ballY>b.y &&
+      ballY<b.y+brickH
+    ){
+      b.alive=false;
+      dy*=-1;
+      score++;
+      document.getElementById("score").innerText=score;
+    }
+  });
+
+  // lose
+  if(ballY>400){
+    alert("Game Over — Score: "+score);
+    location.reload();
+  }
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+draw();
+update();
+</script>
+
+</body>
+</html>

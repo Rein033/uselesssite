@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MYSTERY BOX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000;color:#fff;font-family:'Press Start 2P',cursive;display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;overflow:hidden}
+a.back{position:fixed;top:16px;left:16px;font-size:10px;color:#fff;text-decoration:none;opacity:.7}
+#box{font-size:84px;cursor:pointer;transition:.15s}
+#box:active{transform:scale(1.15)}
+#text{margin-top:22px;font-size:14px;opacity:.85}
+#small{margin-top:10px;font-size:10px;opacity:.55}
+</style>
+</head>
+<body>
+<a href="../../" class="back">EXIT</a>
+<div>
+<div id="box">📦</div>
+<div id="text">TAP THE BOX</div>
+<div id="small">every tap is different</div>
+</div>
+<script>
+const box=document.getElementById("box");
+const text=document.getElementById("text");
+const small=document.getElementById("small");
+box.addEventListener("click",()=>{
+  const r=Math.random();
+  if(r<0.12){ document.body.style.background="gold"; text.textContent="JACKPOT"; small.textContent="+ bragging rights"; return; }
+  if(r<0.24){ document.body.style.filter="invert(1)"; text.textContent="CURSED"; small.textContent="tap again"; return; }
+  if(r<0.40){ location.href="../hacker/"; return; }
+  if(r<0.56){ location.href="../dvd/"; return; }
+  if(r<0.72){ location.href="../rageclick/"; return; }
+  if(r<0.86){ location.href="../reaction/"; return; }
+  document.body.style.background="#00ffcc"; text.textContent="SUPER RARE"; small.textContent="ok now leave"; 
+});
+</script>
+</body>
+</html>

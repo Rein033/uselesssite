@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RAGE CLICKER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000;color:#fff;font-family:'Press Start 2P',cursive;display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;overflow:hidden}
+a.back{position:fixed;top:16px;left:16px;font-size:10px;color:#fff;text-decoration:none;opacity:.75}
+h1{font-size:12px;opacity:.7;margin-bottom:16px}
+#score{font-size:18px;margin-bottom:26px}
+button{padding:28px 60px;font-size:14px;background:#ff00ff;border:none;color:#000;cursor:pointer;box-shadow:0 0 30px #ff00ff}
+button:active{transform:scale(1.1)}
+.small{font-size:10px;opacity:.55;margin-top:18px}
+</style>
+</head>
+<body>
+<a href="../../" class="back">EXIT</a>
+<div>
+<h1>CLICK. DON'T THINK.</h1>
+<div id="score">0</div>
+<button id="btn">CLICK</button>
+<div class="small" id="m"></div>
+</div>
+<script>
+let score=0, mult=1;
+const btn=document.getElementById("btn");
+const scoreEl=document.getElementById("score");
+const msg=document.getElementById("m");
+const colors=["#ff00ff","#00ffff","#00ff00","#ffff00","#ff0033","#ffffff"];
+const pick=()=>colors[(Math.random()*colors.length)|0];
+btn.addEventListener("click",()=>{
+  score+=mult; scoreEl.textContent=score;
+  const c=pick(); btn.style.background=c; btn.style.boxShadow="0 0 30px "+c;
+  if(score>=50) mult=2;
+  if(score>=150) mult=3;
+  if(score>=400) mult=5;
+  if(Math.random()<0.05){ document.body.style.background=c; setTimeout(()=>document.body.style.background="#000",120); }
+  if(Math.random()<0.02){ score+=100; scoreEl.textContent=score; msg.textContent="JACKPOT +100"; setTimeout(()=>msg.textContent="",500); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEON PONG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:'Press Start 2P',cursive;
+  color:#00ffff;
+}
+
+canvas{
+  display:block;
+  margin:auto;
+  background:#050510;
+  box-shadow:0 0 40px #00ffff40;
+}
+
+.top{
+  position:fixed;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:14px;
+}
+
+.back{
+  position:fixed;
+  top:15px;
+  right:20px;
+  color:#00ffff;
+  text-decoration:none;
+  font-size:12px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+YOU <span id="p1">0</span> — <span id="p2">0</span> AI
+</div>
+<a href="../../index.html" class="back">EXIT</a>
+
+<canvas id="game" width="600" height="400"></canvas>
+
+<script>
+const c=document.getElementById("game");
+const ctx=c.getContext("2d");
+
+let playerY=160;
+let aiY=160;
+
+let ballX=300;
+let ballY=200;
+let ballDX=4;
+let ballDY=3;
+
+let p1=0;
+let p2=0;
+
+function draw(){
+  ctx.fillStyle="#050510";
+  ctx.fillRect(0,0,600,400);
+
+  // middenlijn
+  ctx.fillStyle="#00ffff33";
+  for(let i=0;i<400;i+=20){
+    ctx.fillRect(298,i,4,10);
+  }
+
+  // paddles
+  ctx.fillStyle="#00ffff";
+  ctx.shadowBlur=15;
+  ctx.shadowColor="#00ffff";
+  ctx.fillRect(20,playerY,12,80);
+
+  ctx.fillStyle="#ff00ff";
+  ctx.shadowColor="#ff00ff";
+  ctx.fillRect(568,aiY,12,80);
+
+  // bal
+  ctx.fillStyle="#ffffff";
+  ctx.shadowColor="#ffffff";
+  ctx.beginPath();
+  ctx.arc(ballX,ballY,8,0,Math.PI*2);
+  ctx.fill();
+}
+
+function update(){
+
+  // player move (mouse)
+  document.onmousemove=e=>{
+    playerY=e.clientY-40;
+  };
+
+  // mobile touch
+  document.ontouchmove=e=>{
+    playerY=e.touches[0].clientY-40;
+  };
+
+  // ai follow
+  aiY += (ballY-(aiY+40))*0.08;
+
+  // ball
+  ballX+=ballDX;
+  ballY+=ballDY;
+
+  // wall bounce
+  if(ballY<0||ballY>400) ballDY*=-1;
+
+  // player hit
+  if(ballX<40 && ballY>playerY && ballY<playerY+80){
+    ballDX*=-1;
+    ballDX*=1.05;
+  }
+
+  // ai hit
+  if(ballX>560 && ballY>aiY && ballY<aiY+80){
+    ballDX*=-1;
+    ballDX*=1.05;
+  }
+
+  // score
+  if(ballX<0){
+    p2++;
+    reset();
+  }
+
+  if(ballX>600){
+    p1++;
+    reset();
+  }
+
+  document.getElementById("p1").innerText=p1;
+  document.getElementById("p2").innerText=p2;
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+function reset(){
+  ballX=300;
+  ballY=200;
+  ballDX = (Math.random()>0.5?4:-4);
+  ballDY = (Math.random()*4-2);
+}
+
+draw();
+update();
+</script>
+
+</body>
+</html>

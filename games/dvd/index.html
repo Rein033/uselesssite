@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DVD CHAOS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000;overflow:hidden;font-family:'Press Start 2P',cursive;color:#fff}
+#score{position:fixed;top:14px;left:14px;font-size:12px;opacity:.75}
+a.back{position:fixed;top:14px;right:14px;font-size:12px;color:#fff;text-decoration:none;opacity:.75}
+#dvd{position:absolute;width:120px;height:60px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;letter-spacing:2px;user-select:none}
+</style>
+</head>
+<body>
+<div id="score">BOUNCES: 0</div>
+<a href="../../" class="back">EXIT</a>
+<div id="dvd">DVD</div>
+<script>
+const dvd=document.getElementById("dvd");
+const scoreText=document.getElementById("score");
+let x=100,y=100,dx=2.6,dy=2.6,score=0;
+const colors=["#ff00ff","#00ffff","#00ff00","#ffff00","#ff0033","#ffffff"];
+function pick(){return colors[(Math.random()*colors.length)|0];}
+function bounce(){
+  score++; scoreText.textContent="BOUNCES: "+score;
+  const c=pick(); dvd.style.background=c; dvd.style.boxShadow="0 0 25px "+c;
+  dx*=1.025; dy*=1.025;
+  if(score%20===0){ document.body.style.background=c; setTimeout(()=>document.body.style.background="#000",120); }
+}
+function tick(){
+  x+=dx; y+=dy;
+  const w=innerWidth-dvd.offsetWidth, h=innerHeight-dvd.offsetHeight;
+  if(x<=0||x>=w){dx*=-1; bounce();}
+  if(y<=0||y>=h){dy*=-1; bounce();}
+  dvd.style.left=x+"px"; dvd.style.top=y+"px";
+  requestAnimationFrame(tick);
+}
+bounce(); tick();
+</script>
+</body>
+</html>

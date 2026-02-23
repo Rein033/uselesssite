@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STACK TOWER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ffff;
+  font-family:'Press Start 2P',cursive;
+  overflow:hidden;
+}
+a.back{
+  position:fixed; top:14px; right:14px;
+  color:#00ffff; text-decoration:none;
+  font-size:12px; opacity:.7; z-index:10;
+}
+#hud{
+  position:fixed; top:14px; left:14px;
+  font-size:12px; opacity:.85; z-index:10;
+}
+canvas{
+  display:block;
+  margin:0 auto;
+  background:#050510;
+  box-shadow:0 0 40px rgba(0,255,255,.25);
+}
+.overlay{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+  background:rgba(0,0,0,.78);
+  gap:14px;
+  opacity:0; pointer-events:none;
+  transition:.2s;
+}
+.overlay.show{opacity:1; pointer-events:auto;}
+button{
+  font-family:'Press Start 2P',cursive;
+  padding:14px 18px;
+  background:#ff00ff;
+  border:none; color:black;
+  cursor:pointer;
+}
+.small{font-size:10px; opacity:.7; text-align:center; padding:0 18px;}
+</style>
+</head>
+
+<body>
+<div id="hud">LEVEL: <span id="lvl">1</span> | SCORE: <span id="score">0</span></div>
+<a class="back" href="../../index.html">EXIT</a>
+
+<canvas id="c" width="420" height="640"></canvas>
+
+<div class="overlay" id="over">
+  <div style="font-size:18px;color:#ff0033;">GAME OVER</div>
+  <div class="small" id="final"></div>
+  <button onclick="restart()">RETRY</button>
+</div>
+
+<script>
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
+const lvlEl=document.getElementById("lvl");
+const scoreEl=document.getElementById("score");
+const over=document.getElementById("over");
+const final=document.getElementById("final");
+
+function fit(){
+  // keep it nice on mobile: scale canvas via CSS
+  const maxW = Math.min(innerWidth, 520);
+  const scale = maxW / c.width;
+  c.style.width = (c.width*scale)+"px";
+  c.style.height = (c.height*scale)+"px";
+}
+addEventListener("resize", fit); fit();
+
+let baseW=220;
+let cur = { x:0, y: c.height-120, w: baseW, h:24, dir:1, speed:3.2 };
+let stack = [{ x:(c.width-baseW)/2, y:c.height-96, w:baseW, h:24 }];
+let level=1;
+let score=0;
+let playing=true;
+
+function draw(){
+  ctx.clearRect(0,0,c.width,c.height);
+
+  // subtle grid bg
+  ctx.fillStyle="#050510";
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // stack blocks
+  for(let i=0;i<stack.length;i++){
+    const b=stack[i];
+    ctx.fillStyle = (i%2===0) ? "#00ffff" : "#ff00ff";
+    ctx.shadowBlur=14;
+    ctx.shadowColor=ctx.fillStyle;
+    ctx.fillRect(b.x,b.y,b.w,b.h);
+  }
+
+  // moving block
+  if(playing){
+    ctx.fillStyle="#ffffff";
+    ctx.shadowColor="#ffffff";
+    ctx.shadowBlur=18;
+    ctx.fillRect(cur.x,cur.y,cur.w,cur.h);
+  }
+
+  // reset shadow
+  ctx.shadowBlur=0;
+}
+
+function update(){
+  if(!playing) return;
+
+  // move current block
+  cur.x += cur.speed * cur.dir;
+  if(cur.x<=0){ cur.x=0; cur.dir=1; }
+  if(cur.x+cur.w>=c.width){ cur.x=c.width-cur.w; cur.dir=-1; }
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+function place(){
+  if(!playing) { restart(); return; }
+
+  const last = stack[stack.length-1];
+
+  const left = Math.max(cur.x, last.x);
+  const right = Math.min(cur.x+cur.w, last.x+last.w);
+  const overlap = right - left;
+
+  if(overlap <= 6){
+    endGame();
+    return;
+  }
+
+  // keep only overlap piece
+  const newBlock = { x:left, y:last.y-cur.h, w:overlap, h:cur.h };
+  stack.push(newBlock);
+
+  // score/level
+  level++;
+  score += Math.floor(overlap);
+  lvlEl.textContent=level;
+  scoreEl.textContent=score;
+
+  // next moving block becomes the overlap width, faster
+  cur.w = overlap;
+  cur.x = 0;
+  cur.y = newBlock.y - cur.h;
+  cur.speed = Math.min(8.5, cur.speed + 0.25 + (level*0.01));
+  cur.dir = (Math.random()>0.5) ? 1 : -1;
+
+  // scroll up if near top
+  if(cur.y < 160){
+    const dy = 120;
+    for(const b of stack) b.y += dy;
+    cur.y += dy;
+  }
+}
+
+function endGame(){
+  playing=false;
+  over.classList.add("show");
+  final.textContent = "LEVEL " + level + " | SCORE " + score + " (tap to retry)";
+}
+
+function restart(){
+  location.reload();
+}
+
+addEventListener("keydown",(e)=>{ if(e.code==="Space"||e.code==="Enter") place(); });
+addEventListener("click", place);
+addEventListener("touchstart",(e)=>{ e.preventDefault(); place(); }, {passive:false});
+
+draw();
+update();
+</script>
+</body>
+</html>
