@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Print Request — 3D Print Shop</title>
-<meta name="description" content="No 3D printer? No problem. Request a custom print and we'll make it for you.">
+<title>Custom Patch Aanvragen — Airsoft Patches</title>
+<meta name="description" content="Eigen teamlogo, callsign of uniek design? Vraag een custom PVC airsoft patch aan.">
 <link rel="icon" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/shop.css">
@@ -25,119 +25,114 @@
 
 <div class="custom-page">
 
-  <h1>🖨️ CUSTOM PRINT REQUEST</h1>
-  <p class="sub">Don't have a 3D printer? Describe what you want and we'll print it for you. From replacement parts to unique gifts — anything is possible. We'll send you a quote within 48 hours.</p>
+  <h1>🛡️ CUSTOM PATCH AANVRAGEN</h1>
+  <p class="sub">Eigen teamlogo, callsign of uniek design? Stuur je idee op — wij maken er een stevige PVC patch van. Velcro achterkant, elke kleur, elke vorm. Offerte binnen 48 uur.</p>
 
   <div class="steps">
     <div class="step-card">
       <div class="step-num">1️⃣</div>
-      <div class="step-title">DESCRIBE IT</div>
-      <div class="step-desc">Tell us what you want. Attach a sketch or reference image if you have one.</div>
+      <div class="step-title">STUUR JE ONTWERP</div>
+      <div class="step-desc">Omschrijf je patch of stuur een afbeelding/logo mee als referentie.</div>
     </div>
     <div class="step-card">
       <div class="step-num">2️⃣</div>
-      <div class="step-title">GET A QUOTE</div>
-      <div class="step-desc">We'll email you a price and timeline within 48 hours.</div>
+      <div class="step-title">ONTVANG OFFERTE</div>
+      <div class="step-desc">Wij sturen je binnen 48 uur een prijs en levertijd. Geen verplichtingen.</div>
     </div>
     <div class="step-card">
       <div class="step-num">3️⃣</div>
-      <div class="step-title">WE PRINT IT</div>
-      <div class="step-desc">Pay and we'll print & ship your custom item straight to you.</div>
+      <div class="step-title">WIJ MAKEN HET</div>
+      <div class="step-desc">Na akkoord drukken en sturen wij je patch(es) op. Getrackt pakket.</div>
     </div>
   </div>
 
   <div class="custom-form-box">
-    <h2>SUBMIT YOUR REQUEST</h2>
+    <h2>AANVRAAG INDIENEN</h2>
 
     <form id="custom-form" onsubmit="submitCustom(event)">
 
       <div class="form-row">
         <div class="form-group">
-          <label>YOUR NAME *</label>
-          <input type="text" id="c-name" required placeholder="Full name">
+          <label>NAAM *</label>
+          <input type="text" id="c-name" required placeholder="Jouw naam">
         </div>
         <div class="form-group">
-          <label>EMAIL *</label>
-          <input type="email" id="c-email" required placeholder="your@email.com">
+          <label>E-MAIL *</label>
+          <input type="email" id="c-email" required placeholder="jouw@email.nl">
         </div>
       </div>
 
       <div class="form-group">
-        <label>WHAT DO YOU WANT PRINTED? *</label>
-        <textarea id="c-description" required placeholder="Describe your item in detail. What is it? What size? What will it be used for? The more detail, the better!" style="min-height:120px;"></textarea>
+        <label>OMSCHRIJVING VAN JE PATCH *</label>
+        <textarea id="c-description" required placeholder="Wat wil je op de patch? Tekst, logo, symbool? Hoe meer detail, hoe beter!" style="min-height:120px;"></textarea>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>PREFERRED COLOR</label>
+          <label>KLEURVOORKEUR</label>
           <select class="form-select" id="c-color">
-            <option value="any">Any / Surprise me</option>
-            <option value="black">Black</option>
-            <option value="white">White</option>
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
-            <option value="yellow">Yellow</option>
-            <option value="orange">Orange</option>
-            <option value="purple">Purple</option>
-            <option value="pink">Pink</option>
-            <option value="grey">Grey</option>
-            <option value="other">Other (specify in notes)</option>
+            <option value="any">Geen voorkeur</option>
+            <option value="zwart/wit">Zwart/Wit</option>
+            <option value="od-green/tan">OD Green/Tan</option>
+            <option value="coyote/zwart">Coyote/Zwart</option>
+            <option value="multicam">MultiCam</option>
+            <option value="full-black">Full Black</option>
+            <option value="rood/zwart">Rood/Zwart</option>
+            <option value="anders">Anders (in opmerkingen)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>QUANTITY</label>
+          <label>AANTAL</label>
           <select class="form-select" id="c-qty">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="5">5</option>
             <option value="10">10</option>
-            <option value="more">More (specify in notes)</option>
+            <option value="25">25</option>
+            <option value="meer">Meer (in opmerkingen)</option>
           </select>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>APPROXIMATE SIZE</label>
+          <label>GEWENST FORMAAT</label>
           <select class="form-select" id="c-size">
-            <option value="tiny">Tiny (&lt; 5cm)</option>
-            <option value="small" selected>Small (5–15cm)</option>
-            <option value="medium">Medium (15–30cm)</option>
-            <option value="large">Large (&gt; 30cm)</option>
-            <option value="unsure">Not sure</option>
+            <option value="klein">Klein (5×3 cm)</option>
+            <option value="standaard" selected>Standaard (8×5 cm)</option>
+            <option value="groot">Groot (10×7 cm)</option>
+            <option value="rond">Rond (7 cm ø)</option>
+            <option value="anders">Anders / op maat</option>
           </select>
         </div>
         <div class="form-group">
-          <label>MATERIAL PREFERENCE</label>
+          <label>VELCRO ACHTERKANT</label>
           <select class="form-select" id="c-material">
-            <option value="pla">PLA (standard, eco)</option>
-            <option value="petg">PETG (durable, flexible)</option>
-            <option value="tpu">TPU (soft/rubber-like)</option>
-            <option value="abs">ABS (heat resistant)</option>
-            <option value="unsure">Not sure — recommend one</option>
+            <option value="haak">Haak velcro (standaard)</option>
+            <option value="lus">Lus velcro</option>
+            <option value="beide">Beide (zelf-klevend setje)</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label>REFERENCE LINK (optional)</label>
-        <input type="url" id="c-ref" placeholder="Link to image, Thingiverse page, etc.">
+        <label>REFERENTIE LINK / AFBEELDING (optioneel)</label>
+        <input type="url" id="c-ref" placeholder="Link naar logo, afbeelding of referentie">
       </div>
 
       <div class="form-group">
-        <label>ADDITIONAL NOTES</label>
-        <textarea id="c-notes" placeholder="Deadline, special requirements, budget, anything else..."></textarea>
+        <label>OPMERKINGEN</label>
+        <textarea id="c-notes" placeholder="Deadline, teamnaam, budget, speciale wensen..."></textarea>
       </div>
 
-      <button type="submit" class="submit-btn">🚀 SEND REQUEST</button>
-      <p style="font-family:Arial;font-size:11px;color:#666;margin-top:12px;text-align:center;">We'll get back to you within 48 hours with a quote. No commitment until you approve.</p>
+      <button type="submit" class="submit-btn">🚀 AANVRAAG VERSTUREN</button>
+      <p style="font-family:Arial;font-size:11px;color:#666;margin-top:12px;text-align:center;">Wij reageren binnen 48 uur met een offerte. Geen betaling vereist tot jij akkoord gaat.</p>
     </form>
 
     <div id="custom-success">
-      <h2>🎉 REQUEST SENT!</h2>
-      <p>Thanks! We'll review your request and send you a quote within 48 hours. Check your inbox.</p>
+      <h2>🎉 AANVRAAG VERSTUURD!</h2>
+      <p>Bedankt! We bekijken je aanvraag en sturen je binnen 48 uur een offerte. Check je inbox.</p>
       <br>
       <a href="/" style="color:var(--magenta);font-size:10px;font-family:'Press Start 2P',cursive;">← BROWSE THE SHOP</a>
     </div>
@@ -168,7 +163,7 @@ function submitCustom(e) {
   const ref      = document.getElementById('c-ref').value.trim();
   const notes    = document.getElementById('c-notes').value.trim();
 
-  const subject = encodeURIComponent(`Custom 3D Print Request — ${name}`);
+  const subject = encodeURIComponent(`Custom Patch Aanvraag — ${name}`);
   const body = encodeURIComponent(
     `Name: ${name}\nEmail: ${email}\n\nDescription:\n${desc}\n\nColor: ${color}\nQuantity: ${qty}\nSize: ${size}\nMaterial: ${material}\nReference: ${ref || 'None'}\n\nNotes:\n${notes || 'None'}`
   );

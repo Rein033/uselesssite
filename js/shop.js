@@ -2,133 +2,133 @@
 const PRODUCTS = [
   {
     id: 1,
-    name: "Flexi Dragon",
-    category: "toys",
-    price: 11.99,
-    description: "Fully articulated dragon that moves in your hand. Printed in flexible segments. A desk classic.",
-    emoji: "🐉",
-    colors: ["Red", "Green", "Blue", "Black", "Purple"],
+    name: "KILL CONFIRMED",
+    category: "morale",
+    price: 4.99,
+    description: "Klassieke morale patch voor op je vest of tas. Stevige PVC kwaliteit met velcro achterkant. Past op elk MOLLE systeem.",
+    emoji: "💀",
+    colors: ["Zwart/Wit", "OD Green/Tan", "Full Black"],
     inStock: true,
     popular: true
   },
   {
     id: 2,
-    name: "Articulated Octopus",
-    category: "toys",
-    price: 13.99,
-    description: "Eight wiggly legs, endless fun. Each tentacle moves independently. Great fidget toy.",
-    emoji: "🐙",
-    colors: ["Orange", "Purple", "Teal", "Pink"],
+    name: "FRIENDLY FIRE ISN'T",
+    category: "morale",
+    price: 4.99,
+    description: "Herinner je teamgenoten aan de basics. PVC patch met velcro. Altijd goed voor een lach op het veld.",
+    emoji: "🔫",
+    colors: ["Zwart/Wit", "OD Green/Tan", "Full Black"],
     inStock: true,
     popular: true
   },
   {
     id: 3,
-    name: "Fidget Cube",
-    category: "toys",
-    price: 8.99,
-    description: "Six sides of satisfying interaction. Click, spin, slide. Perfect for restless hands.",
-    emoji: "🎲",
-    colors: ["Black", "White", "Blue", "Red"],
+    name: "BORN TO AIRSOFT",
+    category: "morale",
+    price: 4.99,
+    description: "Voor de airsofter die het in het bloed heeft. Stevige 3D PVC patch, UV-bestendig en waterproof.",
+    emoji: "🎯",
+    colors: ["Zwart/Wit", "OD Green/Tan", "Coyote Brown"],
     inStock: true,
     popular: false
   },
   {
     id: 4,
-    name: "Gear Cube Puzzle",
-    category: "toys",
-    price: 16.99,
-    description: "A twisty puzzle with interlocking gears. Satisfying to solve, impossible to put down.",
-    emoji: "⚙️",
-    colors: ["Black", "White"],
+    name: "NO BB NO GLORY",
+    category: "morale",
+    price: 4.99,
+    description: "Laat iedereen weten waar je voor staat. PVC 3D patch met haak velcro. 8×5 cm.",
+    emoji: "⚡",
+    colors: ["Zwart/Wit", "Full Black", "MultiCam"],
     inStock: true,
     popular: false
   },
   {
     id: 5,
-    name: "Phone Stand",
-    category: "gadgets",
-    price: 12.99,
-    description: "Adjustable phone stand for desk use. Works for all phone sizes. Clean minimal design.",
-    emoji: "📱",
-    colors: ["Black", "White", "Grey"],
+    name: "Naamlabel — eigen tekst",
+    category: "naam",
+    price: 6.99,
+    description: "Persoonlijk naamlabel met jouw naam of callsign. Maximaal 12 tekens. PVC, velcro achterkant. Standaard 9×2.5 cm.",
+    emoji: "🪖",
+    colors: ["Zwart/Wit", "Tan/Zwart", "OD Green/Zwart", "Full Black"],
     inStock: true,
     popular: true
   },
   {
     id: 6,
-    name: "Cable Organizer Set",
-    category: "gadgets",
-    price: 9.99,
-    description: "Set of 5 cable clips to tame your desk chaos. Stick to any surface.",
-    emoji: "🔌",
-    colors: ["Black", "White"],
+    name: "Bloedgroep patch",
+    category: "naam",
+    price: 3.99,
+    description: "Bloedgroep patch voor op je vest of helm. Kies je bloedgroep (A+, A-, B+, B-, O+, O-, AB+, AB-). Rood/zwart PVC.",
+    emoji: "🩸",
+    colors: ["Rood/Zwart", "Rood/Tan", "Full Black"],
     inStock: true,
     popular: false
   },
   {
     id: 7,
-    name: "Desk Organizer",
-    category: "gadgets",
-    price: 19.99,
-    description: "Multi-compartment desk organizer with pen holder, card slot, and phone dock.",
-    emoji: "🗂️",
-    colors: ["Black", "White", "Wood Brown"],
+    name: "Callsign patch",
+    category: "naam",
+    price: 6.99,
+    description: "Jouw callsign op een patch. Tot 10 tekens. Ideaal voor team-herkenning op het veld. Velcro achterkant.",
+    emoji: "📟",
+    colors: ["Zwart/Wit", "OD Green/Tan", "Coyote/Zwart"],
     inStock: true,
-    popular: false
+    popular: true
   },
   {
     id: 8,
-    name: "Headphone Stand",
-    category: "gadgets",
-    price: 22.99,
-    description: "Sleek headphone stand that keeps your cans off the desk. Weighted base, no wobble.",
-    emoji: "🎧",
-    colors: ["Black", "White"],
+    name: "Nederlandse Vlag",
+    category: "tactisch",
+    price: 3.99,
+    description: "Nederlandse vlag patch, links- of rechtsgeoriënteerd. PVC, 8×5 cm. Past op elke sleeve of vest.",
+    emoji: "🇳🇱",
+    colors: ["Standaard kleur", "Subdued (grijs)", "IR patch (zwart)"],
     inStock: true,
     popular: true
   },
   {
     id: 9,
-    name: "Keychain Set (3-pack)",
-    category: "gadgets",
-    price: 6.99,
-    description: "Three mini geometric keychain pendants. Lightweight and durable PLA plastic.",
-    emoji: "🔑",
-    colors: ["Mixed", "Black", "Glow-in-dark"],
+    name: "IR FLAG patch",
+    category: "tactisch",
+    price: 5.99,
+    description: "Infrarood vlag patch — onzichtbaar voor het blote oog, zichtbaar onder NV. PVC met velcro.",
+    emoji: "👁️",
+    colors: ["IR Zwart", "IR Tan"],
     inStock: true,
     popular: false
   },
   {
     id: 10,
-    name: "Geometric Planter",
-    category: "decor",
-    price: 15.99,
-    description: "Faceted geometric plant pot. Drainage hole included. Perfect for succulents.",
-    emoji: "🌵",
-    colors: ["White", "Black", "Terracotta", "Teal"],
+    name: "Team patch — eigen ontwerp",
+    category: "tactisch",
+    price: 8.99,
+    description: "Eigen teamlogo of ontwerp als PVC patch. Stuur je afbeelding op en wij maken het. Minimaal 5 stuks per ontwerp.",
+    emoji: "🛡️",
+    colors: ["Op aanvraag"],
     inStock: true,
     popular: true
   },
   {
     id: 11,
-    name: "LED Lamp Shade",
-    category: "decor",
-    price: 24.99,
-    description: "Geometric lamp shade for standard E27 bulbs. Creates beautiful shadow patterns.",
-    emoji: "💡",
-    colors: ["White", "Black"],
+    name: "Rank patch set (3x)",
+    category: "tactisch",
+    price: 7.99,
+    description: "Set van 3 rank patches naar keuze. Sergeant, Lieutenant, Captain — of eigen rangaanduiding op aanvraag.",
+    emoji: "⭐",
+    colors: ["Zwart/Tan", "OD Green/Zwart", "Full Black"],
     inStock: true,
     popular: false
   },
   {
     id: 12,
-    name: "Wall Hook Set",
-    category: "decor",
-    price: 7.99,
-    description: "Set of 4 minimalist wall hooks. Screw-mount for secure holding. Great for keys, bags, coats.",
-    emoji: "🪝",
-    colors: ["Black", "White", "Gold"],
+    name: "Medic patch",
+    category: "tactisch",
+    price: 3.99,
+    description: "Rode kruis medic patch. Duidelijk zichtbaar op het veld. PVC, 5×5 cm, velcro achterkant.",
+    emoji: "➕",
+    colors: ["Rood/Wit", "Rood/Zwart", "Subdued"],
     inStock: true,
     popular: false
   }
@@ -310,7 +310,7 @@ function renderCart() {
   const totalEl = document.getElementById('cart-total');
 
   if (cart.length === 0) {
-    container.innerHTML = '<div class="empty-cart">Your cart is empty 😔<br><a href="/shop/">Browse products</a></div>';
+    container.innerHTML = '<div class="empty-cart">Je winkelwagen is leeg 😔<br><a href="/">Bekijk patches</a></div>';
     totalEl.textContent = '€0.00';
     return;
   }
@@ -365,7 +365,7 @@ function submitOrder() {
   const orderLines = cart.map(i => `${i.qty}x ${i.name} (${i.color}) - €${(i.price * i.qty).toFixed(2)}`).join('\n');
   const total = cartTotal().toFixed(2);
 
-  const subject = encodeURIComponent(`New 3D Print Order — €${total}`);
+  const subject = encodeURIComponent(`Nieuwe Patch Bestelling — €${total}`);
   const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nAddress: ${address}\n\nOrder:\n${orderLines}\n\nTotal: €${total}\n\nNotes: ${notes}`);
 
   window.location.href = `mailto:orders@uselesssite.nl?subject=${subject}&body=${body}`;
