@@ -3,175 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Useless Arcade — Random Games & Chaos</title>
-
-<meta name="description" content="Random arcade games, memes and chaos. Click and regret instantly.">
-<meta name="keywords" content="arcade, random games, useless web, online games, meme site">
-
+<title>3D Print Shop — Useless Arcade</title>
+<meta name="description" content="Shop unique 3D printed toys, gadgets and decor. Custom prints available for everyone.">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="icon" href="/favicon.ico">
-
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-
-body{
-  background: radial-gradient(circle at center,#12002e 0%,#000 75%);
-  font-family:'Press Start 2P',cursive;
-  color:#00ffff;
-  overflow-x:hidden;
-}
-
-/* ===== HEADER ===== */
-header{
-  width:100%;
-  height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-
-  background:#050510;
-  border-bottom:1px solid rgba(0,255,255,.2);
-  box-shadow:0 4px 20px rgba(0,0,0,.6);
-
-  position:sticky;
-  top:0;
-  z-index:9999;
-}
-
-.logo{
-  font-size:12px;
-  color:#00ffff;
-}
-
-.afv-btn{
-  background:#ff6a00;
-  padding:8px 14px;
-  border-radius:6px;
-  color:white;
-  text-decoration:none;
-  font-size:12px;
-  font-family:Arial;
-}
-
-/* ===== CENTER PAGE ===== */
-.page{
-  min-height:calc(100vh - 120px);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:40px 20px;
-}
-
-/* ===== ARCADE ===== */
-.cabinet{
-  width:100%;
-  max-width:520px;
-  background:linear-gradient(#0d0d18,#000,#0d0d18);
-  border:8px solid #111;
-  border-radius:20px 20px 40px 40px;
-  box-shadow:
-    0 0 60px rgba(0,255,255,.25),
-    inset 0 0 40px rgba(255,0,255,.15),
-    0 25px 80px rgba(0,0,0,.9);
-  padding:32px 22px 70px;
-  position:relative;
-}
-
-.screen-bezel{
-  background:#060612;
-  border:12px solid #1b1b2f;
-  border-radius:12px;
-  padding:24px 16px 32px;
-  margin-bottom:40px;
-  box-shadow: inset 0 0 40px #000;
-}
-
-h1{
-  font-size:clamp(1.8rem,6vw,2.6rem);
-  color:#ff00ff;
-  text-shadow:0 0 12px #ff00ff;
-  margin-bottom:14px;
-  letter-spacing:4px;
-}
-
-.sub{
-  font-size:.9rem;
-  color:#00ffff;
-  opacity:.8;
-}
-
-.controls{
-  display:flex;
-  justify-content:center;
-}
-
-button.random{
-  font-family:'Press Start 2P',cursive;
-  font-size:1rem;
-  padding:20px 40px;
-  background:#000;
-  border:4px solid #ff00ff;
-  color:#ff00ff;
-  cursor:pointer;
-  text-shadow:0 0 10px currentColor;
-  box-shadow:0 0 25px rgba(255,0,255,.5);
-}
-
-/* ===== FOOTER ===== */
-footer{
-  width:100%;
-  text-align:center;
-  padding:20px 0;
-  font-size:12px;
-  opacity:.6;
-}
-
-footer a{
-  color:#00ffff;
-  text-decoration:none;
-  margin:0 10px;
-}
-</style>
+<link rel="stylesheet" href="/css/shop.css">
 </head>
-
 <body>
 
 <header>
-  <div class="logo">USELESS ARCADE</div>
-
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a class="afv-btn" href="/shop/" style="background:linear-gradient(90deg,#00ffff,#ff00ff);color:#000;font-family:'Press Start 2P',cursive;font-size:10px;padding:8px 14px;border-radius:6px;text-decoration:none;box-shadow:0 0 14px rgba(0,255,255,.4);">🖨️ SHOP</a>
-    <a class="afv-btn" href="https://amersfoortvoorvrijheid.nl" target="_blank">
-      Amersfoort voor Vrijheid
-    </a>
-  </div>
+  <a class="logo" href="/">USELESS ARCADE</a>
+  <nav class="nav-links">
+    <a href="/" class="active">SHOP</a>
+    <a href="/custom.html">CUSTOM ORDER</a>
+  </nav>
+  <a href="/cart.html" class="cart-btn">
+    🛒 CART
+    <span id="cart-badge">0</span>
+  </a>
 </header>
 
-<div class="page">
+<div class="shop-hero">
+  <h1>3D PRINT SHOP</h1>
+  <p>Handcrafted 3D printed toys, gadgets & decor — made fresh for every order. No printer? No problem. We print it for you.</p>
+  <span class="hero-badge">🔧 Made to order</span>
+  <span class="hero-badge">🚀 Ships in 3-5 days</span>
+  <span class="hero-badge">🎨 Custom colors</span>
+</div>
 
-  <div class="cabinet">
-    <div class="screen-bezel">
-      <h1 id="title">USELESS ARCADE</h1>
-      <div class="sub">tap the button. regret instantly.</div>
-    </div>
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">ALL</button>
+  <button class="filter-btn" data-filter="toys">TOYS</button>
+  <button class="filter-btn" data-filter="gadgets">GADGETS</button>
+  <button class="filter-btn" data-filter="decor">DECOR</button>
+</div>
 
-    <div class="controls">
-      <button class="random" id="randomBtn">🎲 RANDOM GAME</button>
-    </div>
+<div class="product-grid" id="product-grid"></div>
+
+<div class="custom-banner">
+  <h2>🖨️ WANT SOMETHING CUSTOM?</h2>
+  <p>Don't have a 3D printer? We've got you covered. Send us your idea — a sketch, a description, or a reference image — and we'll print it for you. Totally custom, any color, any size.</p>
+  <a class="custom-link" href="/custom.html">REQUEST CUSTOM PRINT →</a>
+</div>
+
+<div id="modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
   </div>
-
 </div>
 
 <footer>
-  <a href="/privacy.html">privacy</a> |
-  <a href="/terms.html">terms</a>
+  <a href="/privacy.html">Privacy</a> |
+  <a href="/terms.html">Terms</a>
 </footer>
 
-<script src="js/main.js"></script>
-
+<script src="/js/shop.js"></script>
+<script>initShop();</script>
 </body>
 </html>

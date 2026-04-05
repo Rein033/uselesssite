@@ -7,17 +7,17 @@
 <meta name="description" content="No 3D printer? No problem. Request a custom print and we'll make it for you.">
 <link rel="icon" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/shop/css/shop.css">
+<link rel="stylesheet" href="/css/shop.css">
 </head>
 <body>
 
 <header>
   <a class="logo" href="/">USELESS ARCADE</a>
   <nav class="nav-links">
-    <a href="/shop/">SHOP</a>
-    <a href="/shop/custom.html" class="active">CUSTOM ORDER</a>
+    <a href="/">SHOP</a>
+    <a href="/custom.html" class="active">CUSTOM ORDER</a>
   </nav>
-  <a href="/shop/cart.html" class="cart-btn">
+  <a href="/cart.html" class="cart-btn">
     🛒 CART
     <span id="cart-badge">0</span>
   </a>
@@ -28,7 +28,6 @@
   <h1>🖨️ CUSTOM PRINT REQUEST</h1>
   <p class="sub">Don't have a 3D printer? Describe what you want and we'll print it for you. From replacement parts to unique gifts — anything is possible. We'll send you a quote within 48 hours.</p>
 
-  <!-- HOW IT WORKS -->
   <div class="steps">
     <div class="step-card">
       <div class="step-num">1️⃣</div>
@@ -47,7 +46,6 @@
     </div>
   </div>
 
-  <!-- FORM -->
   <div class="custom-form-box">
     <h2>SUBMIT YOUR REQUEST</h2>
 
@@ -104,10 +102,10 @@
         <div class="form-group">
           <label>APPROXIMATE SIZE</label>
           <select class="form-select" id="c-size">
-            <option value="tiny">Tiny (< 5cm)</option>
+            <option value="tiny">Tiny (&lt; 5cm)</option>
             <option value="small" selected>Small (5–15cm)</option>
             <option value="medium">Medium (15–30cm)</option>
-            <option value="large">Large (> 30cm)</option>
+            <option value="large">Large (&gt; 30cm)</option>
             <option value="unsure">Not sure</option>
           </select>
         </div>
@@ -141,19 +139,19 @@
       <h2>🎉 REQUEST SENT!</h2>
       <p>Thanks! We'll review your request and send you a quote within 48 hours. Check your inbox.</p>
       <br>
-      <a href="/shop/" style="color:var(--magenta);font-size:10px;font-family:'Press Start 2P',cursive;">← BROWSE THE SHOP</a>
+      <a href="/" style="color:var(--magenta);font-size:10px;font-family:'Press Start 2P',cursive;">← BROWSE THE SHOP</a>
     </div>
   </div>
 
 </div>
 
 <footer>
-  <a href="/shop/">← Back to Shop</a> |
+  <a href="/">← Back to Shop</a> |
   <a href="/privacy.html">Privacy</a> |
   <a href="/terms.html">Terms</a>
 </footer>
 
-<script src="/shop/js/shop.js"></script>
+<script src="/js/shop.js"></script>
 <script>
 updateCartBadge();
 
