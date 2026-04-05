@@ -131,6 +131,72 @@ const PRODUCTS = [
     colors: ["Zwart", "Tan", "OD Green"],
     inStock: true,
     popular: false
+  },
+  {
+    id: 13,
+    name: "Magazijn koppelaar",
+    category: "accessoires",
+    price: 6.50,
+    description: "Koppel twee magazijnen samen voor sneller herladen. Past op de meeste standaard AEG mags. Geprint in stevige PLA. Past op M4/M16 mags.",
+    emoji: "🔋",
+    colors: ["Zwart", "Tan", "OD Green"],
+    inStock: true,
+    popular: true
+  },
+  {
+    id: 14,
+    name: "Barrel plug",
+    category: "accessoires",
+    price: 3.50,
+    description: "Veiligheidsplug voor de loop van je replica. PLA, past op loops van 14–16mm diameter. Verplicht op de meeste velden. Set van 2.",
+    emoji: "🔒",
+    colors: ["Rood", "Oranje", "Zwart"],
+    inStock: true,
+    popular: true
+  },
+  {
+    id: 15,
+    name: "Picatinny rail covers",
+    category: "accessoires",
+    price: 5.00,
+    description: "Beschermkapjes voor je Picatinny/Weaver rails. Set van 4 stuks. Stevig PLA, klikken eenvoudig vast. Geen losse rails meer.",
+    emoji: "🔫",
+    colors: ["Zwart", "Tan", "OD Green", "FDE"],
+    inStock: true,
+    popular: false
+  },
+  {
+    id: 16,
+    name: "Velcro patch paneel",
+    category: "accessoires",
+    price: 7.50,
+    description: "Rechthoekig paneel met lus-velcro oppervlak. Schroef of tape vast op helm, rugzak of vest. Geschikt voor al je patches. Ca. 10×6 cm.",
+    emoji: "🪖",
+    colors: ["Zwart", "Tan", "OD Green"],
+    inStock: true,
+    popular: true
+  },
+  {
+    id: 17,
+    name: "Sling mount adapter",
+    category: "accessoires",
+    price: 5.50,
+    description: "QD sling mount adapter voor replica's zonder ingebouwd bevestigingspunt. PLA, past op standaard 20mm rails. Print-in-place scharnier.",
+    emoji: "🔗",
+    colors: ["Zwart", "Tan"],
+    inStock: true,
+    popular: false
+  },
+  {
+    id: 18,
+    name: "Speed loader houder",
+    category: "accessoires",
+    price: 4.50,
+    description: "MOLLE-compatibele houder voor je speedloader. Past op elk MOLLE vest of tas. Stevige PLA, houdt de speedloader veilig vast op het veld.",
+    emoji: "⚡",
+    colors: ["Zwart", "Tan", "OD Green"],
+    inStock: true,
+    popular: false
   }
 ];
 
