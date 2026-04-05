@@ -74,7 +74,7 @@ export default function RegisterPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black mb-1">Join RigPins</h1>
+          <h1 className="text-3xl font-black mb-1">Join UselessSite</h1>
           <p className="text-muted-foreground text-sm">Share your setup, get graded by the community</p>
         </div>
 

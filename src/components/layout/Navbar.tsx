@@ -12,7 +12,7 @@ export async function Navbar() {
         <Link href="/" className="flex items-center gap-2 font-bold text-lg shrink-0">
           <span className="text-2xl">📌</span>
           <span className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-transparent">
-            RigPins
+            UselessSite
           </span>
         </Link>
 
