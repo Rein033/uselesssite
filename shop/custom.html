@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Print Request — 3D Print Shop</title>
+<meta name="description" content="No 3D printer? No problem. Request a custom print and we'll make it for you.">
+<link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shop/css/shop.css">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">USELESS ARCADE</a>
+  <nav class="nav-links">
+    <a href="/shop/">SHOP</a>
+    <a href="/shop/custom.html" class="active">CUSTOM ORDER</a>
+  </nav>
+  <a href="/shop/cart.html" class="cart-btn">
+    🛒 CART
+    <span id="cart-badge">0</span>
+  </a>
+</header>
+
+<div class="custom-page">
+
+  <h1>🖨️ CUSTOM PRINT REQUEST</h1>
+  <p class="sub">Don't have a 3D printer? Describe what you want and we'll print it for you. From replacement parts to unique gifts — anything is possible. We'll send you a quote within 48 hours.</p>
+
+  <!-- HOW IT WORKS -->
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">1️⃣</div>
+      <div class="step-title">DESCRIBE IT</div>
+      <div class="step-desc">Tell us what you want. Attach a sketch or reference image if you have one.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2️⃣</div>
+      <div class="step-title">GET A QUOTE</div>
+      <div class="step-desc">We'll email you a price and timeline within 48 hours.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3️⃣</div>
+      <div class="step-title">WE PRINT IT</div>
+      <div class="step-desc">Pay and we'll print & ship your custom item straight to you.</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="custom-form-box">
+    <h2>SUBMIT YOUR REQUEST</h2>
+
+    <form id="custom-form" onsubmit="submitCustom(event)">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>YOUR NAME *</label>
+          <input type="text" id="c-name" required placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>EMAIL *</label>
+          <input type="email" id="c-email" required placeholder="your@email.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>WHAT DO YOU WANT PRINTED? *</label>
+        <textarea id="c-description" required placeholder="Describe your item in detail. What is it? What size? What will it be used for? The more detail, the better!" style="min-height:120px;"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>PREFERRED COLOR</label>
+          <select class="form-select" id="c-color">
+            <option value="any">Any / Surprise me</option>
+            <option value="black">Black</option>
+            <option value="white">White</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="orange">Orange</option>
+            <option value="purple">Purple</option>
+            <option value="pink">Pink</option>
+            <option value="grey">Grey</option>
+            <option value="other">Other (specify in notes)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>QUANTITY</label>
+          <select class="form-select" id="c-qty">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="more">More (specify in notes)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>APPROXIMATE SIZE</label>
+          <select class="form-select" id="c-size">
+            <option value="tiny">Tiny (< 5cm)</option>
+            <option value="small" selected>Small (5–15cm)</option>
+            <option value="medium">Medium (15–30cm)</option>
+            <option value="large">Large (> 30cm)</option>
+            <option value="unsure">Not sure</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>MATERIAL PREFERENCE</label>
+          <select class="form-select" id="c-material">
+            <option value="pla">PLA (standard, eco)</option>
+            <option value="petg">PETG (durable, flexible)</option>
+            <option value="tpu">TPU (soft/rubber-like)</option>
+            <option value="abs">ABS (heat resistant)</option>
+            <option value="unsure">Not sure — recommend one</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>REFERENCE LINK (optional)</label>
+        <input type="url" id="c-ref" placeholder="Link to image, Thingiverse page, etc.">
+      </div>
+
+      <div class="form-group">
+        <label>ADDITIONAL NOTES</label>
+        <textarea id="c-notes" placeholder="Deadline, special requirements, budget, anything else..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">🚀 SEND REQUEST</button>
+      <p style="font-family:Arial;font-size:11px;color:#666;margin-top:12px;text-align:center;">We'll get back to you within 48 hours with a quote. No commitment until you approve.</p>
+    </form>
+
+    <div id="custom-success">
+      <h2>🎉 REQUEST SENT!</h2>
+      <p>Thanks! We'll review your request and send you a quote within 48 hours. Check your inbox.</p>
+      <br>
+      <a href="/shop/" style="color:var(--magenta);font-size:10px;font-family:'Press Start 2P',cursive;">← BROWSE THE SHOP</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="/shop/">← Back to Shop</a> |
+  <a href="/privacy.html">Privacy</a> |
+  <a href="/terms.html">Terms</a>
+</footer>
+
+<script src="/shop/js/shop.js"></script>
+<script>
+updateCartBadge();
+
+function submitCustom(e) {
+  e.preventDefault();
+
+  const name     = document.getElementById('c-name').value.trim();
+  const email    = document.getElementById('c-email').value.trim();
+  const desc     = document.getElementById('c-description').value.trim();
+  const color    = document.getElementById('c-color').value;
+  const qty      = document.getElementById('c-qty').value;
+  const size     = document.getElementById('c-size').value;
+  const material = document.getElementById('c-material').value;
+  const ref      = document.getElementById('c-ref').value.trim();
+  const notes    = document.getElementById('c-notes').value.trim();
+
+  const subject = encodeURIComponent(`Custom 3D Print Request — ${name}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nEmail: ${email}\n\nDescription:\n${desc}\n\nColor: ${color}\nQuantity: ${qty}\nSize: ${size}\nMaterial: ${material}\nReference: ${ref || 'None'}\n\nNotes:\n${notes || 'None'}`
+  );
+
+  window.location.href = `mailto:custom@uselesssite.nl?subject=${subject}&body=${body}`;
+
+  setTimeout(() => {
+    document.getElementById('custom-form').style.display = 'none';
+    document.getElementById('custom-success').style.display = 'block';
+  }, 1000);
+}
+</script>
+</body>
+</html>
