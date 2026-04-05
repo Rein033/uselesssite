@@ -434,7 +434,7 @@ function submitOrder() {
   const subject = encodeURIComponent(`Nieuwe Patch Bestelling — €${total}`);
   const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nAddress: ${address}\n\nOrder:\n${orderLines}\n\nTotal: €${total}\n\nNotes: ${notes}`);
 
-  window.location.href = `mailto:orders@uselesssite.nl?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:orders@gunpatch.nl?subject=${subject}&body=${body}`;
 
   setTimeout(() => {
     clearCart();

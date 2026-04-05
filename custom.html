@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Patch Aanvragen — PatchOps.nl</title>
+<title>Custom Patch Aanvragen — GunPatch.nl</title>
 <meta name="description" content="Eigen teamlogo, callsign of uniek design? Ik print het zelf op mijn Anycubic Kobra S1. Vanaf 1 stuk, offerte binnen 48 uur.">
 <link rel="icon" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
 
 <header>
-  <a class="logo" href="/">PATCH<span>OPS</span>.NL</a>
+  <a class="logo" href="/">GUN<span>PATCH</span>.NL</a>
   <nav class="nav-links">
     <a href="/">PATCHES</a>
     <a href="/custom.html" class="active">CUSTOM ORDER</a>
@@ -168,7 +168,7 @@ function submitCustom(e) {
     `Name: ${name}\nEmail: ${email}\n\nDescription:\n${desc}\n\nColor: ${color}\nQuantity: ${qty}\nSize: ${size}\nMaterial: ${material}\nReference: ${ref || 'None'}\n\nNotes:\n${notes || 'None'}`
   );
 
-  window.location.href = `mailto:custom@uselesssite.nl?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:custom@gunpatch.nl?subject=${subject}&body=${body}`;
 
   setTimeout(() => {
     document.getElementById('custom-form').style.display = 'none';
