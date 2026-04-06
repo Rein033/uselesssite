@@ -1,5 +1,3 @@
-import { prisma } from '@/lib/prisma'
-import { PostCard } from '@/components/feed/PostCard'
 import { Avatar } from '@/components/ui/Avatar'
 import { gradeFromScore } from '@/lib/utils'
 import Link from 'next/link'
@@ -7,9 +5,9 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Leaderboard' }
 
+const DEMO = process.env.USE_DEMO_DATA === 'true'
 const PERIODS = ['weekly', 'monthly', 'alltime'] as const
 type Period = typeof PERIODS[number]
-
 interface Props { searchParams: { period?: Period } }
 
 function getDateFilter(period: Period) {
@@ -21,27 +19,36 @@ function getDateFilter(period: Period) {
 
 export default async function LeaderboardPage({ searchParams }: Props) {
   const period = (searchParams.period ?? 'alltime') as Period
-  const since = getDateFilter(period)
 
-  const posts = await prisma.post.findMany({
-    where: {
-      published: true,
-      ratingCount: { gte: 3 },
-      ...(since ? { createdAt: { gte: since } } : {}),
-    },
-    orderBy: [{ avgRating: 'desc' }, { ratingCount: 'desc' }],
-    take: 20,
-    include: {
-      author: { select: { id: true, username: true, name: true, avatar: true } },
-    },
-  })
+  let posts: any[] = []
+  let topUsers: any[] = []
 
-  const topUsers = await prisma.user.findMany({
-    where: { totalRatings: { gte: 3 } },
-    orderBy: { avgRating: 'desc' },
-    take: 10,
-    select: { id: true, username: true, name: true, avatar: true, avgRating: true, totalPosts: true, totalRatings: true },
-  })
+  if (DEMO) {
+    const { DEMO_POSTS, DEMO_USERS } = await import('@/lib/demo-data')
+    const since = getDateFilter(period)
+    posts = DEMO_POSTS
+      .filter(p => p.ratingCount >= 3 && (!since || p.createdAt >= since))
+      .sort((a, b) => b.avgRating - a.avgRating)
+      .slice(0, 20)
+    topUsers = [...DEMO_USERS].sort((a, b) => b.avgRating - a.avgRating)
+  } else {
+    const { prisma } = await import('@/lib/prisma')
+    const since = getDateFilter(period)
+    ;[posts, topUsers] = await Promise.all([
+      prisma.post.findMany({
+        where: { published: true, ratingCount: { gte: 3 }, ...(since ? { createdAt: { gte: since } } : {}) },
+        orderBy: [{ avgRating: 'desc' }, { ratingCount: 'desc' }],
+        take: 20,
+        include: { author: { select: { id: true, username: true, name: true, avatar: true } } },
+      }),
+      prisma.user.findMany({
+        where: { totalRatings: { gte: 3 } },
+        orderBy: { avgRating: 'desc' },
+        take: 10,
+        select: { id: true, username: true, name: true, avatar: true, avgRating: true, totalPosts: true, totalRatings: true },
+      }),
+    ])
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
@@ -50,16 +57,13 @@ export default async function LeaderboardPage({ searchParams }: Props) {
         <p className="text-muted-foreground">The highest-rated setups in the community.</p>
       </div>
 
-      {/* Period selector */}
       <div className="flex gap-2">
         {PERIODS.map(p => (
           <Link
             key={p}
             href={`/leaderboard?period=${p}`}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
-              period === p
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+              period === p ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
             }`}
           >
             {p === 'alltime' ? 'All Time' : p.charAt(0).toUpperCase() + p.slice(1)}
@@ -68,14 +72,13 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Top posts */}
         <div className="lg:col-span-2 space-y-4">
           <h2 className="font-semibold text-lg">Top Setups</h2>
           {posts.length === 0 ? (
             <p className="text-muted-foreground py-8 text-center">Not enough ratings yet for this period.</p>
           ) : (
             <div className="space-y-3">
-              {posts.map((post, i) => {
+              {posts.map((post: any, i: number) => {
                 const { grade, color } = gradeFromScore(post.avgRating)
                 return (
                   <Link key={post.id} href={`/post/${post.id}`} className="group flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary/40 transition-all">
@@ -94,11 +97,10 @@ export default async function LeaderboardPage({ searchParams }: Props) {
           )}
         </div>
 
-        {/* Top users */}
         <div>
           <h2 className="font-semibold text-lg mb-4">Top Builders</h2>
           <div className="space-y-3">
-            {topUsers.map((user, i) => {
+            {topUsers.map((user: any, i: number) => {
               const { grade, color } = gradeFromScore(user.avgRating)
               return (
                 <Link key={user.id} href={`/u/${user.username}`} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3 hover:border-primary/40 transition-all">

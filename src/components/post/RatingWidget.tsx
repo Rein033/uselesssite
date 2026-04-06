@@ -12,9 +12,10 @@ interface RatingWidgetProps {
   avgRating: number
   ratingCount: number
   userRating?: number | null
+  demo?: boolean
 }
 
-export function RatingWidget({ postId, avgRating, ratingCount, userRating }: RatingWidgetProps) {
+export function RatingWidget({ postId, avgRating, ratingCount, userRating, demo }: RatingWidgetProps) {
   const { data: session } = useSession()
   const { toast } = useToast()
   const router = useRouter()
@@ -26,6 +27,7 @@ export function RatingWidget({ postId, avgRating, ratingCount, userRating }: Rat
   const { grade, color } = gradeFromScore(displayScore)
 
   async function rate(score: number) {
+    if (demo) { toast('Sign in to rate setups', 'info'); return }
     if (!session) { router.push('/login'); return }
     setLoading(true)
     try {

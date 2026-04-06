@@ -12,9 +12,10 @@ import type { CommentWithAuthor } from '@/types'
 interface CommentThreadProps {
   postId: string
   comments: CommentWithAuthor[]
+  demo?: boolean
 }
 
-export function CommentThread({ postId, comments }: CommentThreadProps) {
+export function CommentThread({ postId, comments, demo }: CommentThreadProps) {
   const { data: session } = useSession()
   const { toast } = useToast()
   const router = useRouter()
@@ -23,6 +24,7 @@ export function CommentThread({ postId, comments }: CommentThreadProps) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+    if (demo) { toast('Sign in to comment', 'info'); return }
     if (!content.trim() || !session) return
     setLoading(true)
     try {
@@ -46,7 +48,11 @@ export function CommentThread({ postId, comments }: CommentThreadProps) {
       <h3 className="font-semibold text-lg">Comments <span className="text-muted-foreground font-normal text-base">({comments.length})</span></h3>
 
       {/* Input */}
-      {session ? (
+      {demo ? (
+        <p className="text-sm text-muted-foreground bg-secondary rounded-lg px-4 py-3">
+          <a href="/login" className="text-primary hover:underline">Log in</a> to leave a comment.
+        </p>
+      ) : session ? (
         <form onSubmit={submit} className="flex gap-3">
           <Avatar src={session.user.image} username={session.user.username} size={36} className="shrink-0 mt-0.5" />
           <div className="flex-1 space-y-2">
@@ -67,6 +73,7 @@ export function CommentThread({ postId, comments }: CommentThreadProps) {
           <a href="/login" className="text-primary hover:underline">Log in</a> to leave a comment.
         </p>
       )}
+
 
       {/* Comments list */}
       <div className="space-y-4">

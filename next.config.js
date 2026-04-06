@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
+const isDemo = process.env.USE_DEMO_DATA === 'true'
+
 const nextConfig = {
+  ...(isDemo && {
+    output: 'export',
+    basePath: '',
+    trailingSlash: true,
+  }),
   images: {
+    unoptimized: isDemo,
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
