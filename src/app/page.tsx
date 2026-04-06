@@ -8,6 +8,7 @@ import type { FeedSort } from '@/types'
 
 const DEMO = process.env.USE_DEMO_DATA === 'true'
 
+// In demo mode the page is fully static — no searchParams
 interface PageProps {
   searchParams: { sort?: FeedSort; tag?: string; page?: string }
 }
@@ -22,12 +23,9 @@ async function Feed({ sort, tag, page }: { sort: FeedSort; tag: string; page: nu
     const { DEMO_POSTS } = await import('@/lib/demo-data')
     let filtered = [...DEMO_POSTS]
     if (tag) filtered = filtered.filter(p => p.tags.includes(tag))
-    if (sort === 'top') filtered.sort((a, b) => b.avgRating - a.avgRating)
-    else if (sort === 'discussed') filtered.sort((a, b) => b.commentCount - a.commentCount)
-    else if (sort === 'new') filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    else filtered.sort((a, b) => b.ratingCount - a.ratingCount)
+    filtered.sort((a, b) => b.avgRating - a.avgRating)
     total = filtered.length
-    posts = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    posts = filtered
   } else {
     const { prisma } = await import('@/lib/prisma')
     const { auth } = await import('@/lib/auth')
@@ -68,24 +66,28 @@ async function Feed({ sort, tag, page }: { sort: FeedSort; tag: string; page: nu
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {posts.map((post: any) => <PostCard key={post.id} post={post} />)}
       </div>
-      <div className="flex justify-center gap-3 pt-4">
-        {page > 1 && <Button variant="outline" asChild><Link href={`/?sort=${sort}&tag=${tag}&page=${page - 1}`}>← Previous</Link></Button>}
-        {hasMore && <Button variant="outline" asChild><Link href={`/?sort=${sort}&tag=${tag}&page=${page + 1}`}>Next →</Link></Button>}
-      </div>
+      {!DEMO && (
+        <div className="flex justify-center gap-3 pt-4">
+          {page > 1 && <Button variant="outline" asChild><Link href={`/?sort=${sort}&tag=${tag}&page=${page - 1}`}>← Previous</Link></Button>}
+          {hasMore && <Button variant="outline" asChild><Link href={`/?sort=${sort}&tag=${tag}&page=${page + 1}`}>Next →</Link></Button>}
+        </div>
+      )}
     </div>
   )
 }
 
 export default function HomePage({ searchParams }: PageProps) {
-  const sort = (searchParams.sort ?? 'trending') as FeedSort
-  const tag  = searchParams.tag ?? ''
-  const page = parseInt(searchParams.page ?? '1', 10)
+  // In demo mode, ignore searchParams to allow static export
+  const sort = DEMO ? 'top' : ((searchParams.sort ?? 'trending') as FeedSort)
+  const tag  = DEMO ? '' : (searchParams.tag ?? '')
+  const page = DEMO ? 1 : parseInt(searchParams.page ?? '1', 10)
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
       {DEMO && (
         <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-sm text-center text-primary">
-          👋 This is a <strong>live demo</strong> with sample data. <a href="https://vercel.com" className="underline">Deploy your own</a> to get started.
+          👋 This is a <strong>live demo</strong> with sample data.{' '}
+          <a href="https://github.com/Rein033/uselesssite" className="underline">Deploy your own</a> to get started.
         </div>
       )}
 
@@ -101,7 +103,7 @@ export default function HomePage({ searchParams }: PageProps) {
         <Button size="lg" asChild><Link href="/submit">📸 Post Your Setup</Link></Button>
       </div>
 
-      <FeedFilters />
+      {!DEMO && <FeedFilters />}
 
       <Suspense fallback={
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

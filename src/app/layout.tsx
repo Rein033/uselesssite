@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Providers } from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://uselesssite.nl'
 
@@ -33,7 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <Providers>
           <div className="min-h-screen flex flex-col">
             <Navbar />

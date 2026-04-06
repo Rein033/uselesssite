@@ -18,7 +18,8 @@ function getDateFilter(period: Period) {
 }
 
 export default async function LeaderboardPage({ searchParams }: Props) {
-  const period = (searchParams.period ?? 'alltime') as Period
+  // In demo mode ignore searchParams to allow static export
+  const period = (DEMO ? 'alltime' : (searchParams.period ?? 'alltime')) as Period
 
   let posts: any[] = []
   let topUsers: any[] = []

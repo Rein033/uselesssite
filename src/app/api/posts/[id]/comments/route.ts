@@ -10,15 +10,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const post = await prisma.post.findUnique({ where: { id: params.id, published: true } })
   if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 })
 
-  const { body, parentId } = await req.json()
-  if (!body || typeof body !== 'string' || body.trim().length === 0) {
-    return NextResponse.json({ error: 'Comment body is required' }, { status: 400 })
+  const { content, parentId } = await req.json()
+  if (!content || typeof content !== 'string' || content.trim().length === 0) {
+    return NextResponse.json({ error: 'Comment content is required' }, { status: 400 })
   }
-  if (body.length > 2000) {
+  if (content.length > 2000) {
     return NextResponse.json({ error: 'Comment too long (max 2000 chars)' }, { status: 400 })
   }
 
-  // Validate parent if provided
   if (parentId) {
     const parent = await prisma.comment.findUnique({ where: { id: parentId } })
     if (!parent) return NextResponse.json({ error: 'Parent comment not found' }, { status: 404 })
@@ -26,7 +25,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const comment = await prisma.comment.create({
     data: {
-      body: body.trim(),
+      content: content.trim(),
       postId: params.id,
       authorId: session.user.id,
       parentId: parentId ?? null,
@@ -58,8 +57,11 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
   await prisma.comment.update({
     where: { id: commentId },
-    data: { deleted: true, body: '[deleted]' },
+    data: { deleted: true, content: '[deleted]' },
   })
 
   return NextResponse.json({ ok: true })
 }
+
+// Required for static export
+export function generateStaticParams() { return [] }

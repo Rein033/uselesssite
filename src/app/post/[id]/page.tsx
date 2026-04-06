@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ImageGallery } from '@/components/post/ImageGallery'
 import { RatingWidget } from '@/components/post/RatingWidget'
 import { CommentThread } from '@/components/post/CommentThread'
+import { ShareButton } from '@/components/post/ShareButton'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
 import { gradeFromScore, timeAgo } from '@/lib/utils'
@@ -149,12 +150,7 @@ export default async function PostPage({ params }: Props) {
 
           <div className="bg-card border border-border rounded-xl p-5">
             <h3 className="text-sm font-semibold mb-3 text-muted-foreground">SHARE</h3>
-            <button
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
-              className="w-full text-sm bg-secondary hover:bg-secondary/80 transition-colors py-2 rounded-lg"
-            >
-              🔗 Copy Link
-            </button>
+            <ShareButton />
           </div>
         </div>
       </div>

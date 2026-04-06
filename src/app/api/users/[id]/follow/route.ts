@@ -30,3 +30,6 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
 
   return NextResponse.redirect(new URL(`/u/${target.username}`, _req.url))
 }
+
+// Required for static export
+export function generateStaticParams() { return [] }

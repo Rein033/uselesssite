@@ -62,3 +62,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   return NextResponse.json({ avgRating, ratingCount, userScore: score })
 }
+
+// Required for static export
+export function generateStaticParams() { return [] }

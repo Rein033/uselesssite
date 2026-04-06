@@ -28,3 +28,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   return NextResponse.json(report, { status: 201 })
 }
+
+// Required for static export
+export function generateStaticParams() { return [] }

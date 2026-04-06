@@ -4,9 +4,9 @@ import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toaster'
-import { TAGS, uploadImage } from '@/lib/cloudinary'
+import { uploadImage } from '@/lib/cloudinary'
+import { TAGS, cn } from '@/lib/utils'
 import Image from 'next/image'
-import { cn } from '@/lib/utils'
 
 const SPEC_FIELDS = [
   { key: 'cpu',         label: 'CPU',         placeholder: 'e.g. AMD Ryzen 9 7950X' },

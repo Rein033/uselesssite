@@ -7,12 +7,12 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const existing = await prisma.bookmark.findUnique({
-    where: { userId_postId: { userId: session.user.id, postId: params.id } },
+    where: { postId_userId: { postId: params.id, userId: session.user.id } },
   })
 
   if (existing) {
     await prisma.bookmark.delete({
-      where: { userId_postId: { userId: session.user.id, postId: params.id } },
+      where: { postId_userId: { postId: params.id, userId: session.user.id } },
     })
     return NextResponse.json({ bookmarked: false })
   }
@@ -23,3 +23,6 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
 
   return NextResponse.json({ bookmarked: true })
 }
+
+// Required for static export
+export function generateStaticParams() { return [] }

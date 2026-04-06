@@ -3,20 +3,6 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-// Inline cva since we don't want extra deps
-function cva(base: string, config: any) {
-  return function (props: any = {}) {
-    const { variants, defaultVariants, compoundVariants } = config
-    let classes = base
-    const resolved = { ...defaultVariants, ...props }
-    for (const [key, variantMap] of Object.entries(variants as Record<string, Record<string, string>>)) {
-      const val = resolved[key]
-      if (val && variantMap[val]) classes += ' ' + variantMap[val]
-    }
-    return classes
-  }
-}
-
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-95',
   {
@@ -51,6 +37,13 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, loading, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
+    if (asChild) {
+      return (
+        <Comp className={cn(buttonVariants({ variant, size }), className)} ref={ref} {...props}>
+          {children}
+        </Comp>
+      )
+    }
     return (
       <Comp
         className={cn(buttonVariants({ variant, size }), className)}

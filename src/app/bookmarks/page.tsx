@@ -1,14 +1,31 @@
-import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { PostCard } from '@/components/feed/PostCard'
+import Link from 'next/link'
 import type { Metadata } from 'next'
+import { PostCard } from '@/components/feed/PostCard'
 
 export const metadata: Metadata = { title: 'Bookmarks' }
 
+const DEMO = process.env.USE_DEMO_DATA === 'true'
+
 export default async function BookmarksPage() {
+  if (DEMO) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 py-8 text-center">
+        <div className="text-5xl mb-4">🔖</div>
+        <h1 className="text-2xl font-bold mb-2">Bookmarks</h1>
+        <p className="text-muted-foreground mb-6">Sign in to save setups you want to revisit later.</p>
+        <Link href="/login" className="inline-flex items-center justify-center px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+          Sign In
+        </Link>
+      </div>
+    )
+  }
+
+  const { redirect } = await import('next/navigation')
+  const { auth } = await import('@/lib/auth')
+  const { prisma } = await import('@/lib/prisma')
+
   const session = await auth()
-  if (!session) redirect('/login?callbackUrl=/bookmarks')
+  if (!session) return redirect('/login?callbackUrl=/bookmarks')
 
   const bookmarks = await prisma.bookmark.findMany({
     where: { userId: session.user.id },

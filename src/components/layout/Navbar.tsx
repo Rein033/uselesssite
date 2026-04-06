@@ -1,9 +1,14 @@
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
 import { NavClient } from './NavClient'
 
+const DEMO = process.env.USE_DEMO_DATA === 'true'
+
 export async function Navbar() {
-  const session = await auth()
+  let session = null
+  if (!DEMO) {
+    const { auth } = await import('@/lib/auth')
+    session = await auth()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 glass">
