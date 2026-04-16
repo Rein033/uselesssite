@@ -29,6 +29,9 @@ export async function Navbar() {
           <Link href="/leaderboard" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
             Leaderboard
           </Link>
+          <Link href="/scrum" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            Scrum
+          </Link>
         </nav>
 
         {/* Right */}
