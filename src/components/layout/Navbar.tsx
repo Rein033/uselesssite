@@ -24,6 +24,9 @@ export async function Navbar() {
         {/* Center nav */}
         <nav className="hidden md:flex items-center gap-1 text-sm">
           <Link href="/" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            Portfolio
+          </Link>
+          <Link href="/feed" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
             Feed
           </Link>
           <Link href="/leaderboard" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
