@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "name": "KILL CONFIRMED",
+    "category": "morale",
+    "price": 5.50,
+    "description": "Zelf geprinte morale patch op mijn Anycubic Kobra S1. PLA plastic, licht flexibel. Velcro (haak) achterkant inbegrepen. Ca. 8×5 cm.",
+    "emoji": "💀",
+    "colors": ["Zwart/Wit", "OD Green/Tan", "Full Black"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 2,
+    "name": "FRIENDLY FIRE ISN'T",
+    "category": "morale",
+    "price": 5.50,
+    "description": "Herinner je teamgenoten aan de basics. Handgemaakt en geprint in PLA. Velcro achterkant. Altijd goed voor een lach op het veld.",
+    "emoji": "🔫",
+    "colors": ["Zwart/Wit", "OD Green/Tan", "Full Black"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 3,
+    "name": "BORN TO AIRSOFT",
+    "category": "morale",
+    "price": 5.50,
+    "description": "Voor de airsofter die het in het bloed heeft. Zelf geprint in PLA, velcro achterkant. Ca. 8×5 cm.",
+    "emoji": "🎯",
+    "colors": ["Zwart/Wit", "OD Green/Tan", "Coyote Brown"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 4,
+    "name": "NO BB NO GLORY",
+    "category": "morale",
+    "price": 5.50,
+    "description": "Laat iedereen weten waar je voor staat. Geprint op mijn eigen 3D printer, haak velcro achterkant. Ca. 8×5 cm.",
+    "emoji": "⚡",
+    "colors": ["Zwart/Wit", "Full Black", "MultiCam Tan"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 5,
+    "name": "Naamlabel — eigen tekst",
+    "category": "naam",
+    "price": 7.50,
+    "description": "Persoonlijk naamlabel met jouw naam of callsign, zelf geprint op aanvraag. Max. 12 tekens. PLA, velcro achterkant. Ca. 9×2.5 cm. Levertijd iets langer.",
+    "emoji": "🪖",
+    "colors": ["Zwart/Wit", "Tan/Zwart", "OD Green/Zwart", "Full Black"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 6,
+    "name": "Bloedgroep patch",
+    "category": "naam",
+    "price": 4.50,
+    "description": "Bloedgroep patch voor op je vest of helm. Geef je bloedgroep op bij bestelling (A+/A-/B+/B-/O+/O-/AB+/AB-). Rood/zwart PLA, velcro achterkant.",
+    "emoji": "🩸",
+    "colors": ["Rood/Zwart", "Rood/Tan"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 7,
+    "name": "Callsign patch",
+    "category": "naam",
+    "price": 7.50,
+    "description": "Jouw callsign op een patch, zelf geprint op bestelling. Tot 10 tekens. PLA plastic, velcro achterkant. Ca. 8×3 cm.",
+    "emoji": "📟",
+    "colors": ["Zwart/Wit", "OD Green/Tan", "Coyote/Zwart"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 8,
+    "name": "Nederlandse Vlag",
+    "category": "tactisch",
+    "price": 4.50,
+    "description": "Nederlandse vlag patch, zelf geprint in PLA. Links- of rechtsgeoriënteerd, geef aan bij bestelling. Ca. 8×5 cm, velcro achterkant.",
+    "emoji": "🇳🇱",
+    "colors": ["Standaard kleur", "Subdued (grijs/zwart)"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 9,
+    "name": "Medic patch",
+    "category": "tactisch",
+    "price": 4.50,
+    "description": "Rode kruis medic patch, zelf geprint. Duidelijk zichtbaar op het veld. PLA, ca. 5×5 cm, velcro achterkant.",
+    "emoji": "➕",
+    "colors": ["Rood/Wit", "Rood/Zwart", "Subdued"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 10,
+    "name": "Team patch — eigen ontwerp",
+    "category": "tactisch",
+    "price": 9.99,
+    "description": "Eigen teamlogo of ontwerp als 3D geprinte patch. Stuur je afbeelding op, ik print het zelf op mijn Kobra S1. Vanaf 1 stuk mogelijk.",
+    "emoji": "🛡️",
+    "colors": ["Op aanvraag"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 11,
+    "name": "Rank patch set (3x)",
+    "category": "tactisch",
+    "price": 9.50,
+    "description": "Set van 3 rank patches naar keuze. Sergeant, Lieutenant, Captain — of eigen rang. Zelf geprint in PLA, velcro achterkant.",
+    "emoji": "⭐",
+    "colors": ["Zwart/Tan", "OD Green/Zwart", "Full Black"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 12,
+    "name": "Admin patch",
+    "category": "tactisch",
+    "price": 5.50,
+    "description": "Lege admin patch voor op je vest. Schrijfbaar oppervlak voor tijdelijke info op het veld. PLA frame, velcro achterkant. Ca. 10×5 cm.",
+    "emoji": "📋",
+    "colors": ["Zwart", "Tan", "OD Green"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 13,
+    "name": "Magazijn koppelaar",
+    "category": "accessoires",
+    "price": 6.50,
+    "description": "Koppel twee magazijnen samen voor sneller herladen. Past op de meeste standaard AEG mags. Geprint in stevige PLA. Past op M4/M16 mags.",
+    "emoji": "🔋",
+    "colors": ["Zwart", "Tan", "OD Green"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 14,
+    "name": "Barrel plug",
+    "category": "accessoires",
+    "price": 3.50,
+    "description": "Veiligheidsplug voor de loop van je replica. PLA, past op loops van 14–16mm diameter. Verplicht op de meeste velden. Set van 2.",
+    "emoji": "🔒",
+    "colors": ["Rood", "Oranje", "Zwart"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 15,
+    "name": "Picatinny rail covers",
+    "category": "accessoires",
+    "price": 5.00,
+    "description": "Beschermkapjes voor je Picatinny/Weaver rails. Set van 4 stuks. Stevig PLA, klikken eenvoudig vast. Geen losse rails meer.",
+    "emoji": "🔫",
+    "colors": ["Zwart", "Tan", "OD Green", "FDE"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 16,
+    "name": "Velcro patch paneel",
+    "category": "accessoires",
+    "price": 7.50,
+    "description": "Rechthoekig paneel met lus-velcro oppervlak. Schroef of tape vast op helm, rugzak of vest. Geschikt voor al je patches. Ca. 10×6 cm.",
+    "emoji": "🪖",
+    "colors": ["Zwart", "Tan", "OD Green"],
+    "inStock": true,
+    "popular": true
+  },
+  {
+    "id": 17,
+    "name": "Sling mount adapter",
+    "category": "accessoires",
+    "price": 5.50,
+    "description": "QD sling mount adapter voor replica's zonder ingebouwd bevestigingspunt. PLA, past op standaard 20mm rails. Print-in-place scharnier.",
+    "emoji": "🔗",
+    "colors": ["Zwart", "Tan"],
+    "inStock": true,
+    "popular": false
+  },
+  {
+    "id": 18,
+    "name": "Speed loader houder",
+    "category": "accessoires",
+    "price": 4.50,
+    "description": "MOLLE-compatibele houder voor je speedloader. Past op elk MOLLE vest of tas. Stevige PLA, houdt de speedloader veilig vast op het veld.",
+    "emoji": "⚡",
+    "colors": ["Zwart", "Tan", "OD Green"],
+    "inStock": true,
+    "popular": false
+  }
+]
