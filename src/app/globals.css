@@ -47,6 +47,30 @@
   ::selection { @apply bg-primary/25 text-foreground; }
 }
 
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+.retro-cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+.retro-screen {
+  animation: flicker 8s infinite;
+}
+
 @layer components {
   .glass {
     @apply bg-card/60 backdrop-blur-xl border border-border/60;

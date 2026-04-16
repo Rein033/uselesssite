@@ -1,213 +1,270 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import EasterEggs from './EasterEggs'
 
 export const metadata: Metadata = {
-  title: 'Portfolio — Rein',
-  description: 'Portfolio van Rein: projecten en tools gebouwd met Next.js, TypeScript en meer.',
+  title: 'REIN.DEV — PORTFOLIO',
+  description: 'Have you tried turning it off and on again?',
 }
 
-const projects = [
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const PROJECTS = [
   {
+    id: 'PRJ-001',
     href: '/airsoft/',
     external: true,
-    icon: '◈',
-    gradient: 'from-orange-500 to-red-500',
-    tag: 'Webshop',
-    title: '3D Airsoft Patches',
-    desc: 'Webshop voor custom 3D-geprinte PLA airsoft patches en accessoires. Statisch gebouwd met HTML, CSS en JavaScript. Inclusief winkelmandje en bestelformulier.',
-    tags: ['HTML', 'CSS', 'JavaScript'],
-    cta: 'Bekijk webshop',
+    title: '3D AIRSOFT PATCHES',
+    tag: 'WEBSHOP',
+    desc: 'Webshop voor custom 3D-geprinte PLA airsoft patches en accessoires. Statisch gebouwd met HTML, CSS en JavaScript inclusief winkelmandje.',
+    stack: ['HTML', 'CSS', 'JAVASCRIPT'],
   },
   {
+    id: 'PRJ-002',
     href: '/feed',
     external: false,
-    icon: '📌',
-    gradient: 'from-indigo-500 to-violet-500',
-    tag: 'Community platform',
-    title: 'UselessSite Community',
-    desc: 'Full-stack community waar gebruikers hun gaming rig, dev-workspace of thuiskantoor delen en laten beoordelen. Met accounts, ratings, comments en leaderboard.',
-    tags: ['Next.js 14', 'TypeScript', 'Prisma', 'PostgreSQL'],
-    cta: 'Open platform',
+    title: 'USELESSSITE COMMUNITY',
+    tag: 'PLATFORM',
+    desc: 'Full-stack community waar gebruikers hun setup delen en laten beoordelen. Met accounts, ratings, comments en leaderboard. Gebouwd door één persoon — nee, niet Moss.',
+    stack: ['NEXT.JS 14', 'TYPESCRIPT', 'PRISMA', 'POSTGRESQL'],
   },
   {
+    id: 'PRJ-003',
     href: '/scrum',
     external: false,
-    icon: '🔄',
-    gradient: 'from-emerald-500 to-teal-400',
-    tag: 'Kennisartikel',
-    title: 'Scrum Guide NL',
-    desc: 'Nederlandstalige uitleg van het Scrum-framework: rollen, ceremonies, artefacten en een stap-voor-stap implementatieplan. Gebaseerd op de officiële Scrum Guide 2020.',
-    tags: ['Scrum', 'Agile', 'Kennisdeling'],
-    cta: 'Lees artikel',
+    title: 'SCRUM GUIDE NL',
+    tag: 'ARTIKEL',
+    desc: 'Nederlandstalige uitleg van het Scrum-framework. Rollen, ceremonies, artefacten, implementatieplan. Gebaseerd op de officiële Scrum Guide 2020.',
+    stack: ['SCRUM', 'AGILE', 'KENNISDELING'],
   },
 ]
 
-const tools = [
+const TOOLS = [
   {
+    id: 'T-001',
     href: '/tools/sap',
-    external: false,
-    icon: '🗂️',
-    gradient: 'from-blue-500 to-cyan-400',
-    tag: 'Bedrijfstool',
-    title: 'SAP Import Generator',
-    desc: 'Genereer SAP-compatibele CSV-importbestanden voor inkooporders, materiaalstam, leveranciers en kostenplaatsen. Direct downloaden, klaar voor import.',
-    tags: ['SAP', 'CSV', 'Excel'],
-    cta: 'Open tool',
+    title: 'SAP IMPORT GENERATOR',
+    tag: 'BEDRIJFSTOOL',
+    desc: 'Genereer SAP-compatibele CSV-importbestanden voor inkooporders, materiaalstam, leveranciers en kostenplaatsen. Geen IT-afdeling nodig.',
+    stack: ['SAP', 'CSV', 'EXCEL'],
   },
   {
+    id: 'T-002',
     href: '/tools/sprint',
-    external: false,
-    icon: '📋',
-    gradient: 'from-violet-500 to-purple-400',
-    tag: 'Agile tool',
-    title: 'Sprint Planner',
-    desc: 'Plan sprint-capaciteit op basis van teamgrootte, beschikbare dagen en velocity. Voeg backlog-items toe en zie direct of je team overloaded is.',
-    tags: ['Scrum', 'Planning', 'Agile'],
-    cta: 'Open tool',
+    title: 'SPRINT PLANNER',
+    tag: 'AGILE TOOL',
+    desc: 'Plan sprint-capaciteit op basis van teamgrootte, beschikbare dagen en velocity. Inclusief backlog en overload-indicator.',
+    stack: ['SCRUM', 'PLANNING', 'AGILE'],
   },
   {
+    id: 'T-003',
     href: '/tools/wachtwoord',
-    external: false,
-    icon: '🔐',
-    gradient: 'from-pink-500 to-rose-400',
-    tag: 'Beveiligingstool',
-    title: 'Wachtwoord Generator',
-    desc: 'Genereer sterke, willekeurige wachtwoorden via crypto.getRandomValues(). Instelbare lengte, tekensets en sterkte-indicator. Niets wordt verzonden.',
-    tags: ['Beveiliging', 'Privacy', 'Crypto'],
-    cta: 'Open tool',
+    title: 'WACHTWOORD GENERATOR',
+    tag: 'SECURITY',
+    desc: 'Genereer sterke wachtwoorden via crypto.getRandomValues(). Alles lokaal — er wordt niets verstuurd. Zelfs niet naar Denholm.',
+    stack: ['CRYPTO', 'SECURITY', 'PRIVACY'],
   },
   {
+    id: 'T-004',
     href: '/tools/json',
-    external: false,
-    icon: '{ }',
-    gradient: 'from-amber-500 to-yellow-400',
-    tag: 'Developer tool',
-    title: 'JSON Formatter',
-    desc: 'Format, minify of valideer JSON direct in je browser. Toont fouten met uitleg, statistieken over de structuur en een kopieerknop voor de uitvoer.',
-    tags: ['JSON', 'Developer', 'Formatter'],
-    cta: 'Open tool',
+    title: 'JSON FORMATTER',
+    tag: 'DEV TOOL',
+    desc: 'Format, minify of valideer JSON direct in je browser. Statistieken, foutmeldingen met uitleg en een kopieerknop. Roy zou het gebruiken.',
+    stack: ['JSON', 'DEVELOPER', 'FORMATTER'],
   },
   {
+    id: 'T-005',
     href: '/tools/signature',
-    external: false,
-    icon: '✍️',
-    gradient: 'from-teal-500 to-emerald-400',
-    tag: 'Productiviteitstool',
-    title: 'E-mail Handtekening Generator',
-    desc: 'Maak een professionele e-mailhandtekening op basis van je gegevens — naam, functie, foto, contactinfo en meer. Kopieer direct naar Outlook of Gmail.',
-    tags: ['Outlook', 'E-mail', 'Handtekening'],
-    cta: 'Open tool',
+    title: 'EMAIL HANDTEKENING GEN.',
+    tag: 'PRODUCTIVITEIT',
+    desc: 'Maak een professionele e-mailhandtekening met naam, functie, foto en contactinfo. Drie stijlen, kleurkiezer, live preview, Outlook-klaar.',
+    stack: ['OUTLOOK', 'EMAIL', 'HTML'],
   },
 ]
 
-type Item = typeof projects[0] & { external: boolean }
+const STACK = ['NEXT.JS', 'TYPESCRIPT', 'REACT', 'TAILWIND', 'PRISMA', 'POSTGRESQL', 'NODE.JS', 'GIT']
 
-function Card({ p }: { p: Item }) {
+// ─── COMPONENTS ──────────────────────────────────────────────────────────────
+
+function Row({ item }: { item: typeof PROJECTS[0] | typeof TOOLS[0] }) {
   const inner = (
-    <div className="group bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-200 cursor-pointer flex gap-5">
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-xl shrink-0 shadow-md font-mono mt-0.5`}>
-        {p.icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <h3 className="font-bold group-hover:text-primary transition-colors">{p.title}</h3>
-          <span className="text-xs bg-secondary text-muted-foreground px-2 py-0.5 rounded-full">{p.tag}</span>
-        </div>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-3">{p.desc}</p>
-        <div className="flex flex-wrap items-center gap-2">
-          {p.tags.map(t => (
-            <span key={t} className="text-xs bg-secondary text-muted-foreground px-2 py-0.5 rounded-md">{t}</span>
-          ))}
-          <span className={`ml-auto text-sm font-semibold bg-gradient-to-r ${p.gradient} bg-clip-text text-transparent flex items-center gap-1`}>
-            {p.cta} <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+    <div className="group border border-green-900/60 hover:border-green-500/70 p-4 transition-all cursor-pointer hover:bg-green-950/30 relative">
+      {/* Corner decorations */}
+      <span className="absolute top-0 left-0 text-green-900 group-hover:text-green-700 transition-colors select-none text-xs leading-none">┌</span>
+      <span className="absolute top-0 right-0 text-green-900 group-hover:text-green-700 transition-colors select-none text-xs leading-none">┐</span>
+      <span className="absolute bottom-0 left-0 text-green-900 group-hover:text-green-700 transition-colors select-none text-xs leading-none">└</span>
+      <span className="absolute bottom-0 right-0 text-green-900 group-hover:text-green-700 transition-colors select-none text-xs leading-none">┘</span>
+
+      <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
+        <div className="flex items-center gap-3">
+          <span className="text-green-800 text-xs shrink-0">{item.id}</span>
+          <span className="font-bold text-green-300 group-hover:text-green-200 transition-colors tracking-wide">
+            {item.title}
           </span>
         </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="text-green-700 text-xs">[{item.tag}]</span>
+          <span className="text-green-700 group-hover:text-green-400 text-xs transition-colors">
+            OPEN&nbsp;→
+          </span>
+        </div>
+      </div>
+
+      <p className="text-green-700 text-xs leading-relaxed mb-3 ml-0">{item.desc}</p>
+
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
+        {item.stack.map((s, i) => (
+          <span key={s} className="text-green-900 text-xs">
+            {i > 0 && <span className="mr-3">·</span>}
+            {s}
+          </span>
+        ))}
       </div>
     </div>
   )
 
-  if (p.external) return <a href={p.href}>{inner}</a>
-  return <Link href={p.href}>{inner}</Link>
+  if ('external' in item && item.external) {
+    return <a href={(item as typeof PROJECTS[0]).href}>{inner}</a>
+  }
+  return <Link href={(item as any).href}>{inner}</Link>
 }
 
-const stack = [
-  { name: 'Next.js',     icon: '⚡' },
-  { name: 'TypeScript',  icon: '🔷' },
-  { name: 'React',       icon: '⚛️' },
-  { name: 'Tailwind CSS',icon: '🎨' },
-  { name: 'Prisma',      icon: '🗄️' },
-  { name: 'PostgreSQL',  icon: '🐘' },
-  { name: 'Node.js',     icon: '🟢' },
-  { name: 'Git',         icon: '🌿' },
-]
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default function PortfolioPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-20">
+    <>
+      {/* Hidden HTML comment easter egg for source-code readers */}
+      {/* <!-- HELLO IT. HAVE YOU TRIED TURNING IT OFF AND ON AGAIN? --> */}
+      {/* <!-- NOODNUMMER: 0118 999 881 999 119 725 3 --> */}
+      {/* <!-- COPYRIGHT REYNHOLM INDUSTRIES. TOMORROW'S SOLUTIONS... YESTERDAY. --> */}
 
-      {/* Hero */}
-      <section className="space-y-5">
-        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
-          Beschikbaar voor projecten
-        </div>
-        <h1 className="text-5xl font-black leading-tight tracking-tight">
-          Hey, ik ben{' '}
-          <span className="bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-transparent">Rein</span>.
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-          Ik bouw webapplicaties en tools die werken. Klik op een project of tool hieronder om het te openen.
-        </p>
-        <div className="flex flex-wrap gap-3 pt-1">
-          <Link href="/feed" className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors">
-            Bekijk UselessSite →
-          </Link>
-          <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer"
-            className="px-5 py-2.5 rounded-lg bg-secondary text-foreground font-medium text-sm hover:bg-secondary/80 transition-colors">
-            GitHub
-          </a>
-        </div>
-      </section>
+      <EasterEggs />
 
-      {/* Projects */}
-      <section className="space-y-5">
-        <h2 className="text-2xl font-bold">Projecten</h2>
-        <div className="space-y-4">
-          {projects.map(p => <Card key={p.href} p={p as Item} />)}
-        </div>
-      </section>
+      {/* Scanline overlay */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-30 opacity-[0.04]"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #000 3px, #000 4px)',
+        }}
+      />
+      {/* CRT vignette */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-20"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%)' }}
+      />
 
-      {/* Tools */}
-      <section className="space-y-5">
-        <h2 className="text-2xl font-bold">Tools</h2>
-        <div className="space-y-4">
-          {tools.map(p => <Card key={p.href} p={p as Item} />)}
-        </div>
-      </section>
+      <div className="bg-black text-green-400 font-mono min-h-[calc(100vh-3.5rem)] relative z-10 retro-screen">
+        <div className="max-w-3xl mx-auto px-4 py-10 space-y-10">
 
-      {/* Stack */}
-      <section className="space-y-5">
-        <h2 className="text-2xl font-bold">Tech stack</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {stack.map(s => (
-            <div key={s.name} className="bg-card border border-border rounded-xl px-4 py-3 flex items-center gap-3 text-sm font-medium">
-              <span className="text-xl">{s.icon}</span>
-              <span>{s.name}</span>
+          {/* ── BOOT HEADER ── */}
+          <header className="border border-green-900 p-5 space-y-4">
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <span className="text-green-600 text-xs tracking-widest">REIN.DEV PORTFOLIO SYSTEEM v2.0</span>
+              <span className="text-xs">
+                <span className="text-green-700">STATUS: </span>
+                <span className="text-green-400 animate-pulse">● ONLINE</span>
+              </span>
             </div>
-          ))}
+
+            <div className="border-t border-green-900/50 pt-4 space-y-1.5 text-sm">
+              <div><span className="text-green-700">C:\REIN&gt; </span><span className="text-green-500">whoami</span></div>
+              <div className="text-green-300 pl-4">GEBRUIKER........... REIN</div>
+              <div className="text-green-300 pl-4">ROL................. FULL-STACK DEVELOPER</div>
+              <div className="text-green-300 pl-4">
+                STATUS............. <span className="text-green-200 font-bold">BESCHIKBAAR VOOR PROJECTEN</span>
+              </div>
+              <div className="pt-1"><span className="text-green-700">C:\REIN&gt; </span><span className="text-green-500">motd</span></div>
+              <div className="text-green-200 pl-4 font-bold">
+                "Have you tried turning it off and on again?"
+              </div>
+              <div className="pt-1">
+                <span className="text-green-700">C:\REIN&gt; </span>
+                <span className="retro-cursor text-green-500" />
+              </div>
+            </div>
+
+            <div className="border-t border-green-900/50 pt-4 flex flex-wrap gap-3">
+              <Link
+                href="/feed"
+                className="text-xs border border-green-800 hover:border-green-500 px-4 py-2 transition-colors hover:bg-green-950/50 hover:text-green-200"
+              >
+                [ USELESSSITE COMMUNITY → ]
+              </Link>
+              <a
+                href="https://github.com/Rein033"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs border border-green-800 hover:border-green-500 px-4 py-2 transition-colors hover:bg-green-950/50 hover:text-green-200 text-green-600"
+              >
+                [ GITHUB → ]
+              </a>
+            </div>
+          </header>
+
+          {/* ── PROJECTS ── */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-3 text-xs text-green-700">
+              <span className="tracking-widest">══ PROJECTEN</span>
+              <span className="flex-1 border-t border-green-900/40" />
+              <span>{PROJECTS.length} bestanden</span>
+            </div>
+            {PROJECTS.map(p => <Row key={p.id} item={p} />)}
+          </section>
+
+          {/* ── TOOLS ── */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-3 text-xs text-green-700">
+              <span className="tracking-widest">══ TOOLS</span>
+              <span className="flex-1 border-t border-green-900/40" />
+              <span>{TOOLS.length} executables</span>
+            </div>
+            {TOOLS.map(p => <Row key={p.id} item={p} />)}
+          </section>
+
+          {/* ── TECH STACK ── */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-3 text-xs text-green-700">
+              <span className="tracking-widest">══ TECH STACK</span>
+              <span className="flex-1 border-t border-green-900/40" />
+            </div>
+            <div className="border border-green-900/60 p-4">
+              <div className="flex flex-wrap gap-x-2 gap-y-1 text-xs text-green-800">
+                {STACK.map((s, i) => (
+                  <span key={s}>
+                    {i > 0 && <span className="text-green-900 mx-1">·</span>}
+                    <span className="hover:text-green-500 transition-colors cursor-default">{s}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── FOOTER ── */}
+          <footer className="border-t border-green-900/40 pt-5 space-y-1 text-xs text-green-800">
+            <div className="flex justify-between flex-wrap gap-2">
+              <span>© {new Date().getFullYear()} REIN — ALL RIGHTS RESERVED</span>
+              <a
+                href="https://github.com/Rein033"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-green-500 transition-colors"
+              >
+                GITHUB.COM/REIN033
+              </a>
+            </div>
+            <div className="text-green-900">
+              VOOR NOODGEVALLEN: 0118 999 881 999 119 725 3
+            </div>
+            <div className="text-green-900/50 text-[10px] pt-1">
+              TIP: OPEN DE BROWSER CONSOLE · PROBEER DE KONAMI CODE ↑↑↓↓←→←→BA
+            </div>
+          </footer>
+
         </div>
-      </section>
-
-      {/* Contact */}
-      <section className="bg-primary/5 border border-primary/20 rounded-2xl p-8 text-center space-y-4">
-        <h2 className="text-2xl font-bold">Samenwerken?</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">Heb je een project, idee of vraag? Neem contact op via GitHub.</p>
-        <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors">
-          Open GitHub →
-        </a>
-      </section>
-
-    </div>
+      </div>
+    </>
   )
 }
