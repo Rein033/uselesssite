@@ -11,7 +11,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     : undefined
 
   return (
-    <SessionProvider session={demoSession as any}>
+    <SessionProvider
+      session={demoSession as any}
+      refetchInterval={0}
+      refetchOnWindowFocus={false}
+    >
       {children}
     </SessionProvider>
   )
