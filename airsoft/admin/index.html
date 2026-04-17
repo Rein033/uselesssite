@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — GunPatch.nl</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green:   #4a7c3f;
+  --green-lt:#6aad5c;
+  --tan:     #c4a25a;
+  --tan-lt:  #e8c97a;
+  --red:     #cc2200;
+  --red-lt:  #ff4422;
+  --bg:      #0a0f08;
+  --bg2:     #111a0e;
+  --card:    #131e10;
+  --border:  rgba(100,140,80,.25);
+  --text:    #d4cbb8;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* ===== LOGIN ===== */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 40% 40%, #0f1e0a, #060a05);
+}
+
+.login-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--tan);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box h1 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 13px;
+  color: var(--tan);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+.login-box p {
+  font-size: 12px;
+  color: var(--green-lt);
+  margin-bottom: 32px;
+  opacity: .7;
+}
+
+.login-box input {
+  width: 100%;
+  background: rgba(0,0,0,.6);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid var(--green);
+  color: var(--text);
+  font-size: 18px;
+  padding: 14px;
+  text-align: center;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  outline: none;
+  transition: .2s;
+}
+.login-box input:focus { border-bottom-color: var(--tan); }
+
+.login-btn {
+  width: 100%;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 16px;
+  background: var(--green);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: .2s;
+}
+.login-btn:hover { background: var(--green-lt); }
+
+.login-error {
+  color: var(--red-lt);
+  font-size: 11px;
+  margin-top: 14px;
+  display: none;
+}
+
+/* ===== DASHBOARD ===== */
+#dashboard { display: none; }
+
+header {
+  background: rgba(8,12,6,.97);
+  border-bottom: 2px solid var(--green);
+  padding: 0 28px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-logo {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: var(--tan);
+  letter-spacing: 2px;
+}
+.header-logo span { color: var(--green-lt); }
+
+.header-actions { display: flex; gap: 10px; align-items: center; }
+
+.btn {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: .18s;
+}
+.btn-primary   { background: var(--green);  color: #fff; }
+.btn-primary:hover { background: var(--green-lt); box-shadow: 0 0 14px rgba(74,124,63,.4); }
+.btn-tan       { background: var(--tan);    color: #0a0f08; }
+.btn-tan:hover { background: var(--tan-lt); }
+.btn-danger    { background: transparent; border: 1px solid var(--red); color: var(--red); }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn-ghost     { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--tan); color: var(--tan); }
+
+/* ===== MAIN CONTENT ===== */
+main { padding: 28px; max-width: 1100px; margin: 0 auto; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--green);
+  padding: 18px 20px;
+}
+.stat-label { font-size: 9px; color: var(--green-lt); letter-spacing: 1px; margin-bottom: 8px; }
+.stat-value { font-family: 'Press Start 2P', cursive; font-size: 20px; color: var(--tan); }
+
+/* ===== TOOLBAR ===== */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.toolbar h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: var(--tan);
+  letter-spacing: 2px;
+}
+
+/* ===== PRODUCT TABLE ===== */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.product-table th {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  color: var(--green-lt);
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg2);
+}
+.product-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.product-table tr:hover td { background: rgba(74,124,63,.05); }
+
+.row-emoji { font-size: 1.6rem; }
+.row-name  { font-weight: 600; color: var(--tan-lt); font-size: 13px; }
+.row-cat   { font-size: 10px; }
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-family: 'Press Start 2P', cursive;
+}
+.tag-morale     { background: rgba(74,124,63,.2);  color: var(--green-lt); }
+.tag-naam       { background: rgba(196,162,90,.15); color: var(--tan-lt); }
+.tag-tactisch   { background: rgba(100,120,200,.15); color: #8899ff; }
+.tag-accessoires{ background: rgba(200,100,50,.15); color: #ffaa66; }
+
+.stock-badge {
+  font-size: 9px;
+  padding: 3px 8px;
+  font-family: 'Press Start 2P', cursive;
+}
+.in-stock   { color: var(--green-lt); }
+.out-stock  { color: var(--red-lt); }
+
+.row-actions { display: flex; gap: 6px; }
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--tan);
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal-box h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: var(--tan);
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+.modal-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  opacity: .5;
+  transition: .2s;
+}
+.modal-close:hover { opacity: 1; color: var(--red); }
+
+/* ===== FORM ===== */
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 9px;
+  color: var(--green-lt);
+  letter-spacing: 1px;
+  margin-bottom: 7px;
+  font-family: 'Press Start 2P', cursive;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  background: rgba(0,0,0,.6);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  padding: 11px 13px;
+  transition: .2s;
+  outline: none;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(74,124,63,.2); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.checkbox-row { display: flex; gap: 24px; margin-top: 4px; }
+.checkbox-row label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; cursor: pointer;
+  font-family: Arial;
+  color: var(--text);
+  letter-spacing: 0;
+}
+.checkbox-row input[type=checkbox] {
+  width: 18px; height: 18px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.form-hint { font-size: 11px; color: var(--text); opacity: .5; margin-top: 5px; }
+
+.form-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+
+/* ===== SETTINGS PANEL ===== */
+#settings-panel {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--tan);
+  padding: 28px;
+  margin-bottom: 28px;
+}
+#settings-panel h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: var(--tan);
+  margin-bottom: 20px;
+}
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
+
+.pat-field { position: relative; }
+.pat-field input { padding-right: 44px; }
+.pat-toggle {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text); cursor: pointer; font-size: 16px; opacity: .5;
+}
+.pat-toggle:hover { opacity: 1; }
+
+/* ===== DEPLOY STATUS ===== */
+#deploy-status {
+  display: none;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  border-left: 4px solid var(--green);
+  background: rgba(74,124,63,.1);
+}
+#deploy-status.error { border-color: var(--red); background: rgba(204,34,0,.1); color: var(--red-lt); }
+#deploy-status.success { border-color: var(--green-lt); color: var(--green-lt); }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 60px 20px; opacity: .4; }
+.empty-state p { font-size: 13px; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 700px) {
+  .product-table thead { display: none; }
+  .product-table td { display: block; padding: 6px 14px; }
+  .product-table td:first-child { padding-top: 14px; }
+  .product-table td:last-child { padding-bottom: 14px; }
+  .form-row { grid-template-columns: 1fr; }
+  main { padding: 16px; }
+  header { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>GUN<span style="color:var(--green-lt)">PATCH</span>.NL</h1>
+    <p>ADMIN DASHBOARD</p>
+    <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">INLOGGEN →</button>
+    <div class="login-error" id="login-error">Verkeerd wachtwoord.</div>
+    <p style="font-size:10px;margin-top:20px;opacity:.35;">Standaard wachtwoord: gunpatch<br>Wijzig via Instellingen</p>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+
+  <header>
+    <div class="header-logo">GUN<span>PATCH</span>.NL <span style="color:var(--border);font-family:Arial;font-size:10px;margin-left:8px;">ADMIN</span></div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="toggleSettings()">⚙ INSTELLINGEN</button>
+      <button class="btn btn-tan" onclick="openAdd()">+ PRODUCT</button>
+      <button class="btn btn-primary" id="deploy-btn" onclick="deployChanges()">▲ OPSLAAN & PUBLICEREN</button>
+      <button class="btn btn-ghost" onclick="doLogout()">UITLOGGEN</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Deploy status -->
+    <div id="deploy-status"></div>
+
+    <!-- Settings panel -->
+    <div id="settings-panel">
+      <h2>⚙ INSTELLINGEN</h2>
+      <div class="settings-grid">
+        <div class="form-group">
+          <label>GITHUB TOKEN (PAT)</label>
+          <div class="pat-field">
+            <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxx">
+            <button class="pat-toggle" onclick="togglePat()">👁</button>
+          </div>
+          <p class="form-hint">Sla op met de knop hieronder. Bewaar je token veilig.</p>
+        </div>
+        <div class="form-group">
+          <label>WACHTWOORD WIJZIGEN</label>
+          <input type="password" id="new-pw" placeholder="Nieuw wachtwoord">
+          <p class="form-hint">Leeg laten om niet te wijzigen.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn btn-primary" onclick="saveSettings()">OPSLAAN</button>
+        <button class="btn btn-ghost" onclick="toggleSettings()">ANNULEREN</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- Product list -->
+    <div class="toolbar">
+      <h2>PRODUCTEN</h2>
+      <button class="btn btn-tan" onclick="openAdd()">+ NIEUW PRODUCT</button>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>NAAM</th>
+            <th>CATEGORIE</th>
+            <th>PRIJS</th>
+            <th>VOORRAAD</th>
+            <th>POPULAIR</th>
+            <th>ACTIES</th>
+          </tr>
+        </thead>
+        <tbody id="product-tbody"></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title">PRODUCT TOEVOEGEN</h2>
+
+    <input type="hidden" id="edit-id">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>NAAM *</label>
+        <input type="text" id="f-name" placeholder="Productnaam">
+      </div>
+      <div class="form-group">
+        <label>EMOJI</label>
+        <input type="text" id="f-emoji" placeholder="🛡️" maxlength="4">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>CATEGORIE *</label>
+        <select id="f-category">
+          <option value="morale">Morale</option>
+          <option value="naam">Naam</option>
+          <option value="tactisch">Tactisch</option>
+          <option value="accessoires">Accessoires</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>PRIJS (€) *</label>
+        <input type="number" id="f-price" placeholder="5.50" step="0.01" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>OMSCHRIJVING *</label>
+      <textarea id="f-description" placeholder="Productomschrijving..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>KLEUREN (komma gescheiden)</label>
+      <input type="text" id="f-colors" placeholder="Zwart/Wit, OD Green/Tan, Full Black">
+      <p class="form-hint">Meerdere kleuren scheiden met een komma</p>
+    </div>
+
+    <div class="form-group">
+      <label>STATUS</label>
+      <div class="checkbox-row">
+        <label><input type="checkbox" id="f-instock" checked> Op voorraad</label>
+        <label><input type="checkbox" id="f-popular"> Populair (HOT badge)</label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">ANNULEREN</button>
+      <button class="btn btn-tan" onclick="saveProduct()">OPSLAAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM ===== -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box" style="max-width:400px;text-align:center;">
+    <h2 style="color:var(--red-lt);">VERWIJDEREN?</h2>
+    <p style="margin:16px 0 28px;font-size:13px;opacity:.8;">Weet je zeker dat je <strong id="delete-name" style="color:var(--tan)"></strong> wilt verwijderen?</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()">ANNULEREN</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">VERWIJDEREN</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const REPO_OWNER = 'rein033';
+const REPO_NAME  = 'uselesssite';
+const FILE_PATH  = 'data/products.json';
+const BRANCH     = 'main';
+
+// ===== STATE =====
+let products = [];
+let fileSha  = '';
+let deleteId = null;
+let dirty    = false;
+
+// ===== AUTH =====
+function getStoredHash() {
+  return localStorage.getItem('gp_admin_pw') || btoa('gunpatch');
+}
+
+function hashPw(pw) { return btoa(pw); }
+
+function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  if (hashPw(pw) === getStoredHash()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function doLogout() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw-input').value = '';
+}
+
+// ===== SETTINGS =====
+function toggleSettings() {
+  const p = document.getElementById('settings-panel');
+  const visible = p.style.display === 'block';
+  p.style.display = visible ? 'none' : 'block';
+  if (!visible) {
+    document.getElementById('pat-input').value = localStorage.getItem('gp_pat') || '';
+    document.getElementById('new-pw').value = '';
+  }
+}
+
+function togglePat() {
+  const inp = document.getElementById('pat-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function saveSettings() {
+  const pat = document.getElementById('pat-input').value.trim();
+  const newPw = document.getElementById('new-pw').value;
+  if (pat) localStorage.setItem('gp_pat', pat);
+  if (newPw) localStorage.setItem('gp_admin_pw', hashPw(newPw));
+  toggleSettings();
+  showStatus('Instellingen opgeslagen.', 'success');
+}
+
+// ===== LOAD DATA via GitHub API =====
+async function loadData() {
+  const pat = localStorage.getItem('gp_pat');
+  if (!pat) {
+    // Fall back: fetch directly from site
+    try {
+      const res = await fetch('/data/products.json?nocache=' + Date.now());
+      products = await res.json();
+      renderAll();
+    } catch(e) {
+      showStatus('Kon producten niet laden. Stel een GitHub Token in via Instellingen.', 'error');
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`,
+      { headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    const data = await res.json();
+    if (!data.content) throw new Error(data.message || 'Kon bestand niet laden');
+    fileSha = data.sha;
+    products = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    renderAll();
+    showStatus(`${products.length} producten geladen via GitHub.`, 'success');
+    setTimeout(() => document.getElementById('deploy-status').style.display = 'none', 3000);
+  } catch(e) {
+    showStatus('Fout bij laden: ' + e.message, 'error');
+    // fallback
+    const res = await fetch('/data/products.json');
+    products = await res.json();
+    renderAll();
+  }
+}
+
+// ===== RENDER =====
+function renderAll() {
+  renderStats();
+  renderTable();
+}
+
+function renderStats() {
+  const total     = products.length;
+  const inStock   = products.filter(p => p.inStock).length;
+  const popular   = products.filter(p => p.popular).length;
+  const cats      = [...new Set(products.map(p => p.category))].length;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-label">PRODUCTEN</div><div class="stat-value">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">OP VOORRAAD</div><div class="stat-value">${inStock}</div></div>
+    <div class="stat-card"><div class="stat-label">POPULAIR</div><div class="stat-value">${popular}</div></div>
+    <div class="stat-card"><div class="stat-label">CATEGORIEËN</div><div class="stat-value">${cats}</div></div>
+  `;
+}
+
+const CAT_TAGS = {
+  morale:      'tag-morale',
+  naam:        'tag-naam',
+  tactisch:    'tag-tactisch',
+  accessoires: 'tag-accessoires'
+};
+
+function renderTable() {
+  const tbody = document.getElementById('product-tbody');
+  if (products.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>Geen producten. Voeg er een toe!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = products.map(p => `
+    <tr>
+      <td class="row-emoji">${p.emoji || '📦'}</td>
+      <td class="row-name">${escHtml(p.name)}</td>
+      <td><span class="tag ${CAT_TAGS[p.category] || ''}">${p.category}</span></td>
+      <td>€${Number(p.price).toFixed(2)}</td>
+      <td><span class="stock-badge ${p.inStock ? 'in-stock' : 'out-stock'}">${p.inStock ? '✓ JA' : '✗ NEE'}</span></td>
+      <td>${p.popular ? '⭐' : '—'}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn-ghost" onclick="openEdit(${p.id})">✏ EDIT</button>
+          <button class="btn btn-danger" onclick="openDelete(${p.id})">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ===== PRODUCT FORM =====
+function openAdd() {
+  document.getElementById('modal-title').textContent = 'PRODUCT TOEVOEGEN';
+  document.getElementById('edit-id').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-emoji').value = '🛡️';
+  document.getElementById('f-category').value = 'morale';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-description').value = '';
+  document.getElementById('f-colors').value = 'Zwart/Wit, OD Green/Tan, Full Black';
+  document.getElementById('f-instock').checked = true;
+  document.getElementById('f-popular').checked = false;
+  document.getElementById('product-modal').classList.add('open');
+}
+
+function openEdit(id) {
+  const p = products.find(p => p.id === id);
+  if (!p) return;
+  document.getElementById('modal-title').textContent = 'PRODUCT BEWERKEN';
+  document.getElementById('edit-id').value = p.id;
+  document.getElementById('f-name').value = p.name;
+  document.getElementById('f-emoji').value = p.emoji || '';
+  document.getElementById('f-category').value = p.category;
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-description').value = p.description;
+  document.getElementById('f-colors').value = p.colors.join(', ');
+  document.getElementById('f-instock').checked = p.inStock;
+  document.getElementById('f-popular').checked = p.popular;
+  document.getElementById('product-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('product-modal').classList.remove('open');
+}
+
+function saveProduct() {
+  const name  = document.getElementById('f-name').value.trim();
+  const price = parseFloat(document.getElementById('f-price').value);
+  const desc  = document.getElementById('f-description').value.trim();
+
+  if (!name || isNaN(price) || !desc) {
+    alert('Vul naam, prijs en omschrijving in.');
+    return;
+  }
+
+  const editId = document.getElementById('edit-id').value;
+  const colors = document.getElementById('f-colors').value
+    .split(',').map(c => c.trim()).filter(Boolean);
+
+  const productData = {
+    name,
+    category: document.getElementById('f-category').value,
+    price,
+    description: desc,
+    emoji: document.getElementById('f-emoji').value.trim() || '📦',
+    colors: colors.length ? colors : ['Zwart'],
+    inStock: document.getElementById('f-instock').checked,
+    popular: document.getElementById('f-popular').checked
+  };
+
+  if (editId) {
+    const idx = products.findIndex(p => p.id == editId);
+    if (idx !== -1) products[idx] = { ...products[idx], ...productData };
+  } else {
+    const maxId = products.reduce((m, p) => Math.max(m, p.id), 0);
+    products.push({ id: maxId + 1, ...productData });
+  }
+
+  dirty = true;
+  closeModal();
+  renderAll();
+  showStatus('Product opgeslagen. Klik "Opslaan & Publiceren" om live te zetten.', 'success');
+}
+
+// ===== DELETE =====
+function openDelete(id) {
+  deleteId = id;
+  const p = products.find(p => p.id === id);
+  document.getElementById('delete-name').textContent = p ? p.name : '';
+  document.getElementById('delete-modal').classList.add('open');
+}
+
+function closeDeleteModal() {
+  document.getElementById('delete-modal').classList.remove('open');
+  deleteId = null;
+}
+
+function confirmDelete() {
+  if (deleteId === null) return;
+  products = products.filter(p => p.id !== deleteId);
+  dirty = true;
+  closeDeleteModal();
+  renderAll();
+  showStatus('Product verwijderd. Klik "Opslaan & Publiceren" om live te zetten.', 'success');
+}
+
+// ===== DEPLOY via GitHub API =====
+async function deployChanges() {
+  const pat = localStorage.getItem('gp_pat');
+  if (!pat) {
+    showStatus('Geen GitHub Token ingesteld. Ga naar Instellingen en voeg je PAT toe.', 'error');
+    toggleSettings();
+    return;
+  }
+
+  const btn = document.getElementById('deploy-btn');
+  btn.textContent = '⏳ PUBLICEREN...';
+  btn.disabled = true;
+  showStatus('Bezig met publiceren naar GitHub...', 'success');
+
+  try {
+    // Get latest SHA if we don't have it
+    if (!fileSha) {
+      const r = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`,
+        { headers: { 'Authorization': `Bearer ${pat}` } }
+      );
+      const d = await r.json();
+      fileSha = d.sha;
+    }
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${pat}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `Admin: update products.json (${new Date().toLocaleString('nl-NL')})`,
+          content,
+          sha: fileSha,
+          branch: BRANCH
+        })
+      }
+    );
+
+    const result = await res.json();
+    if (result.content) {
+      fileSha = result.content.sha;
+      dirty = false;
+      showStatus('✓ Gepubliceerd! GitHub Pages wordt bijgewerkt (±1 minuut).', 'success');
+    } else {
+      throw new Error(result.message || 'Onbekende fout');
+    }
+  } catch(e) {
+    showStatus('Fout bij publiceren: ' + e.message, 'error');
+  } finally {
+    btn.textContent = '▲ OPSLAAN & PUBLICEREN';
+    btn.disabled = false;
+  }
+}
+
+// ===== HELPERS =====
+function showStatus(msg, type) {
+  const el = document.getElementById('deploy-status');
+  el.textContent = msg;
+  el.className = type;
+  el.style.display = 'block';
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Close modals on backdrop click
+document.getElementById('product-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('product-modal')) closeModal();
+});
+document.getElementById('delete-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('delete-modal')) closeDeleteModal();
+});
+
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload', e => {
+  if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
