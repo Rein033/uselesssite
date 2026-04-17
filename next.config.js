@@ -7,6 +7,9 @@ const nextConfig = {
     basePath: '',
     trailingSlash: true,
   }),
+  env: {
+    NEXT_PUBLIC_IS_DEMO: isDemo ? 'true' : 'false',
+  },
   images: {
     unoptimized: isDemo,
     remotePatterns: [
