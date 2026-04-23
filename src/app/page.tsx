@@ -80,6 +80,14 @@ const TOOLS = [
     desc: 'Maak een professionele e-mailhandtekening met naam, functie, foto en contactinfo. Drie stijlen, kleurkiezer, live preview, Outlook-klaar.',
     stack: ['OUTLOOK', 'EMAIL', 'HTML'],
   },
+  {
+    id: 'T-006',
+    href: '/tools/wipe',
+    title: 'DISK WIPE SCRIPT',
+    tag: 'PRIVÉ',
+    desc: 'PowerShell script voor het wissen van schijven via diskpart. Wachtwoord vereist.',
+    stack: ['POWERSHELL', 'DISKPART', 'WINDOWS'],
+  },
 ]
 
 const STACK = ['NEXT.JS', 'TYPESCRIPT', 'REACT', 'TAILWIND', 'PRISMA', 'POSTGRESQL', 'NODE.JS', 'GIT']
