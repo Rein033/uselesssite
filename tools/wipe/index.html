@@ -29,14 +29,13 @@
 
 $excludedLetters = @("X")
 
-$disks = Get-Disk
+$disks = Get-Disk | Where-Object { $_.BusType -ne "USB" } | Sort-Object Number
+
+$preferredLetters = @("C", "D")
+$allLetters = "EFGHIJKLMNOPQRSTUVWYZ".ToCharArray()
+$letterIndex = 0
 
 foreach ($disk in $disks) {
-
-    if ($disk.BusType -eq "USB") {
-        Write-Host "Overgeslagen USB: Disk $($disk.Number)"
-        continue
-    }
 
     $skip = $false
     $partitions = Get-Partition -DiskNumber $disk.Number -ErrorAction SilentlyContinue
@@ -48,19 +47,57 @@ foreach ($disk in $disks) {
     }
 
     if ($skip -eq $true) {
-        Write-Host "Overgeslagen letter: Disk $($disk.Number)"
+        Write-Host "Overgeslagen: Disk $($disk.Number)"
         continue
     }
 
+    # Bepaal de letter
+    $letter = $null
+
+    if ($letterIndex -lt $preferredLetters.Length) {
+        $preferred = $preferredLetters[$letterIndex]
+        $usedLetters = (Get-Partition | Where-Object { $_.DriveLetter } | Select-Object -ExpandProperty DriveLetter)
+        if ($usedLetters -notcontains $preferred) {
+            $letter = $preferred
+        }
+    }
+
+    # Als voorkeursletter niet beschikbaar, pak eerste vrije letter
+    if ($null -eq $letter) {
+        $usedLetters = (Get-Partition | Where-Object { $_.DriveLetter } | Select-Object -ExpandProperty DriveLetter)
+        foreach ($l in $allLetters) {
+            if ($usedLetters -notcontains $l) {
+                $letter = $l
+                break
+            }
+        }
+    }
+
+    if ($null -eq $letter) {
+        Write-Host "Geen letter beschikbaar voor Disk $($disk.Number)"
+        continue
+    }
+
+    $letterIndex++
+
+    Write-Host "Wissen en partitie aanmaken met letter $($letter): Disk $($disk.Number)"
+
     $tmpFile = "X:\wipe_$($disk.Number).txt"
-    $inhoud = "select disk $($disk.Number)`nclean"
+    $inhoud = "select disk $($disk.Number)
+clean
+convert gpt
+create partition primary
+format fs=ntfs quick
+assign letter=$letter
+exit"
     $inhoud | Out-File -FilePath $tmpFile -Encoding ASCII
     diskpart /s $tmpFile
     Remove-Item $tmpFile
-    Write-Host "Klaar: Disk $($disk.Number)"
+    Write-Host "Klaar: Disk $($disk.Number) -> $($letter):"
 }
 
-Write-Host "Gereed!"</code></pre>
+Write-Host "Gereed!"
+</code></pre>
     <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-400">
       <strong>Let op:</strong> Dit script wist permanent alle data op de geselecteerde schijven. Geen herstel mogelijk.
     </div>
