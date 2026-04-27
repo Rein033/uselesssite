@@ -14,6 +14,8 @@
     #fake .bar { width: 320px; height: 6px; background: #14532d; border-radius: 3px; overflow: hidden; margin: 0 auto 1rem; }
     #fake .bar-fill { height: 100%; width: 0%; background: #4ade80; border-radius: 3px; transition: width .05s linear; }
     #fake .pct { font-size: .75rem; color: #166534; }
+    #enter-btn { display: none; margin: 1.5rem auto 0; font-family: inherit; font-size: .85rem; color: #4ade80; background: none; border: 1px solid #4ade80; padding: .6rem 2rem; cursor: pointer; letter-spacing: .15em; animation: pulse 1.2s infinite; }
+    #enter-btn:hover { background: #052e16; }
     #player { display: none; position: fixed; inset: 0; z-index: 99; }
     #player iframe { width: 100%; height: 100%; border: none; }
     #player .overlay-text { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #4ade80; text-shadow: 0 0 10px #4ade80; animation: pulse 1.5s infinite; white-space: nowrap; }
@@ -28,6 +30,7 @@
     <p id="status">Systeem opstarten...</p>
     <div class="bar"><div class="bar-fill" id="bar"></div></div>
     <div class="pct" id="pct">0%</div>
+    <button id="enter-btn" onclick="launchRick()">[ ENTER ]</button>
   </div>
   <div id="player">
     <div id="yt"></div>
@@ -37,41 +40,27 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
   var ytPlayer;
-  var rickrollReady = false;
 
   function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('yt', {
       width: '100%',
       height: '100%',
       videoId: 'dQw4w9WgXcQ',
-      playerVars: {
-        autoplay: 1,
-        mute: 1,
-        controls: 0,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-      },
-      events: {
-        onReady: function(e) {
-          e.target.setVolume(100);
-          e.target.unMute();
-          rickrollReady = true;
-        }
-      }
+      playerVars: { autoplay: 0, mute: 0, controls: 0, modestbranding: 1, rel: 0, iv_load_policy: 3 },
     });
   }
 
-  var msgs = [
-    'Systeem opstarten...',
-    'RAM controleren...',
-    'Drivers laden...',
-    'Netwerk initialiseren...',
-    'Gebruiker authenticeren...',
-    'Portfolio laden...',
-    'Bijna klaar...',
-  ];
+  function launchRick() {
+    document.getElementById('fake').style.display = 'none';
+    document.getElementById('player').style.display = 'block';
+    if (ytPlayer && ytPlayer.playVideo) {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(100);
+      ytPlayer.playVideo();
+    }
+  }
+
+  var msgs = ['Systeem opstarten...','RAM controleren...','Drivers laden...','Netwerk initialiseren...','Gebruiker authenticeren...','Portfolio laden...','Bijna klaar...'];
   var bar  = document.getElementById('bar');
   var pct  = document.getElementById('pct');
   var stat = document.getElementById('status');
@@ -84,14 +73,9 @@
     stat.textContent = msgs[Math.min(Math.floor(p / 15), msgs.length - 1)];
     if (p >= 100) {
       clearInterval(interval);
-      setTimeout(function() {
-        document.getElementById('fake').style.display = 'none';
-        document.getElementById('player').style.display = 'block';
-        if (ytPlayer && ytPlayer.unMute) {
-          ytPlayer.unMute();
-          ytPlayer.setVolume(100);
-        }
-      }, 400);
+      pct.textContent = '100%';
+      stat.textContent = 'Gereed.';
+      document.getElementById('enter-btn').style.display = 'block';
     }
   }, 80);
 </script>
