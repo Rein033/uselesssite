@@ -3,189 +3,69 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>REIN.DEV — PORTFOLIO</title>
-  <meta name="description" content="Have you tried turning it off and on again?"/>
+  <title>UselessSite.nl</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000; color: #4ade80; font-family: 'Courier New', Courier, monospace; min-height: 100vh; }
-    a { color: inherit; text-decoration: none; }
-    body::before { content: ''; position: fixed; inset: 0; z-index: 30; pointer-events: none; background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #000 3px, #000 4px); opacity: .04; }
-    body::after  { content: ''; position: fixed; inset: 0; z-index: 20; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
-    .boot { border: 1px solid #14532d; padding: 1.25rem; margin-bottom: 2.5rem; }
-    .boot-topbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap:.5rem; font-size:.7rem; letter-spacing:.15em; color:#166534; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid #14532d55; }
-    .pulse { animation: pulse 2s infinite; } @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
-    .terminal { font-size:.85rem; line-height:1.8; }
-    .prompt { color:#166534; } .cmd { color:#86efac; }
-    .out { color:#bbf7d0; padding-left:1rem; } .out strong { color:#fff; }
-    .cursor::after { content:'█'; animation: pulse 1s infinite; }
-    .boot-links { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1rem; padding-top:1rem; border-top:1px solid #14532d55; }
-    .boot-links a { font-size:.7rem; border:1px solid #166534; padding:.4rem 1rem; transition:border-color .2s,background .2s,color .2s; }
-    .boot-links a:hover { border-color:#4ade80; background:#052e16; color:#d1fae5; }
-    .sec-header { display:flex; align-items:center; gap:.75rem; font-size:.7rem; color:#166534; margin-bottom:.75rem; }
-    .sec-header .line { flex:1; border-top:1px solid #14532d55; }
-    section { margin-bottom:2.5rem; }
-    .card { position:relative; border:1px solid #14532d99; padding:1rem; margin-bottom:.5rem; transition:border-color .2s,background .2s; display:block; }
-    .card:hover { border-color:#4ade8088; background:#052e1620; }
-    .corner { position:absolute; font-size:.65rem; line-height:1; color:#14532d; transition:color .2s; pointer-events:none; }
-    .card:hover .corner { color:#166534; }
-    .tl{top:0;left:0} .tr{top:0;right:0} .bl{bottom:0;left:0} .br{bottom:0;right:0}
-    .card-top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:.5rem; margin-bottom:.4rem; }
-    .card-left  { display:flex; align-items:center; gap:.75rem; }
-    .card-right { display:flex; align-items:center; gap:.75rem; flex-shrink:0; }
-    .card-id    { font-size:.65rem; color:#166534; white-space:nowrap; }
-    .card-title { font-weight:bold; font-size:.85rem; color:#86efac; letter-spacing:.05em; transition:color .2s; }
-    .card:hover .card-title { color:#d1fae5; }
-    .card-tag   { font-size:.65rem; color:#166534; }
-    .card-open  { font-size:.65rem; color:#166534; transition:color .2s; }
-    .card:hover .card-open { color:#4ade80; }
-    .card-desc  { font-size:.7rem; color:#166534; line-height:1.6; margin-bottom:.6rem; }
-    .card-stack { display:flex; flex-wrap:wrap; gap:.2rem .75rem; font-size:.65rem; color:#14532d; }
-    .card-stack span+span::before { content:'· '; }
-    .stack-box { border:1px solid #14532d99; padding:1rem; font-size:.7rem; color:#166534; display:flex; flex-wrap:wrap; gap:.2rem .5rem; margin-bottom:2.5rem; }
-    .stack-box span { cursor:default; transition:color .2s; } .stack-box span:hover { color:#4ade80; }
-    .stack-box span+span::before { content:' · '; color:#14532d; }
-    footer { border-top:1px solid #14532d55; padding-top:1.25rem; font-size:.7rem; color:#14532d; }
-    .footer-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:.25rem; }
-    footer a:hover { color:#4ade80; }
-    .tip { font-size:.6rem; opacity:.5; margin-top:.25rem; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; font-family: 'Courier New', monospace; color: #4ade80; overflow: hidden; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #screen { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #fake { text-align: center; padding: 2rem; }
+    #fake h1 { font-size: 1.8rem; color: #4ade80; margin-bottom: .5rem; }
+    #fake p  { font-size: .85rem; color: #166534; margin-bottom: 1.5rem; }
+    #fake .bar { width: 320px; height: 6px; background: #14532d; border-radius: 3px; overflow: hidden; margin: 0 auto 1rem; }
+    #fake .bar-fill { height: 100%; width: 0%; background: #4ade80; border-radius: 3px; transition: width .05s linear; }
+    #fake .pct { font-size: .75rem; color: #166534; }
+    #player { display: none; position: fixed; inset: 0; z-index: 99; }
+    #player iframe { width: 100%; height: 100%; border: none; }
+    #player .overlay-text { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #4ade80; text-shadow: 0 0 10px #4ade80; animation: pulse 1.5s infinite; white-space: nowrap; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px); opacity:.05; z-index:100; }
   </style>
 </head>
 <body>
-<div class="wrap">
-
-  <div class="boot">
-    <div class="boot-topbar">
-      <span>REIN.DEV PORTFOLIO SYSTEEM v2.0</span>
-      <span>STATUS: <span class="pulse" style="color:#4ade80">&#9679; ONLINE</span></span>
-    </div>
-    <div class="terminal">
-      <div><span class="prompt">C:\REIN&gt; </span><span class="cmd">whoami</span></div>
-      <div class="out">GEBRUIKER........... REIN</div>
-      <div class="out">ROL................. FULL-STACK DEVELOPER</div>
-      <div class="out">STATUS............. <strong>BESCHIKBAAR VOOR PROJECTEN</strong></div>
-      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cmd">motd</span></div>
-      <div class="out"><strong>"Have you tried turning it off and on again?"</strong></div>
-      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cursor cmd"></span></div>
-    </div>
-    <div class="boot-links">
-      <a href="/feed/">[ USELESSSITE COMMUNITY &#8594; ]</a>
-      <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer" style="color:#166534">[ GITHUB &#8594; ]</a>
-    </div>
+<div id="screen">
+  <div id="fake">
+    <h1>USELESSSITE.NL</h1>
+    <p id="status">Systeem opstarten...</p>
+    <div class="bar"><div class="bar-fill" id="bar"></div></div>
+    <div class="pct" id="pct">0%</div>
   </div>
-
-  <section>
-    <div class="sec-header"><span>&#9552;&#9552; PROJECTEN</span><span class="line"></span><span>3 bestanden</span></div>
-
-    <a class="card" href="/airsoft/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-001</span><span class="card-title">3D AIRSOFT PATCHES</span></div>
-        <div class="card-right"><span class="card-tag">[WEBSHOP]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Webshop voor custom 3D-geprinte PLA airsoft patches en accessoires. Statisch gebouwd met HTML, CSS en JavaScript inclusief winkelmandje.</p>
-      <div class="card-stack"><span>HTML</span><span>CSS</span><span>JAVASCRIPT</span></div>
-    </a>
-
-    <a class="card" href="/feed/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-002</span><span class="card-title">USELESSSITE COMMUNITY</span></div>
-        <div class="card-right"><span class="card-tag">[PLATFORM]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Full-stack community waar gebruikers hun setup delen en laten beoordelen. Met accounts, ratings, comments en leaderboard. Gebouwd door &eacute;&eacute;n persoon &mdash; nee, niet Moss.</p>
-      <div class="card-stack"><span>NEXT.JS 14</span><span>TYPESCRIPT</span><span>PRISMA</span><span>POSTGRESQL</span></div>
-    </a>
-
-    <a class="card" href="/scrum/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-003</span><span class="card-title">SCRUM GUIDE NL</span></div>
-        <div class="card-right"><span class="card-tag">[ARTIKEL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Nederlandstalige uitleg van het Scrum-framework. Rollen, ceremonies, artefacten, implementatieplan. Gebaseerd op de offici&euml;le Scrum Guide 2020.</p>
-      <div class="card-stack"><span>SCRUM</span><span>AGILE</span><span>KENNISDELING</span></div>
-    </a>
-  </section>
-
-  <section>
-    <div class="sec-header"><span>&#9552;&#9552; TOOLS</span><span class="line"></span><span>6 executables</span></div>
-
-    <a class="card" href="/tools/sap/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-001</span><span class="card-title">SAP IMPORT GENERATOR</span></div>
-        <div class="card-right"><span class="card-tag">[BEDRIJFSTOOL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Genereer SAP-compatibele CSV-importbestanden voor inkooporders, materiaalstam, leveranciers en kostenplaatsen. Geen IT-afdeling nodig.</p>
-      <div class="card-stack"><span>SAP</span><span>CSV</span><span>EXCEL</span></div>
-    </a>
-
-    <a class="card" href="/tools/sprint/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-002</span><span class="card-title">SPRINT PLANNER</span></div>
-        <div class="card-right"><span class="card-tag">[AGILE TOOL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Plan sprint-capaciteit op basis van teamgrootte, beschikbare dagen en velocity. Inclusief backlog en overload-indicator.</p>
-      <div class="card-stack"><span>SCRUM</span><span>PLANNING</span><span>AGILE</span></div>
-    </a>
-
-    <a class="card" href="/tools/wachtwoord/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-003</span><span class="card-title">WACHTWOORD GENERATOR</span></div>
-        <div class="card-right"><span class="card-tag">[SECURITY]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Genereer sterke wachtwoorden via crypto.getRandomValues(). Alles lokaal &mdash; er wordt niets verstuurd. Zelfs niet naar Denholm.</p>
-      <div class="card-stack"><span>CRYPTO</span><span>SECURITY</span><span>PRIVACY</span></div>
-    </a>
-
-    <a class="card" href="/tools/json/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-004</span><span class="card-title">JSON FORMATTER</span></div>
-        <div class="card-right"><span class="card-tag">[DEV TOOL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Format, minify of valideer JSON direct in je browser. Statistieken, foutmeldingen met uitleg en een kopieerknop. Roy zou het gebruiken.</p>
-      <div class="card-stack"><span>JSON</span><span>DEVELOPER</span><span>FORMATTER</span></div>
-    </a>
-
-    <a class="card" href="/tools/signature/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-005</span><span class="card-title">EMAIL HANDTEKENING GEN.</span></div>
-        <div class="card-right"><span class="card-tag">[PRODUCTIVITEIT]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Maak een professionele e-mailhandtekening met naam, functie, foto en contactinfo. Drie stijlen, kleurkiezer, live preview, Outlook-klaar.</p>
-      <div class="card-stack"><span>OUTLOOK</span><span>EMAIL</span><span>HTML</span></div>
-    </a>
-
-    <a class="card" href="/tools/wipe/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-006</span><span class="card-title">DISK WIPE SCRIPT</span></div>
-        <div class="card-right"><span class="card-tag">[PRIV&Eacute;]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">PowerShell script voor het wissen van schijven via diskpart. Wachtwoord vereist.</p>
-      <div class="card-stack"><span>POWERSHELL</span><span>DISKPART</span><span>WINDOWS</span></div>
-    </a>
-  </section>
-
-  <div class="sec-header"><span>&#9552;&#9552; TECH STACK</span><span class="line"></span></div>
-  <div class="stack-box">
-    <span>NEXT.JS</span><span>TYPESCRIPT</span><span>REACT</span><span>TAILWIND</span><span>PRISMA</span><span>POSTGRESQL</span><span>NODE.JS</span><span>GIT</span>
+  <div id="player">
+    <iframe id="yt"
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+    <div class="overlay-text">NEVER GONNA GIVE YOU UP 🎵</div>
   </div>
-
-  <footer>
-    <div class="footer-top">
-      <span>&copy; 2026 REIN &mdash; ALL RIGHTS RESERVED</span>
-      <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer">GITHUB.COM/REIN033</a>
-    </div>
-    <div>VOOR NOODGEVALLEN: 0118 999 881 999 119 725 3</div>
-    <div class="tip">TIP: PROBEER DE KONAMI CODE &#8593;&#8593;&#8595;&#8595;&#8592;&#8594;&#8592;&#8594;BA</div>
-  </footer>
-
 </div>
+<script>
+  var msgs = [
+    'Systeem opstarten...',
+    'RAM controleren...',
+    'Drivers laden...',
+    'Netwerk initialiseren...',
+    'Gebruiker authenticeren...',
+    'Portfolio laden...',
+    'Bijna klaar...',
+  ];
+  var bar  = document.getElementById('bar');
+  var pct  = document.getElementById('pct');
+  var stat = document.getElementById('status');
+  var p = 0;
+  var interval = setInterval(function() {
+    p += Math.random() * 3 + 1;
+    if (p > 100) p = 100;
+    bar.style.width = p + '%';
+    pct.textContent = Math.floor(p) + '%';
+    stat.textContent = msgs[Math.min(Math.floor(p / 15), msgs.length - 1)];
+    if (p >= 100) {
+      clearInterval(interval);
+      setTimeout(function() {
+        document.getElementById('fake').style.display = 'none';
+        document.getElementById('player').style.display = 'block';
+      }, 400);
+    }
+  }, 80);
+</script>
 </body>
 </html>
