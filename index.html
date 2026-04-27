@@ -19,6 +19,7 @@
     #player { display: none; position: fixed; inset: 0; z-index: 99; }
     #player iframe { width: 100%; height: 100%; border: none; }
     #player .overlay-text { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #4ade80; text-shadow: 0 0 10px #4ade80; animation: pulse 1.5s infinite; white-space: nowrap; }
+    #version-label { position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); font-size: .65rem; color: #166534; letter-spacing: .1em; white-space: nowrap; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
     body::before { content:''; position:fixed; inset:0; pointer-events:none; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px); opacity:.05; z-index:100; }
   </style>
@@ -35,17 +36,32 @@
   <div id="player">
     <div id="yt"></div>
     <div class="overlay-text">NEVER GONNA GIVE YOU UP 🎵</div>
+    <div id="version-label"></div>
   </div>
 </div>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+  var VERSIONS = [
+    { id: 'dQw4w9WgXcQ',  label: 'ORIGINEEL (1987)'            },
+    { id: 'wpV-gGA4PSk',  label: 'MEME EDITIE'                 },
+    { id: '1_Z5q152GSQ',  label: 'METAL COVER'                 },
+    { id: 'ntqd8MFnvk0',  label: 'SLOWED + REVERB'             },
+    { id: 'z4hsGK8A1qY',  label: '8-BIT VERSIE'                },
+    { id: 'KyElxl_j4Wc',  label: 'MINECRAFT NOTE BLOCK'        },
+    { id: '9pnhbPxSmxY',  label: 'LOFI HIP HOP REMIX'          },
+    { id: '7mK4K90fTNw',  label: 'VAPORWAVE MIX'               },
+    { id: 'o4CnpJw6vP0',  label: 'REGGAE VERSIE'               },
+    { id: '8VFzHYtOARw',  label: 'BASS BOOST ESCALATIE'        },
+  ];
+
+  var pick = VERSIONS[Math.floor(Math.random() * VERSIONS.length)];
   var ytPlayer;
 
   function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('yt', {
       width: '100%',
       height: '100%',
-      videoId: 'dQw4w9WgXcQ',
+      videoId: pick.id,
       playerVars: { autoplay: 0, mute: 0, controls: 0, modestbranding: 1, rel: 0, iv_load_policy: 3 },
     });
   }
@@ -53,6 +69,7 @@
   function launchRick() {
     document.getElementById('fake').style.display = 'none';
     document.getElementById('player').style.display = 'block';
+    document.getElementById('version-label').textContent = '[ ' + pick.label + ' ]';
     if (ytPlayer && ytPlayer.playVideo) {
       ytPlayer.unMute();
       ytPlayer.setVolume(100);
