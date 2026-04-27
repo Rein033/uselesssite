@@ -5,79 +5,183 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>UselessSite.nl</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; font-family: 'Courier New', monospace; color: #4ade80; overflow: hidden; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #screen { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #fake { text-align: center; padding: 2rem; }
-    #fake h1 { font-size: 1.8rem; color: #4ade80; margin-bottom: .5rem; }
-    #fake p  { font-size: .85rem; color: #166534; margin-bottom: 1.5rem; }
-    #fake .bar { width: 320px; height: 6px; background: #14532d; border-radius: 3px; overflow: hidden; margin: 0 auto 1rem; }
-    #fake .bar-fill { height: 100%; width: 0%; background: #4ade80; border-radius: 3px; transition: width .05s linear; }
-    #fake .pct { font-size: .75rem; color: #166534; }
-    #enter-btn { display: none; margin: 1.5rem auto 0; font-family: inherit; font-size: .85rem; color: #4ade80; background: none; border: 1px solid #4ade80; padding: .6rem 2rem; cursor: pointer; letter-spacing: .15em; animation: pulse 1.2s infinite; }
-    #enter-btn:hover { background: #052e16; }
-    #player { display: none; position: fixed; inset: 0; z-index: 99; }
-    #player iframe { width: 100%; height: 100%; border: none; }
-    #player .overlay-text { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #4ade80; text-shadow: 0 0 10px #4ade80; animation: pulse 1.5s infinite; white-space: nowrap; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-    body::before { content:''; position:fixed; inset:0; pointer-events:none; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px); opacity:.05; z-index:100; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; font-family: 'Courier New', monospace; color: #4ade80; height: 100vh; overflow: hidden; }
+
+    /* scanlines */
+    body::before { content:''; position:fixed; inset:0; z-index:200; pointer-events:none;
+      background-image: repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px);
+      opacity:.05; }
+
+    /* ── LOADER ── */
+    #loader { position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; }
+    #loader h1 { font-size:1.8rem; color:#4ade80; margin-bottom:.4rem; }
+    #loader .sub { font-size:.75rem; color:#166534; margin-bottom:1.5rem; letter-spacing:.1em; }
+    #status { font-size:.8rem; color:#166534; margin-bottom:.75rem; height:1.2em; }
+    .bar { width:320px; max-width:90vw; height:6px; background:#14532d; border-radius:3px; overflow:hidden; margin-bottom:.5rem; }
+    .bar-fill { height:100%; width:0%; background:#4ade80; border-radius:3px; }
+    #pct { font-size:.7rem; color:#166534; }
+
+    /* ── MEME WALL ── */
+    #wall { display:none; position:fixed; inset:0; overflow-y:auto; background:#000; padding:1rem; }
+    .wall-title { text-align:center; font-size:1rem; color:#4ade80; letter-spacing:.2em; margin-bottom:1rem; animation: glow 2s infinite; }
+    @keyframes glow { 0%,100%{text-shadow:0 0 6px #4ade80} 50%{text-shadow:0 0 20px #4ade80,0 0 40px #4ade80} }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:.75rem; }
+    .meme { position:relative; border:1px solid #14532d; overflow:hidden; background:#000; aspect-ratio:4/3; cursor:pointer; }
+    .meme img { width:100%; height:100%; object-fit:cover; display:block; }
+    .meme .label { position:absolute; bottom:0; left:0; right:0; padding:.35rem .6rem; font-size:.65rem; letter-spacing:.1em; font-weight:bold; text-align:center; }
+
+    /* meme filter styles */
+    .m-original img  { filter:none; }
+    .m-original .label { background:#000d; color:#4ade80; }
+
+    .m-vaporwave img { filter:hue-rotate(280deg) saturate(250%) brightness(1.1); }
+    .m-vaporwave { border-color:#f0f !important; }
+    .m-vaporwave .label { background:#f0fd; color:#fff; }
+
+    .m-deepfried img { filter:contrast(220%) saturate(350%) brightness(1.15) hue-rotate(10deg); }
+    .m-deepfried .label { background:#f80d; color:#ff0; }
+
+    .m-matrix img   { filter:grayscale(100%) brightness(0.8); }
+    .m-matrix::after { content:''; position:absolute; inset:0; background:rgba(0,255,70,.18); pointer-events:none; }
+    .m-matrix { border-color:#0f0 !important; }
+    .m-matrix .label { background:#0f0d; color:#0f0; }
+
+    .m-noir img     { filter:grayscale(100%) contrast(160%) brightness(.9); }
+    .m-noir .label  { background:#111d; color:#ccc; }
+
+    .m-neon img     { filter:invert(100%) hue-rotate(100deg) saturate(300%); }
+    .m-neon { border-color:#0ff !important; }
+    .m-neon .label  { background:#0ffd; color:#000; }
+
+    .m-pixel img    { image-rendering:pixelated; filter:brightness(1.1) saturate(1.4); transform:scale(1.04); }
+    .m-pixel .label { background:#000d; color:#ff0; }
+
+    .m-sepia img    { filter:sepia(100%) contrast(130%); }
+    .m-sepia .label { background:#8640d; color:#f90; }
+    .m-sepia { border-color:#c80 !important; }
+
+    .m-glitch img   { animation:glitch 3s infinite; }
+    .m-glitch { border-color:#f00 !important; }
+    .m-glitch .label { background:#f00d; color:#fff; }
+    @keyframes glitch {
+      0%,90%,100% { filter:none; transform:none; }
+      91% { filter:hue-rotate(90deg) saturate(300%); transform:translate(-2px,1px); }
+      93% { filter:invert(80%) hue-rotate(180deg); transform:translate(2px,-1px); }
+      95% { filter:hue-rotate(270deg) brightness(1.5); transform:translate(-1px,2px); }
+      97% { filter:none; transform:translate(1px,-1px); }
+    }
+
+    .m-windows .label { background:#000080ee; color:#fff; font-size:.6rem; padding:.2rem .4rem; bottom:auto; top:0; text-align:left; letter-spacing:0; }
+    .m-windows { border:2px solid #000080 !important; }
+    .m-windows::after { content:''; position:absolute; inset:0; border:3px solid #c0c0c0; pointer-events:none; }
+
+    .m-rainbow img  { animation:rainbow 2s linear infinite; }
+    @keyframes rainbow { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+    .m-rainbow { border-color:#ff0 !important; }
+    .m-rainbow .label { background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f); color:#fff; -webkit-text-stroke:.3px #000; }
   </style>
 </head>
 <body>
-<div id="screen">
-  <div id="fake">
-    <h1>USELESSSITE.NL</h1>
-    <p id="status">Systeem opstarten...</p>
-    <div class="bar"><div class="bar-fill" id="bar"></div></div>
-    <div class="pct" id="pct">0%</div>
-    <button id="enter-btn" onclick="launchRick()">[ ENTER ]</button>
-  </div>
-  <div id="player">
-    <div id="yt"></div>
-    <div class="overlay-text">NEVER GONNA GIVE YOU UP 🎵</div>
+
+<!-- LOADER -->
+<div id="loader">
+  <h1>USELESSSITE.NL</h1>
+  <div class="sub">SYSTEEM INITIALISEREN...</div>
+  <div id="status">Opstarten...</div>
+  <div class="bar"><div class="bar-fill" id="bar"></div></div>
+  <div id="pct">0%</div>
+</div>
+
+<!-- MEME WALL -->
+<div id="wall">
+  <div class="wall-title">&#9835; NEVER GONNA GIVE YOU UP &#9835;</div>
+  <div class="grid">
+
+    <div class="meme m-original">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">ORIGINEEL 1987</div>
+    </div>
+
+    <div class="meme m-vaporwave">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">A E S T H E T I C</div>
+    </div>
+
+    <div class="meme m-deepfried">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">DEEP FRIED 🔥🔥🔥</div>
+    </div>
+
+    <div class="meme m-matrix">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">MATRIX MODE</div>
+    </div>
+
+    <div class="meme m-neon">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">NEON NIGHTS</div>
+    </div>
+
+    <div class="meme m-pixel">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">PIXEL ART 8-BIT</div>
+    </div>
+
+    <div class="meme m-noir">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">FILM NOIR 1944</div>
+    </div>
+
+    <div class="meme m-sepia">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">VINTAGE EDITIE</div>
+    </div>
+
+    <div class="meme m-glitch">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">GL1TCH ERROR 404</div>
+    </div>
+
+    <div class="meme m-windows">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">&#128190; rickroll.exe — Windows XP</div>
+    </div>
+
+    <div class="meme m-rainbow">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll"/>
+      <div class="label">PRIDE EDITIE 🏳️‍🌈</div>
+    </div>
+
+    <div class="meme m-original" style="border-color:#4ade80">
+      <img src="https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif" alt="rickroll" style="filter:contrast(180%) brightness(1.2) saturate(0%) sepia(100%) hue-rotate(75deg)"/>
+      <div class="label" style="background:#4ade801a;color:#4ade80">TERMINAL GROEN</div>
+    </div>
+
   </div>
 </div>
-<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
-  var ytPlayer;
-
-  function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('yt', {
-      width: '100%',
-      height: '100%',
-      videoId: 'dQw4w9WgXcQ',
-      playerVars: { autoplay: 0, mute: 0, controls: 0, modestbranding: 1, rel: 0, iv_load_policy: 3 },
-    });
-  }
-
-  function launchRick() {
-    document.getElementById('fake').style.display = 'none';
-    document.getElementById('player').style.display = 'block';
-    if (ytPlayer && ytPlayer.playVideo) {
-      ytPlayer.unMute();
-      ytPlayer.setVolume(100);
-      ytPlayer.playVideo();
-    }
-  }
-
-  var msgs = ['Systeem opstarten...','RAM controleren...','Drivers laden...','Netwerk initialiseren...','Gebruiker authenticeren...','Portfolio laden...','Bijna klaar...'];
+  var msgs = ['Opstarten...','RAM controleren...','Drivers laden...','Netwerk verbinden...','Gebruiker authenticeren...','Portfolio laden...','Bijna klaar...','Gereed.'];
   var bar  = document.getElementById('bar');
   var pct  = document.getElementById('pct');
   var stat = document.getElementById('status');
   var p = 0;
-  var interval = setInterval(function() {
-    p += Math.random() * 3 + 1;
+
+  var iv = setInterval(function() {
+    p += Math.random() * 2.5 + 0.8;
     if (p > 100) p = 100;
     bar.style.width = p + '%';
     pct.textContent = Math.floor(p) + '%';
-    stat.textContent = msgs[Math.min(Math.floor(p / 15), msgs.length - 1)];
+    stat.textContent = msgs[Math.min(Math.floor(p / 14), msgs.length - 1)];
     if (p >= 100) {
-      clearInterval(interval);
-      pct.textContent = '100%';
-      stat.textContent = 'Gereed.';
-      document.getElementById('enter-btn').style.display = 'block';
+      clearInterval(iv);
+      setTimeout(function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('wall').style.display = 'block';
+      }, 500);
     }
-  }, 80);
+  }, 60);
 </script>
 </body>
 </html>
