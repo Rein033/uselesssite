@@ -1,0 +1,91 @@
+/* ── RETRO TERMINAL OVERRIDE ── */
+
+/* Color variables */
+.dark, :root {
+  --background:         0 0% 0%;
+  --foreground:         142 76% 60%;
+  --card:               0 0% 2%;
+  --card-foreground:    142 76% 60%;
+  --popover:            0 0% 1%;
+  --popover-foreground: 142 76% 60%;
+  --primary:            142 76% 60%;
+  --primary-foreground: 0 0% 0%;
+  --secondary:          142 60% 6%;
+  --secondary-foreground: 142 76% 60%;
+  --muted:              142 20% 5%;
+  --muted-foreground:   143 55% 28%;
+  --accent:             142 60% 10%;
+  --accent-foreground:  142 76% 60%;
+  --destructive:        0 84% 60%;
+  --destructive-foreground: 0 0% 0%;
+  --border:             142 60% 15%;
+  --input:              142 60% 8%;
+  --ring:               142 76% 60%;
+  --radius:             0rem;
+}
+
+/* Monospace font everywhere */
+*, *::before, *::after {
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* Scanline overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(0,0,0,1) 3px,
+    rgba(0,0,0,1) 4px
+  );
+  opacity: .04;
+}
+
+/* Header: solid black, green border */
+header.glass, header[class*="glass"] {
+  background: #000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Logo: plain green, no gradient */
+.bg-gradient-to-r,
+[class*="bg-gradient"] {
+  background: transparent !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  color: hsl(142 76% 60%) !important;
+}
+
+/* Remove box shadows */
+* {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Inputs and textareas */
+input, textarea, select {
+  background: #000 !important;
+  color: hsl(142 76% 60%) !important;
+  border-color: hsl(142 60% 15%) !important;
+  caret-color: hsl(142 76% 60%) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: hsl(143 55% 22%) !important;
+}
+
+/* Code and pre blocks */
+pre, code {
+  color: hsl(142 76% 60%) !important;
+  background: #000 !important;
+}
+
+/* Table */
+table { border-collapse: collapse; }
