@@ -105,41 +105,11 @@
   /* ── Pick experience before anything else ── */
   var isRick = Math.random() < (1 / 50);
 
-  /* ── Readiness tracking ── */
-  var barDone = false;
-  var ytReady = !isRick; // non-rick pages don't need YT to be ready
+  /* ── YouTube API ready flag (no pre-init — player created on demand) ── */
+  var ytApiReady = false;
+  function onYouTubeIframeAPIReady() { ytApiReady = true; }
 
-  function checkShowButton() {
-    if (barDone && ytReady) {
-      document.getElementById('enter-btn').style.display = 'block';
-    }
-  }
-
-  /* ── YouTube (only initialized for the rick page) ── */
-  var ytPlayer;
-  function onYouTubeIframeAPIReady() {
-    if (!isRick) return;
-    ytPlayer = new YT.Player('yt-frame', {
-      videoId: 'dQw4w9WgXcQ',
-      playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
-      events: {
-        onReady: function() {
-          ytReady = true;
-          checkShowButton();
-        }
-      }
-    });
-  }
-
-  /* ── Fallback: show button after 8s even if YT is blocked ── */
-  if (isRick) {
-    setTimeout(function() {
-      ytReady = true;
-      checkShowButton();
-    }, 8000);
-  }
-
-  /* ── Memes: [label, template-id, line1, line2, ...] — all IDs verified ── */
+  /* ── Reveal on ENTER: create YT player AFTER container is visible ── */
   var MEMES = [
     ["DRAKE.EXE",               "drake",          "Reading the documentation",              "Copying from Stack Overflow"],
     ["THIS IS FINE",            "fine",            "Production is on fire",                  "This is fine"],
@@ -209,16 +179,28 @@
     return 'https://api.memegen.link/images/' + m[1] + '/' + (lines.length ? lines.join('/') : '_') + '.jpg?width=800';
   }
 
-  /* ── Reveal on ENTER — player guaranteed ready ── */
+  function startRick() {
+    document.getElementById('player').style.display = 'flex';
+    // Create player NOW, after container is visible — fixes black screen
+    if (window.YT && window.YT.Player) {
+      new YT.Player('yt-frame', {
+        videoId: 'dQw4w9WgXcQ',
+        playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
+        events: {
+          onReady: function(e) {
+            e.target.unMute();
+            e.target.setVolume(100);
+            e.target.playVideo();
+          }
+        }
+      });
+    }
+  }
+
   function reveal() {
     document.getElementById('loader').style.display = 'none';
     if (isRick) {
-      document.getElementById('player').style.display = 'flex';
-      if (ytPlayer && ytPlayer.playVideo) {
-        ytPlayer.unMute();
-        ytPlayer.setVolume(100);
-        ytPlayer.playVideo();
-      }
+      startRick();
     } else {
       var mv = document.getElementById('meme-view');
       mv.style.display = 'flex';
@@ -436,17 +418,7 @@
   /* ── Trigger rickroll from code 1111 ── */
   function triggerRickrollNow() {
     document.getElementById('loader').style.display = 'none';
-    document.getElementById('player').style.display = 'flex';
-    function doPlay(p) { p.unMute(); p.setVolume(100); p.playVideo(); }
-    if (ytPlayer && ytReady) {
-      doPlay(ytPlayer);
-    } else if (window.YT && window.YT.Player) {
-      new YT.Player('yt-frame', {
-        videoId: 'dQw4w9WgXcQ',
-        playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
-        events: { onReady: function(e){ doPlay(e.target); } }
-      });
-    }
+    startRick();
   }
 
   /* ── Close egg ── */
@@ -486,8 +458,7 @@
       clearInterval(iv);
       pctEl.textContent = '100%';
       statEl.textContent = 'Done.';
-      barDone = true;
-      checkShowButton();
+      document.getElementById('enter-btn').style.display = 'block';
     }
   }, 80);
 </script>
