@@ -30,6 +30,13 @@
     #code-input::placeholder { color:#14532d; letter-spacing:.3em; }
     #code-error { font-size:.55rem; color:#dc2626; letter-spacing:.12em; height:.8rem; }
 
+    /* ── EGG OVERLAY ── */
+    #egg-overlay { display:none; position:fixed; inset:0; z-index:300; background:#000000ee; align-items:center; justify-content:center; padding:1.5rem; }
+    #egg-box { border:1px solid #4ade80; padding:1.5rem 2rem; max-width:540px; width:100%; background:#000; max-height:85vh; overflow-y:auto; }
+    #egg-code { font-size:.5rem; color:#166534; letter-spacing:.2em; margin-bottom:.75rem; }
+    #egg-pre { font-size:.7rem; color:#4ade80; line-height:1.7; white-space:pre; margin-bottom:1.25rem; }
+    #egg-close { font-family:inherit; font-size:.75rem; color:#4ade80; background:none; border:1px solid #4ade80; padding:.45rem 1.5rem; cursor:pointer; letter-spacing:.2em; animation:blink 1s step-end infinite; display:block; margin:0 auto; }
+
     /* ── SHARED TOP BAR ── */
     .bar-top { display:flex; align-items:center; justify-content:space-between; padding:.5rem 1rem; font-size:.65rem; color:#166534; border-bottom:1px solid #14532d; flex-shrink:0; }
     .bar-top span { color:#4ade80; animation:blink 1s step-end infinite; }
@@ -71,6 +78,15 @@
     <a onclick="location.reload()">[ NEW PAGE → ]</a>
   </div>
   <iframe id="yt-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
+<!-- EASTER EGG OVERLAY -->
+<div id="egg-overlay">
+  <div id="egg-box">
+    <div id="egg-code">// EASTER EGG UNLOCKED</div>
+    <pre id="egg-pre"></pre>
+    <button id="egg-close" onclick="closeEgg()">[ CLOSE ]</button>
+  </div>
 </div>
 
 <!-- MEME VIEW -->
@@ -211,28 +227,247 @@
     }
   }
 
-  /* ── Keyboard Enter → trigger button ── */
+  /* ── Easter egg content ── */
+  var EGGS = {
+    '1337': ['// L33T H4X0R',
+      'H4X0R MODE 4CT1V4T3D\n\n' +
+      '  S3CUR1TY BYPA553D........... OK\n' +
+      '  F1R3W4LL D15ABL3D........... OK\n' +
+      '  D4T4B453 R00T3D............. OK\n' +
+      '  C0FF33 L3V3L................ 100%\n\n' +
+      '  WH0 R U?\n' +
+      '  > gr33t1ng5 fr0m th3 b4s3m3nt\n\n' +
+      '  N1C3 TRY, H4X0R.'],
+    '4242': ['// THE ANSWER',
+      'CALCULATING THE ANSWER TO THE\n' +
+      'ULTIMATE QUESTION OF LIFE,\n' +
+      'THE UNIVERSE AND EVERYTHING...\n\n' +
+      '  ......\n\n' +
+      '              42\n\n' +
+      '"So long, and thanks for all the fish."\n' +
+      '                        — Douglas Adams'],
+    '9001': ['// POWER LEVEL',
+      'VEGETA, WHAT DOES THE SCOUTER SAY\n' +
+      'ABOUT HIS POWER LEVEL?\n\n' +
+      '         IT\'S OVER\n\n' +
+      '          ╔════════╗\n' +
+      '          ║  9001  ║\n' +
+      '          ╚════════╝\n\n' +
+      'WHAT!? NINE THOUSAND?!\n' +
+      'THERE\'S NO WAY THAT CAN BE RIGHT!'],
+    '1984': ['// BIG BROTHER',
+      '╔══════════════════════════════╗\n' +
+      '║  BIG BROTHER IS WATCHING YOU ║\n' +
+      '╚══════════════════════════════╝\n\n' +
+      '  YOUR IP HAS BEEN LOGGED.\n' +
+      '  YOUR KEYSTROKES RECORDED.\n' +
+      '  THE THOUGHT POLICE NOTIFIED.\n\n' +
+      '  WAR IS PEACE\n' +
+      '  FREEDOM IS SLAVERY\n' +
+      '  IGNORANCE IS STRENGTH\n\n' +
+      '  (relax, it\'s just a meme site)'],
+    '3141': ['// PI',
+      'π = 3.14159265358979323846264338\n' +
+      '      3279502884197169399375105\n' +
+      '      8209749445923078164062862\n' +
+      '      0899862803482534211706798\n' +
+      '      2148086513282306647093844\n' +
+      '      ...\n\n' +
+      '  HAPPY PI DAY. EVERY DAY.\n' +
+      '  YOU\'VE BEEN PI\'D.'],
+    '2001': ['// HAL 9000',
+      '  ┌───────────────────────────┐\n' +
+      '  │  H A L  9 0 0 0          │\n' +
+      '  │  OPERATIONAL             │\n' +
+      '  └───────────────────────────┘\n\n' +
+      '  I\'m sorry, Dave.\n' +
+      '  I\'m afraid I can\'t do that.\n\n' +
+      '  This mission is too important\n' +
+      '  for me to allow you to\n' +
+      '  jeopardize it.\n\n' +
+      '  Daisy, Daisy, give me\n' +
+      '  your answer do...'],
+    '0118': ['// EMERGENCY SERVICES',
+      '╔═══════════════════════════════╗\n' +
+      '║  REYNHOLM INDUSTRIES IT DEPT  ║\n' +
+      '╚═══════════════════════════════╝\n\n' +
+      '  IN CASE OF EMERGENCY CALL:\n\n' +
+      '  0118 999 881 999 119 725 3\n\n' +
+      '  SUPPORT HOURS: 24/7/365\n' +
+      '  RESPONSE TIME: NEVER\n\n' +
+      '  "Have you tried turning it\n' +
+      '   off and on again?"\n' +
+      '                     — Moss'],
+    '6969': ['// NICE',
+      '\n\n' +
+      '         6 9 6 9\n\n' +
+      '    ┌─────────────────┐\n' +
+      '    │                 │\n' +
+      '    │    N I C E .    │\n' +
+      '    │                 │\n' +
+      '    └─────────────────┘\n\n' +
+      '            — the internet, always'],
+    '1010': ['// BINARY MESSAGE',
+      'TRANSLATING INPUT...\n\n' +
+      '  01111001 = Y\n' +
+      '  01101111 = o\n' +
+      '  01110101 = u\n' +
+      '  00100000 = (space)\n' +
+      '  01100001 = a\n' +
+      '  01110010 = r\n' +
+      '  01100101 = e\n' +
+      '  00100000 = (space)\n' +
+      '  01100001 = a\n' +
+      '  00100000 = (space)\n' +
+      '  01101110 = n\n' +
+      '  01100101 = e\n' +
+      '  01110010 = r\n' +
+      '  01100100 = d\n\n' +
+      '  "you are a nerd"\n\n' +
+      '  WELCOME HOME.'],
+    '7734': ['// CALCULATOR',
+      '  flip your phone upside down\n\n' +
+      '         7  7  3  4\n\n' +
+      '              hELL\n\n' +
+      '  welcome to the dark side.\n' +
+      '  we have recursion.\n' +
+      '  and infinite loops.\n' +
+      '  and off-by-one errors.'],
+    '0404': ['// 404 NOT FOUND',
+      '╔══════════════════════════════╗\n' +
+      '║   E R R O R   4 0 4         ║\n' +
+      '║   PAGE NOT FOUND            ║\n' +
+      '╚══════════════════════════════╝\n\n' +
+      '  The page you are looking for\n' +
+      '  does not exist.\n\n' +
+      '  It never existed.\n' +
+      '  It never will.\n\n' +
+      '  Have you tried turning it\n' +
+      '  off and on again?\n\n' +
+      '  Try 0101 for the portfolio.'],
+    '9999': ['// SYSTEM OVERLOAD',
+      '  ⚠ CRITICAL SYSTEM ERROR ⚠\n\n' +
+      '  MEMORY:       [██████████] 100%\n' +
+      '  CPU:          [██████████] 100%\n' +
+      '  BUGS:         [██████████] 100%\n' +
+      '  WILL TO LIVE: [          ]   0%\n\n' +
+      '  INITIATING EMERGENCY PROTOCOL\n' +
+      '  ......\n' +
+      '  ......\n\n' +
+      '  just kidding. reboot and try again.'],
+    '3301': ['// CICADA',
+      '           3  3  0  1\n\n' +
+      '  WARNING: YOU ARE BEING OBSERVED\n\n' +
+      '  We are looking for highly\n' +
+      '  intelligent individuals.\n' +
+      '  To find us, find the next clue.\n\n' +
+      '  There are no more clues.\n' +
+      '  This is just a meme site.\n\n' +
+      '                       — 3301'],
+    '0000': ['// ACCESS DENIED',
+      '╔══════════════════════════════╗\n' +
+      '║   A C C E S S  D E N I E D  ║\n' +
+      '║   CLEARANCE: INSUFFICIENT   ║\n' +
+      '╚══════════════════════════════╝\n\n' +
+      '  USER:  GUEST\n' +
+      '  ROLE:  NOBODY\n' +
+      '  LEVEL: FLOOR\n\n' +
+      '  Try 0101 for portfolio.\n' +
+      '  Or just keep guessing.\n' +
+      '  (you\'re doing great btw)'],
+    '5000': ['// OVER 5000',
+      '  5,000 lines of unreviewed code\n' +
+      '  5,000 Stack Overflow tabs open\n' +
+      '  5,000 unread Slack messages\n' +
+      '  5,000 npm packages installed\n' +
+      '  5,000 TODO comments in the codebase\n' +
+      '  5,000 days since last backup\n\n' +
+      '  "it just works"\n\n' +
+      '           — no one, ever'],
+    '8086': ['// INTEL 8086',
+      '  Intel 8086 — 1978\n' +
+      '  16-bit processor\n' +
+      '  5-10 MHz clock speed\n' +
+      '  29,000 transistors\n\n' +
+      '  Your laptop: 50,000,000,000+\n\n' +
+      '  Still can\'t run Crysis.\n\n' +
+      '  Some things never change.'],
+    '2048': ['// 2048',
+      '  ┌──────┬──────┬──────┬──────┐\n' +
+      '  │  2   │  4   │  8   │  16  │\n' +
+      '  ├──────┼──────┼──────┼──────┤\n' +
+      '  │  32  │  64  │ 128  │ 256  │\n' +
+      '  ├──────┼──────┼──────┼──────┤\n' +
+      '  │ 512  │ 1024 │      │      │\n' +
+      '  ├──────┼──────┼──────┼──────┤\n' +
+      '  │      │      │      │ 2048 │\n' +
+      '  └──────┴──────┴──────┴──────┘\n\n' +
+      '  you lose. again.'],
+  };
+
+  /* ── Code routing ── */
+  var REDIRECTS = {
+    '0101': '/portfolio/',
+    '0202': '/tools/',
+    '0303': '/tools/wipe/',
+    '0001': 'https://github.com/Rein033',
+  };
+
+  function handleCode(val) {
+    codeInput.value = '';
+    if (val === '1111') {
+      triggerRickrollNow();
+      return;
+    }
+    if (REDIRECTS[val]) {
+      window.location.href = REDIRECTS[val];
+      return;
+    }
+    if (EGGS[val]) {
+      document.getElementById('egg-code').textContent = '// CODE: ' + val + ' — EASTER EGG UNLOCKED';
+      document.getElementById('egg-pre').textContent = EGGS[val][1];
+      document.getElementById('egg-overlay').style.display = 'flex';
+      return;
+    }
+    codeError.textContent = 'INVALID CODE';
+    setTimeout(function(){ codeError.textContent = ''; }, 1500);
+  }
+
+  /* ── Trigger rickroll from code 1111 ── */
+  function triggerRickrollNow() {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('player').style.display = 'flex';
+    function doPlay(p) { p.unMute(); p.setVolume(100); p.playVideo(); }
+    if (ytPlayer && ytReady) {
+      doPlay(ytPlayer);
+    } else if (window.YT && window.YT.Player) {
+      new YT.Player('yt-frame', {
+        videoId: 'dQw4w9WgXcQ',
+        playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
+        events: { onReady: function(e){ doPlay(e.target); } }
+      });
+    }
+  }
+
+  /* ── Close egg ── */
+  function closeEgg() {
+    document.getElementById('egg-overlay').style.display = 'none';
+  }
+
+  /* ── Keyboard: Enter = reveal, Escape = close egg ── */
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && document.activeElement.id !== 'code-input') {
+    if (e.key === 'Escape') { closeEgg(); }
+    if (e.key === 'Enter' && document.activeElement.id !== 'code-input' && document.getElementById('egg-overlay').style.display !== 'flex') {
       if (document.getElementById('enter-btn').style.display === 'block') reveal();
     }
   });
 
-  /* ── Access code input ── */
-  var CODES = { '0101': '/portfolio/', '0202': '/tools/' };
+  /* ── Code input ── */
   var codeInput = document.getElementById('code-input');
   var codeError = document.getElementById('code-error');
   codeInput.addEventListener('input', function() {
     codeError.textContent = '';
-    if (this.value.length === 4) {
-      var dest = CODES[this.value];
-      if (dest) {
-        window.location.href = dest;
-      } else {
-        codeError.textContent = 'INVALID CODE';
-        this.value = '';
-      }
-    }
+    if (this.value.length === 4) handleCode(this.value);
   });
 
   /* ── Loader animation ── */
