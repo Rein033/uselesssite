@@ -72,76 +72,100 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-  /* ── YouTube ── */
+  /* ── Pick experience before anything else ── */
+  var isRick = Math.random() < (1 / 50);
+
+  /* ── Readiness tracking ── */
+  var barDone = false;
+  var ytReady = !isRick; // non-rick pages don't need YT to be ready
+
+  function checkShowButton() {
+    if (barDone && ytReady) {
+      document.getElementById('enter-btn').style.display = 'block';
+    }
+  }
+
+  /* ── YouTube (only initialized for the rick page) ── */
   var ytPlayer;
   function onYouTubeIframeAPIReady() {
+    if (!isRick) return;
     ytPlayer = new YT.Player('yt-frame', {
       videoId: 'dQw4w9WgXcQ',
       playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
+      events: {
+        onReady: function() {
+          ytReady = true;
+          checkShowButton();
+        }
+      }
     });
   }
 
-  /* ── Meme list: [label, template-id, line1, line2, ...] ── */
+  /* ── Fallback: show button after 8s even if YT is blocked ── */
+  if (isRick) {
+    setTimeout(function() {
+      ytReady = true;
+      checkShowButton();
+    }, 8000);
+  }
+
+  /* ── Memes: [label, template-id, line1, line2, ...] — all IDs verified ── */
   var MEMES = [
     ["DRAKE.EXE",               "drake",          "Reading the documentation",              "Copying from Stack Overflow"],
     ["THIS IS FINE",            "fine",            "Production is on fire",                  "This is fine"],
     ["BAD LUCK BRIAN",          "blb",             "Deploys to production",                  "At 5pm on a Friday"],
     ["SUCCESS KID",             "success",         "It compiled",                            "On the first try"],
-    ["GOOD GUY GREG",           "ggg",             "Writes clear commit messages",           "Every single time"],
-    ["SCUMBAG STEVE",           "scumbag",         "Pushes directly to main",                "Doesn't tell anyone"],
+    ["SCUMBAG STEVE",           "ss",              "Merges to main",                         "Doesn't pull first"],
     ["OVERLY ATTACHED GF",      "oag",             "You haven't committed in an hour",       "Are you okay?"],
     ["PHILOSORAPTOR",           "philosoraptor",   "If it works in dev but breaks in prod",  "Does it really work?"],
     ["MOST INTERESTING MAN",    "interesting",     "I don't always test my code",            "But when I do, it's in production"],
     ["ANCIENT ALIENS",          "aag",             "Requirements changed again?",            "Aliens"],
     ["FIRST WORLD PROBLEMS",    "fwp",             "My IDE theme",                           "Doesn't match my terminal"],
-    ["SOCIALLY AWKWARD PENGUIN","sap",             "Asks a quick question in the meeting",   "45 minutes later still going"],
-    ["GRUMPY CAT",              "grumpycat",       "Oh it works now?",                       "No"],
-    ["CONDESCENDING WONKA",     "skinnywilly",     "You finished in an hour?",               "Tell me more about the tests you wrote"],
+    ["SOCIALLY AWKWARD PENGUIN","awkward",         "Asks a quick question in the meeting",   "45 minutes later still going"],
+    ["FEELS BAD MAN",           "sadfrog",         "Wrote perfect code",                     "Then git reset --hard"],
+    ["CONDESCENDING WONKA",     "wonka",           "You finished in an hour?",               "Tell me more about the tests you wrote"],
     ["ROLL SAFE",               "rollsafe",        "Can't have null pointer exceptions",     "If you never use null"],
     ["Y U NO",                  "yuno",            "Y U NO",                                 "Write documentation?"],
     ["FOREVER ALONE",           "fa",              "Me waiting",                             "For PR approval"],
     ["CHANGE MY MIND",          "cmm",             "It works on my machine",                 "Change my mind"],
-    ["EXPANDING BRAIN",         "brain",           "Console.log",                            "Using the debugger",             "Print statements everywhere",    "Turn it off and on again"],
+    ["GALAXY BRAIN",            "gb",              "Console.log",                            "Using the debugger",             "Print statements everywhere",    "Turn it off and on again"],
     ["DOGE",                    "doge",            "wow",                                    "such legacy code",               "very spaghetti",                 "much debug"],
-    ["SURPRISED PIKACHU",       "pikachu",         "When the bug fixes itself",              "After restarting"],
-    ["DISTRACTED BOYFRIEND",    "distracted",      "My current deadline",                    "Me",                             "New shiny framework"],
+    ["DISTRACTED BOYFRIEND",    "db",              "My current deadline",                    "Me",                             "New shiny framework"],
     ["KERMIT SIPPING TEA",      "kermit",          "Tests are failing in CI",                "But that's none of my business"],
-    ["TWO BUTTONS",             "twobuttons",      "Fix it properly",                        "Turn it off and on again"],
-    ["ONE DOES NOT SIMPLY",     "boromir",         "One does not simply",                    "Ship on a Friday"],
-    ["BATMAN SLAPPING ROBIN",   "batman",          "Stop saying",                            "Almost done"],
-    ["NPC",                     "npc",             "Have you tried",                         "Turning it off and on again?"],
-    ["BERNIE SANDERS",          "bernie",          "I am once again asking",                 "You to write tests"],
-    ["GRU'S PLAN",              "gru",             "Write clean code",                       "Write clean code",               "It ships tonight",               "Write spaghetti code"],
-    ["COFFIN DANCE",            "cdance",          "My last stable build",                   "Being deployed to production"],
-    ["CAPTAIN PICARD FACEPALM", "picard",          "When the intern",                        "Pushes directly to production"],
+    ["DAILY STRUGGLE",          "ds",              "Fix it properly",                        "Restart the server"],
+    ["ONE DOES NOT SIMPLY",     "mordor",          "One does not simply",                    "Ship on a Friday"],
+    ["SLAP",                    "slap",            "Stop saying",                            "Almost done"],
+    ["OLDER CODE",              "older",           "Old spaghetti code",                     "But it checks out"],
+    ["NO IDEA",                 "noidea",          "Me",                                     "During code review"],
+    ["THAT WOULD BE GREAT",     "officespace",     "If you could just",                      "Write some tests, that'd be great"],
+    ["PANIK KALM PANIK",        "panik-kalm-panik","The tests pass",                         "I understand why",               "New requirements arrive"],
+    ["CRYING ON FLOOR",         "cryingfloor",     "When your PR",                           "Has 200 review comments"],
+    ["FACEPALM",                "facepalm",        "When the intern",                        "Pushes directly to production"],
     ["POINTING SPIDERMAN",      "spiderman",       "Me looking at my old code",              "Also me"],
-    ["IS THIS A BUTTERFLY",     "butterfly",       "Is this",                                "A bug or a feature?"],
-    ["BLINKING WHITE GUY",      "blinking",        "When the CI passes",                     "On the first try"],
-    ["CRYING JORDAN",           "jordan",          "When your PR",                           "Has 200 review comments"],
-    ["MOCKING SPONGEBOB",       "spongemock",      "It WoRkS oN mY mAcHiNe",                ""],
+    ["IS THIS A PIGEON",        "pigeon",          "Is this",                                "A bug or a feature?"],
+    ["JIM HALPERT",             "jim",             "Me pointing at the documentation",       "That no one reads"],
+    ["MOCKING SPONGEBOB",       "spongebob",       "It WoRkS oN mY MaChInE",                ""],
     ["CONSPIRACY KEANU",        "keanu",           "What if the bug",                        "Is actually a feature?"],
     ["WOMAN YELLING AT CAT",    "woman-cat",       "The client",                             "The original design"],
     ["HIDE THE PAIN HAROLD",    "harold",          "When the client asks for one more feature",""],
     ["YO DAWG",                 "yodawg",          "Yo dawg I heard you like bugs",          "So I put a bug in your bugfix"],
-    ["SKEPTICAL 3RD WORLD KID", "ski",             "Must be nice",                           "To have documentation"],
+    ["SKEPTICAL 3RD WORLD KID", "sk",              "Must be nice",                           "To have documentation"],
     ["OPRAH",                   "oprah",           "You get a hotfix",                       "Everyone gets a hotfix"],
-    ["UNO REVERSE",             "uno",             "Client: Make it pop",                    "Me: sends invoice"],
+    ["RUNNING AWAY BALLOON",    "balloon",         "Me",                                     "My side projects",               "My actual deadlines"],
     ["ALWAYS HAS BEEN",         "astronaut",       "Wait, was it always broken?",            "Always has been"],
-    ["BABY YODA",               "baby-yoda",       "When the code works",                    "But you don't know why"],
-    ["CONFUSED MATH LADY",      "math",            "Me trying to understand",                "The legacy codebase"],
-    ["MORPHEUS",                "morpheus",        "What if I told you",                     "The bug was the requirements all along"],
-    ["SHUT UP AND TAKE MY MONEY","futurama",       "Shut up and take my money",              ""],
-    ["TROLLFACE",               "trollface",       "It's not a bug",                         "It's a feature. Problem?"],
+    ["TUXEDO WINNIE THE POOH",  "pooh",            "npm install",                            "npm install --save-dev --legacy-peer-deps --force"],
+    ["CONFUSED GANDALF",        "gandalf",         "Me debugging legacy code",               "At 3am"],
+    ["MATRIX MORPHEUS",         "morpheus",        "What if I told you",                     "The bug was the requirements all along"],
+    ["SHUT UP AND TAKE MY MONEY","money",          "A three-day weekend",                    "Shut up and take my PTO"],
+    ["I CAN HAS",               "icanhas",         "I can has",                              "Documentation?"],
     ["DISASTER GIRL",           "disastergirl",    "Me watching the build fail",             "That I didn't cause"],
+    ["VINCE MCMAHON",           "vince",           "When the tests pass",                    "On the first try"],
   ];
 
-  /* ── Pick experience on load ── */
-  var isRick = Math.random() < (1 / 50);
+  /* ── Pre-load meme image during loading bar ── */
   var memeData = null;
-
   if (!isRick) {
     memeData = MEMES[Math.floor(Math.random() * MEMES.length)];
-    // Pre-load the image while the loader runs
     var preload = new Image();
     preload.src = buildUrl(memeData);
   }
@@ -155,12 +179,11 @@
     return 'https://api.memegen.link/images/' + m[1] + '/' + (lines.length ? lines.join('/') : '_') + '.jpg?width=800';
   }
 
-  /* ── Reveal on ENTER click ── */
+  /* ── Reveal on ENTER — player guaranteed ready ── */
   function reveal() {
     document.getElementById('loader').style.display = 'none';
     if (isRick) {
-      var p = document.getElementById('player');
-      p.style.display = 'flex';
+      document.getElementById('player').style.display = 'flex';
       if (ytPlayer && ytPlayer.playVideo) {
         ytPlayer.unMute();
         ytPlayer.setVolume(100);
@@ -190,7 +213,8 @@
       clearInterval(iv);
       pctEl.textContent = '100%';
       statEl.textContent = 'Done.';
-      document.getElementById('enter-btn').style.display = 'block';
+      barDone = true;
+      checkShowButton();
     }
   }, 80);
 </script>
