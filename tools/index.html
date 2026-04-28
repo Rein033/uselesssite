@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TOOLS — UselessSite.nl</title>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#000; font-family:'Courier New',monospace; color:#4ade80; min-height:100vh; }
+    body::before { content:''; position:fixed; inset:0; z-index:10; pointer-events:none;
+      background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px); opacity:.04; }
+
+    .wrap { max-width:680px; margin:0 auto; padding:3rem 1.5rem 5rem; position:relative; z-index:20; }
+
+    header { border:1px solid #14532d; padding:1.25rem 1.5rem; margin-bottom:2rem; }
+    .crumb { font-size:.55rem; color:#166534; letter-spacing:.15em; margin-bottom:.75rem; }
+    .crumb a { color:#166534; text-decoration:none; }
+    .crumb a:hover { color:#4ade80; }
+    h1 { font-size:1.1rem; color:#4ade80; letter-spacing:.2em; margin-bottom:.25rem; }
+    .sub { font-size:.6rem; color:#166534; letter-spacing:.12em; }
+
+    .section-label { font-size:.6rem; color:#166534; letter-spacing:.25em; margin-bottom:.75rem; display:flex; align-items:center; gap:.75rem; }
+    .section-label::after { content:''; flex:1; border-top:1px solid #14532d40; }
+
+    .tool { border:1px solid #14532d; padding:1rem 1.25rem; margin-bottom:.6rem; text-decoration:none; display:block; transition:border-color .15s, background .15s; }
+    .tool:hover { border-color:#4ade8060; background:#4ade800a; }
+    .tool-head { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; margin-bottom:.3rem; flex-wrap:wrap; }
+    .tool-id { font-size:.5rem; color:#166534; }
+    .tool-title { font-size:.8rem; color:#4ade80; font-weight:bold; letter-spacing:.08em; flex:1; }
+    .tool-tag { font-size:.5rem; color:#166534; }
+    .tool-arrow { font-size:.55rem; color:#166534; transition:color .15s; white-space:nowrap; }
+    .tool:hover .tool-arrow { color:#4ade80; }
+    .tool-desc { font-size:.65rem; color:#166534; line-height:1.5; margin-bottom:.5rem; }
+    .tool-stack { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .tool-stack span { font-size:.5rem; color:#14532d; }
+
+    footer { border-top:1px solid #14532d40; padding-top:1.5rem; margin-top:2rem; font-size:.6rem; color:#14532d; display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
+    footer a { color:#14532d; text-decoration:none; }
+    footer a:hover { color:#4ade80; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="crumb"><a href="/">USELESSSITE.NL</a> / <a href="/portfolio/">PORTFOLIO</a> / TOOLS</div>
+    <h1>══ TOOLS.EXE</h1>
+    <div class="sub">6 EXECUTABLES — ALL CLIENT-SIDE — NO DATA SENT</div>
+  </header>
+
+  <div class="section-label">AVAILABLE TOOLS</div>
+
+  <a class="tool" href="/tools/sap/">
+    <div class="tool-head">
+      <span class="tool-id">T-001</span>
+      <span class="tool-title">SAP IMPORT GENERATOR</span>
+      <span class="tool-tag">[BEDRIJFSTOOL]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">Genereer SAP-compatibele CSV-importbestanden voor inkooporders, materiaalstam, leveranciers en kostenplaatsen. Geen IT-afdeling nodig.</div>
+    <div class="tool-stack"><span>SAP</span><span>·</span><span>CSV</span><span>·</span><span>EXCEL</span></div>
+  </a>
+
+  <a class="tool" href="/tools/sprint/">
+    <div class="tool-head">
+      <span class="tool-id">T-002</span>
+      <span class="tool-title">SPRINT PLANNER</span>
+      <span class="tool-tag">[AGILE TOOL]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">Plan sprint-capaciteit op basis van teamgrootte, beschikbare dagen en velocity. Inclusief backlog en overload-indicator.</div>
+    <div class="tool-stack"><span>SCRUM</span><span>·</span><span>PLANNING</span><span>·</span><span>AGILE</span></div>
+  </a>
+
+  <a class="tool" href="/tools/wachtwoord/">
+    <div class="tool-head">
+      <span class="tool-id">T-003</span>
+      <span class="tool-title">WACHTWOORD GENERATOR</span>
+      <span class="tool-tag">[SECURITY]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">Genereer sterke wachtwoorden via crypto.getRandomValues(). Alles lokaal — er wordt niets verstuurd.</div>
+    <div class="tool-stack"><span>CRYPTO</span><span>·</span><span>SECURITY</span><span>·</span><span>PRIVACY</span></div>
+  </a>
+
+  <a class="tool" href="/tools/json/">
+    <div class="tool-head">
+      <span class="tool-id">T-004</span>
+      <span class="tool-title">JSON FORMATTER</span>
+      <span class="tool-tag">[DEV TOOL]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">Format, minify of valideer JSON direct in je browser. Statistieken, foutmeldingen met uitleg en een kopieerknop.</div>
+    <div class="tool-stack"><span>JSON</span><span>·</span><span>DEVELOPER</span><span>·</span><span>FORMATTER</span></div>
+  </a>
+
+  <a class="tool" href="/tools/signature/">
+    <div class="tool-head">
+      <span class="tool-id">T-005</span>
+      <span class="tool-title">EMAIL HANDTEKENING GEN.</span>
+      <span class="tool-tag">[PRODUCTIVITEIT]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">Maak een professionele e-mailhandtekening met naam, functie, foto en contactinfo. Drie stijlen, live preview, Outlook-klaar.</div>
+    <div class="tool-stack"><span>OUTLOOK</span><span>·</span><span>EMAIL</span><span>·</span><span>HTML</span></div>
+  </a>
+
+  <a class="tool" href="/tools/wipe/">
+    <div class="tool-head">
+      <span class="tool-id">T-006</span>
+      <span class="tool-title">DISK WIPE SCRIPT</span>
+      <span class="tool-tag">[PRIVÉ]</span>
+      <span class="tool-arrow">OPEN →</span>
+    </div>
+    <div class="tool-desc">PowerShell script voor het wissen van schijven via diskpart. Wachtwoord vereist.</div>
+    <div class="tool-stack"><span>POWERSHELL</span><span>·</span><span>DISKPART</span><span>·</span><span>WINDOWS</span></div>
+  </a>
+
+  <footer>
+    <span>© <script>document.write(new Date().getFullYear())</script> REIN — USELESSSITE.NL</span>
+    <a href="/portfolio/">← TERUG NAAR PORTFOLIO</a>
+  </footer>
+
+</div>
+</body>
+</html>
