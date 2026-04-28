@@ -6,9 +6,11 @@
   <title>UselessSite.nl</title>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#000; font-family:'Courier New',monospace; color:#4ade80; min-height:100vh; overflow-x:hidden; }
+    body { background:#000; font-family:'Courier New',monospace; color:#4ade80; min-height:100vh; overflow:hidden; }
     body::before { content:''; position:fixed; inset:0; z-index:500; pointer-events:none;
       background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px); opacity:.04; }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     /* ── LOADER ── */
     #loader { position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; }
@@ -19,23 +21,21 @@
     .bar-fill { height:100%; width:0%; background:#4ade80; border-radius:3px; }
     #pct { font-size:.7rem; color:#166534; }
     #enter-btn { display:none; margin-top:1.5rem; font-family:inherit; font-size:.9rem; color:#4ade80; background:none; border:1px solid #4ade80; padding:.65rem 2.2rem; cursor:pointer; letter-spacing:.2em; animation:blink 1s step-end infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── SHARED TOP BAR ── */
+    .bar-top { display:flex; align-items:center; justify-content:space-between; padding:.5rem 1rem; font-size:.65rem; color:#166534; border-bottom:1px solid #14532d; flex-shrink:0; }
+    .bar-top span { color:#4ade80; animation:blink 1s step-end infinite; }
+    .bar-top a { color:#4ade8066; text-decoration:none; cursor:pointer; animation:none; font-size:.6rem; letter-spacing:.1em; }
+    .bar-top a:hover { color:#4ade80; }
 
     /* ── RICKROLL ── */
     #player { display:none; position:fixed; inset:0; z-index:400; background:#000; flex-direction:column; }
     #player iframe { flex:1; width:100%; border:none; }
-    #player .bar-top { display:flex; align-items:center; justify-content:space-between; padding:.5rem 1rem; font-size:.65rem; color:#166534; border-bottom:1px solid #14532d; flex-shrink:0; }
-    #player .bar-top span { color:#4ade80; animation:blink 1s step-end infinite; }
 
-    /* ── MEME WALL ── */
-    #memes { padding:2rem 1rem 4rem; max-width:1400px; margin:0 auto; }
-    .meme-title { text-align:center; font-size:.75rem; letter-spacing:.25em; color:#166534; margin-bottom:2rem; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:.75rem; }
-
-    .mc { border:1px solid #14532d; background:#050505; overflow:hidden; transition:border-color .2s; }
-    .mc:hover { border-color:#4ade8055; }
-    .mc .lbl { padding:.35rem .75rem; font-size:.55rem; color:#166534; border-bottom:1px solid #14532d33; letter-spacing:.12em; }
-    .mc img { width:100%; display:block; background:#080808; }
+    /* ── MEME VIEW ── */
+    #meme-view { display:none; position:fixed; inset:0; z-index:400; background:#000; flex-direction:column; }
+    #meme-view .meme-content { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:1rem; }
+    #meme-view img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
   </style>
 </head>
 <body>
@@ -47,26 +47,32 @@
   <div id="status">Booting...</div>
   <div class="bar"><div class="bar-fill" id="bar"></div></div>
   <div id="pct">0%</div>
-  <button id="enter-btn" onclick="launchRick()">[ ENTER ]</button>
+  <button id="enter-btn" onclick="reveal()">[ ENTER ]</button>
 </div>
 
 <!-- RICKROLL PLAYER -->
 <div id="player">
   <div class="bar-top">
     <span>&#9679; NEVER GONNA GIVE YOU UP — RICK ASTLEY</span>
-    <span>&#9835; PLAYING</span>
+    <a onclick="location.reload()">[ NEW PAGE → ]</a>
   </div>
   <iframe id="yt-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
-<!-- MEME WALL -->
-<div id="memes">
-  <div class="meme-title">&#9552;&#9552; INTERNET CULTURE DATABASE &#9552;&#9552;</div>
-  <div class="grid" id="grid"></div>
+<!-- MEME VIEW -->
+<div id="meme-view">
+  <div class="bar-top">
+    <span id="meme-label">MEME.EXE</span>
+    <a onclick="location.reload()">[ NEW PAGE → ]</a>
+  </div>
+  <div class="meme-content">
+    <img id="meme-img" src="" alt="meme" />
+  </div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+  /* ── YouTube ── */
   var ytPlayer;
   function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('yt-frame', {
@@ -74,37 +80,8 @@
       playerVars: { autoplay:0, mute:0, controls:1, modestbranding:1, rel:0, iv_load_policy:3 },
     });
   }
-  function launchRick() {
-    document.getElementById('loader').style.display = 'none';
-    var p = document.getElementById('player');
-    p.style.display = 'flex';
-    if (ytPlayer && ytPlayer.playVideo) {
-      ytPlayer.unMute();
-      ytPlayer.setVolume(100);
-      ytPlayer.playVideo();
-    }
-  }
 
-  var msgs = ['Booting...','Checking RAM...','Loading memes...','Connecting to network...','Authenticating user...','Indexing internet culture...','Almost there...','Done.'];
-  var bar  = document.getElementById('bar');
-  var pct  = document.getElementById('pct');
-  var stat = document.getElementById('status');
-  var prog = 0;
-  var iv = setInterval(function() {
-    prog += Math.random() * 3 + 1;
-    if (prog > 100) prog = 100;
-    bar.style.width = prog + '%';
-    pct.textContent = Math.floor(prog) + '%';
-    stat.textContent = msgs[Math.min(Math.floor(prog / 14), msgs.length - 1)];
-    if (prog >= 100) {
-      clearInterval(iv);
-      pct.textContent = '100%';
-      stat.textContent = 'Done.';
-      document.getElementById('enter-btn').style.display = 'block';
-    }
-  }, 80);
-
-  // [label, template-id, line1, line2, ...]
+  /* ── Meme list: [label, template-id, line1, line2, ...] ── */
   var MEMES = [
     ["DRAKE.EXE",               "drake",          "Reading the documentation",              "Copying from Stack Overflow"],
     ["THIS IS FINE",            "fine",            "Production is on fire",                  "This is fine"],
@@ -148,55 +125,74 @@
     ["YO DAWG",                 "yodawg",          "Yo dawg I heard you like bugs",          "So I put a bug in your bugfix"],
     ["SKEPTICAL 3RD WORLD KID", "ski",             "Must be nice",                           "To have documentation"],
     ["OPRAH",                   "oprah",           "You get a hotfix",                       "Everyone gets a hotfix"],
-    ["UNO REVERSE",             "uno",             "Client: Make it pop",                    "Me: *sends invoice*"],
+    ["UNO REVERSE",             "uno",             "Client: Make it pop",                    "Me: sends invoice"],
     ["ALWAYS HAS BEEN",         "astronaut",       "Wait, was it always broken?",            "Always has been"],
     ["BABY YODA",               "baby-yoda",       "When the code works",                    "But you don't know why"],
     ["CONFUSED MATH LADY",      "math",            "Me trying to understand",                "The legacy codebase"],
     ["MORPHEUS",                "morpheus",        "What if I told you",                     "The bug was the requirements all along"],
     ["SHUT UP AND TAKE MY MONEY","futurama",       "Shut up and take my money",              ""],
     ["TROLLFACE",               "trollface",       "It's not a bug",                         "It's a feature. Problem?"],
-    ["THIS IS SPARTA",          "sparta",          "This is",                                "PRODUCTION"],
     ["DISASTER GIRL",           "disastergirl",    "Me watching the build fail",             "That I didn't cause"],
   ];
 
-  var BASE = 'https://api.memegen.link/images/';
-  var grid = document.getElementById('grid');
+  /* ── Pick experience on load ── */
+  var isRick = Math.random() < (1 / 50);
+  var memeData = null;
 
-  function encLine(s) {
-    return s
-      .replace(/_/g, '__')
-      .replace(/ /g, '_')
-      .replace(/\?/g, '~q')
-      .replace(/!/g, '~e')
-      .replace(/\//g, '~s')
-      .replace(/%/g, '~p')
-      .replace(/#/g, '~h');
+  if (!isRick) {
+    memeData = MEMES[Math.floor(Math.random() * MEMES.length)];
+    // Pre-load the image while the loader runs
+    var preload = new Image();
+    preload.src = buildUrl(memeData);
   }
 
-  MEMES.forEach(function(m) {
-    var label = m[0];
-    var id    = m[1];
+  function encLine(s) {
+    return s.replace(/_/g,'__').replace(/ /g,'_').replace(/\?/g,'~q').replace(/!/g,'~e').replace(/\//g,'~s').replace(/%/g,'~p').replace(/#/g,'~h');
+  }
+
+  function buildUrl(m) {
     var lines = m.slice(2).filter(function(l){ return l !== ''; }).map(encLine);
+    return 'https://api.memegen.link/images/' + m[1] + '/' + (lines.length ? lines.join('/') : '_') + '.jpg?width=800';
+  }
 
-    var src = BASE + id + '/' + (lines.length ? lines.join('/') : '_') + '.jpg?width=400';
+  /* ── Reveal on ENTER click ── */
+  function reveal() {
+    document.getElementById('loader').style.display = 'none';
+    if (isRick) {
+      var p = document.getElementById('player');
+      p.style.display = 'flex';
+      if (ytPlayer && ytPlayer.playVideo) {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(100);
+        ytPlayer.playVideo();
+      }
+    } else {
+      var mv = document.getElementById('meme-view');
+      mv.style.display = 'flex';
+      document.getElementById('meme-label').textContent = memeData[0];
+      document.getElementById('meme-img').src = buildUrl(memeData);
+    }
+  }
 
-    var card = document.createElement('div');
-    card.className = 'mc';
-
-    var lbl = document.createElement('div');
-    lbl.className = 'lbl';
-    lbl.textContent = label;
-
-    var img = document.createElement('img');
-    img.src = src;
-    img.alt = label;
-    img.loading = 'lazy';
-    img.onerror = function() { card.style.display = 'none'; };
-
-    card.appendChild(lbl);
-    card.appendChild(img);
-    grid.appendChild(card);
-  });
+  /* ── Loader animation ── */
+  var msgs = ['Booting...','Checking RAM...','Loading drivers...','Connecting to network...','Authenticating user...','Preparing experience...','Almost there...','Done.'];
+  var barEl  = document.getElementById('bar');
+  var pctEl  = document.getElementById('pct');
+  var statEl = document.getElementById('status');
+  var prog = 0;
+  var iv = setInterval(function() {
+    prog += Math.random() * 3 + 1;
+    if (prog > 100) prog = 100;
+    barEl.style.width = prog + '%';
+    pctEl.textContent = Math.floor(prog) + '%';
+    statEl.textContent = msgs[Math.min(Math.floor(prog / 14), msgs.length - 1)];
+    if (prog >= 100) {
+      clearInterval(iv);
+      pctEl.textContent = '100%';
+      statEl.textContent = 'Done.';
+      document.getElementById('enter-btn').style.display = 'block';
+    }
+  }, 80);
 </script>
 </body>
 </html>
