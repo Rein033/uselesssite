@@ -14,7 +14,7 @@
 
   function updateStats(parsed){
     if(!parsed){stats.textContent='';return;}
-    var keys=JSON.stringify(parsed).replace(/[^{[]/g,'').length;
+    function countKeys(o){if(!o||typeof o!=='object')return 0;return Array.isArray(o)?o.reduce(function(s,v){return s+countKeys(v);},0):Object.keys(o).length+Object.values(o).reduce(function(s,v){return s+countKeys(v);},0);}var keys=countKeys(parsed);
     stats.textContent='Grootte: '+JSON.stringify(parsed).length+' tekens | Keys: '+keys;
   }
 
