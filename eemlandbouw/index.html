@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eemlandbouw — Agrarisch bedrijf in het Eemland</title>
+  <meta name="description" content="Eemlandbouw is een familiebedrijf in het hart van het Eemland, actief in akkerbouw, melkveehouderij en agrarische loonwerken."/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:    #2d6a2d;
+      --green-l:  #3d8b3d;
+      --green-xl: #e8f5e8;
+      --earth:    #7c5c2a;
+      --earth-l:  #c49a5a;
+      --cream:    #faf8f3;
+      --dark:     #1a1a1a;
+      --mid:      #555;
+      --border:   #d8e4d8;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── PASSWORD GATE ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #1a2e1a 0%, #2d4a1e 50%, #1a2e1a 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .pw-box {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 1.25rem; padding: 2.5rem 2rem; width: 100%; max-width: 400px;
+      backdrop-filter: blur(12px); text-align: center;
+    }
+    .pw-logo { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: #a8d5a8; margin-bottom: .25rem; }
+    .pw-sub  { font-size: .8rem; color: #6b8f6b; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2rem; }
+    .pw-label { display: block; font-size: .75rem; color: #a8d5a8; text-align: left; margin-bottom: .4rem; letter-spacing: .05em; }
+    .pw-input {
+      width: 100%; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.12);
+      border-radius: .6rem; padding: .75rem 1rem; color: #fff; font-size: .9rem;
+      outline: none; transition: border-color .2s;
+    }
+    .pw-input:focus { border-color: #4ade80; }
+    .pw-input::placeholder { color: rgba(255,255,255,.25); }
+    .pw-error { font-size: .78rem; color: #f87171; margin-top: .5rem; min-height: 1.2rem; }
+    .pw-btn {
+      width: 100%; margin-top: 1.25rem; padding: .8rem;
+      background: var(--green-l); color: #fff; border: none; border-radius: .6rem;
+      font-size: .9rem; font-weight: 600; cursor: pointer; letter-spacing: .03em;
+      transition: background .2s, transform .1s;
+    }
+    .pw-btn:hover { background: #4a9e4a; }
+    .pw-btn:active { transform: scale(.98); }
+    .pw-hint { font-size: .7rem; color: rgba(255,255,255,.2); margin-top: 1.5rem; }
+
+    /* ── SITE (hidden until unlocked) ── */
+    #site { display: none; }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,248,243,.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 1.5rem;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: .6rem; }
+    .nav-icon { font-size: 1.4rem; }
+    .nav-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--green); font-weight: 700; }
+    .nav-links { display: flex; gap: .25rem; }
+    .nav-links a {
+      padding: .4rem .9rem; border-radius: .4rem; font-size: .85rem; color: var(--mid);
+      transition: background .2s, color .2s;
+    }
+    .nav-links a:hover { background: var(--green-xl); color: var(--green); }
+    .nav-cta {
+      padding: .45rem 1.1rem; background: var(--green); color: #fff;
+      border-radius: .5rem; font-size: .85rem; font-weight: 600;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--green-l); color: #fff; }
+    .nav-mobile-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: .4rem; }
+    .nav-mobile-btn span { display: block; width: 22px; height: 2px; background: var(--dark); border-radius: 2px; transition: .2s; }
+    .nav-mobile { display: none; padding: 1rem 1.5rem; background: var(--cream); border-top: 1px solid var(--border); }
+    .nav-mobile a { display: block; padding: .6rem 0; font-size: .9rem; color: var(--mid); border-bottom: 1px solid var(--border); }
+    .nav-mobile a:last-child { border-bottom: none; }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-mobile-btn { display: flex; }
+      .nav-mobile.open { display: block; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #1a3a1a 0%, #2d5a20 40%, #3d7a30 100%);
+      padding: 5rem 1.5rem 4rem; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: .5;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 2rem; padding: .35rem .9rem; font-size: .75rem; color: #a8d5a8;
+      margin-bottom: 1.5rem; letter-spacing: .05em;
+    }
+    .hero-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.8rem); color: #fff; line-height: 1.15; margin-bottom: 1.25rem; max-width: 640px; }
+    .hero h1 em { font-style: normal; color: #a8d5a8; }
+    .hero-sub { font-size: 1.05rem; color: rgba(255,255,255,.7); max-width: 540px; margin-bottom: 2.5rem; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .75rem 1.6rem; border-radius: .6rem; font-size: .9rem; font-weight: 600; transition: .2s; cursor: pointer; border: none; }
+    .btn-primary { background: #4ade80; color: #1a2e1a; }
+    .btn-primary:hover { background: #86efac; }
+    .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.35); }
+    .btn-outline:hover { background: rgba(255,255,255,.08); }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.1); }
+    .stat-num { font-size: 1.75rem; font-weight: 800; color: #fff; }
+    .stat-lbl { font-size: .78rem; color: rgba(255,255,255,.5); letter-spacing: .05em; text-transform: uppercase; }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 5rem 1.5rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: .6rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--dark); margin-bottom: 1rem; line-height: 1.25; }
+    .section-sub { color: var(--mid); max-width: 580px; line-height: 1.7; }
+    .divider { width: 48px; height: 3px; background: var(--green); border-radius: 2px; margin: 1rem 0 1.5rem; }
+
+    /* ── DIENSTEN ── */
+    #diensten { background: #fff; }
+    .diensten-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .dienst-card {
+      border: 1px solid var(--border); border-radius: 1rem; padding: 1.75rem;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .dienst-card:hover { box-shadow: 0 8px 30px rgba(45,106,45,.1); border-color: #b4d4b4; }
+    .dienst-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .dienst-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: .5rem; }
+    .dienst-desc { font-size: .85rem; color: var(--mid); line-height: 1.65; }
+
+    /* ── OVER ONS ── */
+    #over { background: var(--cream); }
+    .over-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+    @media (max-width: 768px) { .over-grid { grid-template-columns: 1fr; gap: 2rem; } }
+    .over-visual {
+      aspect-ratio: 4/3; background: linear-gradient(135deg, #2d5a20, #3d7a30);
+      border-radius: 1.25rem; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .over-visual-inner { text-align: center; }
+    .over-visual-icon { font-size: 4rem; margin-bottom: .5rem; }
+    .over-visual-text { color: rgba(255,255,255,.6); font-size: .85rem; letter-spacing: .05em; }
+    .over-items { display: flex; flex-direction: column; gap: 1.25rem; }
+    .over-item { display: flex; gap: 1rem; }
+    .over-bullet { width: 36px; height: 36px; background: var(--green-xl); border-radius: .6rem; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .over-item-text h3 { font-size: .95rem; font-weight: 700; margin-bottom: .25rem; }
+    .over-item-text p  { font-size: .83rem; color: var(--mid); line-height: 1.6; }
+
+    /* ── GEBIED ── */
+    #gebied { background: var(--green-xl); }
+    .gebied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+    .gebied-item {
+      background: #fff; border: 1px solid var(--border); border-radius: .75rem;
+      padding: 1.25rem; text-align: center;
+    }
+    .gebied-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .gebied-name { font-size: .85rem; font-weight: 600; color: var(--dark); }
+    .gebied-sub  { font-size: .75rem; color: var(--mid); margin-top: .2rem; }
+
+    /* ── CONTACT ── */
+    #contact { background: #fff; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; align-items: start; }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .contact-icon { width: 40px; height: 40px; background: var(--green-xl); border-radius: .6rem; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .contact-item-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--mid); margin-bottom: .2rem; }
+    .contact-item-val   { font-size: .9rem; font-weight: 600; color: var(--dark); }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: .35rem; }
+    .form-group label { font-size: .78rem; font-weight: 600; color: var(--dark); }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: .65rem .9rem; border: 1.5px solid var(--border); border-radius: .6rem;
+      font-size: .88rem; font-family: inherit; background: var(--cream); color: var(--dark);
+      outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--green-l); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .form-submit { align-self: flex-start; }
+    .form-note { font-size: .72rem; color: var(--mid); margin-top: .5rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1a2e1a; color: rgba(255,255,255,.7);
+      padding: 3rem 1.5rem 1.5rem;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; margin-bottom: 2.5rem; }
+    .footer-brand .nav-name { color: #a8d5a8; }
+    .footer-brand p { font-size: .82rem; margin-top: .5rem; max-width: 280px; color: rgba(255,255,255,.4); line-height: 1.6; }
+    .footer-col h4 { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.4); margin-bottom: .85rem; }
+    .footer-col a { display: block; font-size: .85rem; color: rgba(255,255,255,.55); margin-bottom: .5rem; transition: color .2s; }
+    .footer-col a:hover { color: #a8d5a8; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; font-size: .75rem; color: rgba(255,255,255,.25); }
+    .footer-back { font-size: .75rem; color: rgba(255,255,255,.25); }
+    .footer-back a { color: rgba(255,255,255,.4); }
+    .footer-back a:hover { color: #a8d5a8; }
+  </style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">Eemlandbouw</div>
+    <div class="pw-sub">Concept website — Portfolio</div>
+    <label class="pw-label" for="pw-input">Wachtwoord vereist</label>
+    <input id="pw-input" class="pw-input" type="password" placeholder="Voer wachtwoord in" autocomplete="current-password"/>
+    <div id="pw-error" class="pw-error"></div>
+    <button id="pw-btn" class="pw-btn">Toegang</button>
+    <div class="pw-hint">Privé portfolio project</div>
+  </div>
+</div>
+
+<!-- SITE CONTENT -->
+<div id="site">
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <span class="nav-icon">🌾</span>
+        <span class="nav-name">Eemlandbouw</span>
+      </div>
+      <div class="nav-links">
+        <a href="#diensten">Diensten</a>
+        <a href="#over">Over ons</a>
+        <a href="#gebied">Werkgebied</a>
+        <a href="#contact" class="nav-cta">Contact</a>
+      </div>
+      <button class="nav-mobile-btn" id="menuToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="mobileMenu">
+      <a href="#diensten">Diensten</a>
+      <a href="#over">Over ons</a>
+      <a href="#gebied">Werkgebied</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="hero-dot"></span>
+        Familiebedrijf · Actief in het Eemland
+      </div>
+      <h1>Agrarisch vakmanschap<br/>in het <em>hart van het Eemland.</em></h1>
+      <p class="hero-sub">
+        Eemlandbouw is een familiebedrijf met wortels in het Eemlandse polderlandschap.
+        Wij combineren generaties agrarische kennis met moderne technieken voor
+        duurzame akkerbouw, melkveehouderij en loonwerk.
+      </p>
+      <div class="hero-actions">
+        <a href="#diensten" class="btn btn-primary">Onze diensten ↓</a>
+        <a href="#contact"  class="btn btn-outline">Neem contact op</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">35+</div>
+          <div class="stat-lbl">Jaar ervaring</div>
+        </div>
+        <div>
+          <div class="stat-num">180 ha</div>
+          <div class="stat-lbl">Landbouwgrond</div>
+        </div>
+        <div>
+          <div class="stat-num">3e gen.</div>
+          <div class="stat-lbl">Familiebedrijf</div>
+        </div>
+        <div>
+          <div class="stat-num">100%</div>
+          <div class="stat-lbl">Eigendomsgrond</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIENSTEN -->
+  <section id="diensten">
+    <div class="section-inner">
+      <p class="section-label">Wat wij doen</p>
+      <h2 class="section-title">Onze diensten</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Van seizoensgebonden akkerbouw tot jaarrond loonwerk — Eemlandbouw levert vakkundige agrarische diensten in de regio.</p>
+      <div class="diensten-grid">
+        <div class="dienst-card">
+          <div class="dienst-icon">🌱</div>
+          <div class="dienst-title">Akkerbouw</div>
+          <p class="dienst-desc">Teelt van granen, aardappelen, suikerbieten en groentegewassen. Modern zaai- en oogstmateriaal, precisiebemesting en IPM-gewasbescherming.</p>
+        </div>
+        <div class="dienst-card">
+          <div class="dienst-icon">🐄</div>
+          <div class="dienst-title">Melkveehouderij</div>
+          <p class="dienst-desc">Weidegang-systeem met Holstein-Friesian melkvee. Focus op dierwelzijn, duurzame voerproductie en een stabiele melkproductie het hele jaar door.</p>
+        </div>
+        <div class="dienst-card">
+          <div class="dienst-icon">🚜</div>
+          <div class="dienst-title">Loonwerk</div>
+          <p class="dienst-desc">Grondbewerking, zaaien, maaien, schudden, harken en inkuilen. Beschikbaar voor derden met modern machinepark en ervaren machinisten.</p>
+        </div>
+        <div class="dienst-card">
+          <div class="dienst-icon">🌿</div>
+          <div class="dienst-title">Groenvoer & Ruwvoer</div>
+          <p class="dienst-desc">Productie en levering van mais, gras en luzernekuil. Gecertificeerde opslag en vlotte leveringslogistiek in het gehele Eemland.</p>
+        </div>
+        <div class="dienst-card">
+          <div class="dienst-icon">🌍</div>
+          <div class="dienst-title">Duurzaam Bodembeheer</div>
+          <p class="dienst-desc">Non-inversieve grondbewerking, groenbemesters en organische stofverbetering. Gericht op langetermijn bodemgezondheid en -vruchtbaarheid.</p>
+        </div>
+        <div class="dienst-card">
+          <div class="dienst-icon">📦</div>
+          <div class="dienst-title">Opslag & Logistiek</div>
+          <p class="dienst-desc">Klimaatgecontroleerde aardappel- en graanopslag. Directe afzet aan verwerkende industrie en regionale handelaren.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVER ONS -->
+  <section id="over">
+    <div class="section-inner">
+      <div class="over-grid">
+        <div class="over-visual">
+          <div class="over-visual-inner">
+            <div class="over-visual-icon">🌾</div>
+            <div class="over-visual-text">Eemlandbouw<br/>Sinds 1989</div>
+          </div>
+        </div>
+        <div>
+          <p class="section-label">Over ons</p>
+          <h2 class="section-title">Drie generaties passie voor het land</h2>
+          <div class="divider"></div>
+          <p class="section-sub" style="margin-bottom:2rem">
+            Eemlandbouw is in 1989 opgericht door de familie Van den Berg op de rijke klei- en veengronden
+            rondom Amersfoort. Wat begon als een kleinschalig gemengd bedrijf is uitgegroeid tot een
+            professioneel agrarisch familiebedrijf met 180 hectare eigen grond.
+          </p>
+          <div class="over-items">
+            <div class="over-item">
+              <div class="over-bullet">🌱</div>
+              <div class="over-item-text">
+                <h3>Duurzaamheid centraal</h3>
+                <p>Wij werken met een kringloopvisie: gewasresten, mest en compost sluiten de kringloop op eigen land.</p>
+              </div>
+            </div>
+            <div class="over-item">
+              <div class="over-bullet">🤝</div>
+              <div class="over-item-text">
+                <h3>Regionale samenwerking</h3>
+                <p>Sterke banden met omliggende boeren, coöperaties en verwerkende industrie in het Eemland.</p>
+              </div>
+            </div>
+            <div class="over-item">
+              <div class="over-bullet">⚙️</div>
+              <div class="over-item-text">
+                <h3>Moderne uitrusting</h3>
+                <p>GPS-gestuurd machinepark met precisielandbouwtechnologie voor efficiënte en nauwkeurige werkzaamheden.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WERKGEBIED -->
+  <section id="gebied">
+    <div class="section-inner">
+      <p class="section-label">Werkgebied</p>
+      <h2 class="section-title">Actief in het Eemland</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Wij werken voornamelijk in de regio rondom Amersfoort, het historische polderlandschap van het Eemland.</p>
+      <div class="gebied-grid">
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Amersfoort</div><div class="gebied-sub">Hoofdlocatie</div></div>
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Soest</div><div class="gebied-sub">Loonwerk</div></div>
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Baarn</div><div class="gebied-sub">Akkerbouw</div></div>
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Bunschoten</div><div class="gebied-sub">Melkveehouderij</div></div>
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Hoevelaken</div><div class="gebied-sub">Loonwerk</div></div>
+        <div class="gebied-item"><div class="gebied-icon">📍</div><div class="gebied-name">Nijkerk</div><div class="gebied-sub">Opslag & afzet</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-inner">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Neem contact op</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Heeft u een vraag, wilt u een offerte voor loonwerk of bent u op zoek naar een betrouwbare agrarische partner? Wij horen graag van u.</p>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <div class="contact-item-label">Adres</div>
+              <div class="contact-item-val">Eemweg 12<br/>3817 NE Amersfoort</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <div class="contact-item-label">Telefoon</div>
+              <div class="contact-item-val">033 – 460 12 34</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <div class="contact-item-label">E-mail</div>
+              <div class="contact-item-val">info@eemlandbouw.nl</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div>
+              <div class="contact-item-label">Bereikbaar</div>
+              <div class="contact-item-val">Ma – Vr: 07:00 – 18:00<br/>Za: 07:00 – 12:00</div>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form" onsubmit="handleForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="naam">Naam</label>
+              <input id="naam" type="text" placeholder="Jan de Vries"/>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input id="email" type="email" placeholder="jan@voorbeeld.nl"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="onderwerp">Onderwerp</label>
+            <select id="onderwerp">
+              <option value="">Selecteer een onderwerp</option>
+              <option>Loonwerk aanvragen</option>
+              <option>Akkerbouwproducten</option>
+              <option>Ruwvoer / groenvoer</option>
+              <option>Samenwerking</option>
+              <option>Overig</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bericht">Bericht</label>
+            <textarea id="bericht" placeholder="Uw bericht..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">Verstuur bericht →</button>
+          <p class="form-note">* Dit is een concept website. Berichten worden niet daadwerkelijk verstuurd.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="nav-icon">🌾</span>
+            <span class="nav-name">Eemlandbouw</span>
+          </div>
+          <p>Agrarisch familiebedrijf in het hart van het Eemland. Drie generaties vakmanschap op 180 hectare polderlandschap.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Diensten</h4>
+          <a href="#diensten">Akkerbouw</a>
+          <a href="#diensten">Melkveehouderij</a>
+          <a href="#diensten">Loonwerk</a>
+          <a href="#diensten">Ruwvoer</a>
+        </div>
+        <div class="footer-col">
+          <h4>Bedrijf</h4>
+          <a href="#over">Over ons</a>
+          <a href="#gebied">Werkgebied</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Eemlandbouw B.V. — Alle rechten voorbehouden</span>
+        <span class="footer-back">Concept door <a href="/portfolio/">REIN.DEV</a></span>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /site -->
+
+<script>
+(function(){
+  var HASH = "bfd925fa86084bd0300fde7fd05ddd97"; // md5("121314")
+
+  function md5(s){
+    function safe_add(x,y){var lsw=(x&0xFFFF)+(y&0xFFFF);var msw=(x>>16)+(y>>16)+(lsw>>16);return(msw<<16)|(lsw&0xFFFF);}
+    function bit_rol(num,cnt){return(num<<cnt)|(num>>>(32-cnt));}
+    function md5_cmn(q,a,b,x,s,t){return safe_add(bit_rol(safe_add(safe_add(a,q),safe_add(x,t)),s),b);}
+    function md5_ff(a,b,c,d,x,s,t){return md5_cmn((b&c)|((~b)&d),a,b,x,s,t);}
+    function md5_gg(a,b,c,d,x,s,t){return md5_cmn((b&d)|(c&(~d)),a,b,x,s,t);}
+    function md5_hh(a,b,c,d,x,s,t){return md5_cmn(b^c^d,a,b,x,s,t);}
+    function md5_ii(a,b,c,d,x,s,t){return md5_cmn(c^(b|(~d)),a,b,x,s,t);}
+    function md5_blks(s){var nblk=((s.length+8)>>6)+1;var blks=new Array(nblk*16);for(var i=0;i<nblk*16;i++)blks[i]=0;for(var i=0;i<s.length;i++)blks[i>>2]|=s.charCodeAt(i)<<((i%4)*8);blks[s.length>>2]|=0x80<<((s.length%4)*8);blks[nblk*16-2]=s.length*8;return blks;}
+    var x=md5_blks(s);var a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+    for(var i=0;i<x.length;i+=16){var olda=a,oldb=b,oldc=c,oldd=d;
+    a=md5_ff(a,b,c,d,x[i+0],7,-680876936);d=md5_ff(d,a,b,c,x[i+1],12,-389564586);c=md5_ff(c,d,a,b,x[i+2],17,606105819);b=md5_ff(b,c,d,a,x[i+3],22,-1044525330);a=md5_ff(a,b,c,d,x[i+4],7,-176418897);d=md5_ff(d,a,b,c,x[i+5],12,1200080426);c=md5_ff(c,d,a,b,x[i+6],17,-1473231341);b=md5_ff(b,c,d,a,x[i+7],22,-45705983);a=md5_ff(a,b,c,d,x[i+8],7,1770035416);d=md5_ff(d,a,b,c,x[i+9],12,-1958414417);c=md5_ff(c,d,a,b,x[i+10],17,-42063);b=md5_ff(b,c,d,a,x[i+11],22,-1990404162);a=md5_ff(a,b,c,d,x[i+12],7,1804603682);d=md5_ff(d,a,b,c,x[i+13],12,-40341101);c=md5_ff(c,d,a,b,x[i+14],17,-1502002290);b=md5_ff(b,c,d,a,x[i+15],22,1236535329);
+    a=md5_gg(a,b,c,d,x[i+1],5,-165796510);d=md5_gg(d,a,b,c,x[i+6],9,-1069501632);c=md5_gg(c,d,a,b,x[i+11],14,643717713);b=md5_gg(b,c,d,a,x[i+0],20,-373897302);a=md5_gg(a,b,c,d,x[i+5],5,-701558691);d=md5_gg(d,a,b,c,x[i+10],9,38016083);c=md5_gg(c,d,a,b,x[i+15],14,-660478335);b=md5_gg(b,c,d,a,x[i+4],20,-405537848);a=md5_gg(a,b,c,d,x[i+9],5,568446438);d=md5_gg(d,a,b,c,x[i+14],9,-1019803690);c=md5_gg(c,d,a,b,x[i+3],14,-187363961);b=md5_gg(b,c,d,a,x[i+8],20,1163531501);a=md5_gg(a,b,c,d,x[i+13],5,-1444681467);d=md5_gg(d,a,b,c,x[i+2],9,-51403784);c=md5_gg(c,d,a,b,x[i+7],14,1735328473);b=md5_gg(b,c,d,a,x[i+12],20,-1926607734);
+    a=md5_hh(a,b,c,d,x[i+5],4,-378558);d=md5_hh(d,a,b,c,x[i+8],11,-2022574463);c=md5_hh(c,d,a,b,x[i+11],16,1839030562);b=md5_hh(b,c,d,a,x[i+14],23,-35309556);a=md5_hh(a,b,c,d,x[i+1],4,-1530992060);d=md5_hh(d,a,b,c,x[i+4],11,1272893353);c=md5_hh(c,d,a,b,x[i+7],16,-155497632);b=md5_hh(b,c,d,a,x[i+10],23,-1094730640);a=md5_hh(a,b,c,d,x[i+13],4,681279174);d=md5_hh(d,a,b,c,x[i+0],11,-358537222);c=md5_hh(c,d,a,b,x[i+3],16,-722521979);b=md5_hh(b,c,d,a,x[i+6],23,76029189);a=md5_hh(a,b,c,d,x[i+9],4,-640364487);d=md5_hh(d,a,b,c,x[i+12],11,-421815835);c=md5_hh(c,d,a,b,x[i+15],16,530742520);b=md5_hh(b,c,d,a,x[i+2],23,-995338651);
+    a=md5_ii(a,b,c,d,x[i+0],6,-198630844);d=md5_ii(d,a,b,c,x[i+7],10,1126891415);c=md5_ii(c,d,a,b,x[i+14],15,-1416354905);b=md5_ii(b,c,d,a,x[i+5],21,-57434055);a=md5_ii(a,b,c,d,x[i+12],6,1700485571);d=md5_ii(d,a,b,c,x[i+3],10,-1894986606);c=md5_ii(c,d,a,b,x[i+10],15,-1051523);b=md5_ii(b,c,d,a,x[i+1],21,-2054922799);a=md5_ii(a,b,c,d,x[i+8],6,1873313359);d=md5_ii(d,a,b,c,x[i+15],10,-30611744);c=md5_ii(c,d,a,b,x[i+6],15,-1560198380);b=md5_ii(b,c,d,a,x[i+13],21,1309151649);a=md5_ii(a,b,c,d,x[i+4],6,-145523070);d=md5_ii(d,a,b,c,x[i+11],10,-1120210379);c=md5_ii(c,d,a,b,x[i+2],15,718787259);b=md5_ii(b,c,d,a,x[i+9],21,-343485551);
+    a=safe_add(a,olda);b=safe_add(b,oldb);c=safe_add(c,oldc);d=safe_add(d,oldd);}
+    function rhex(n){var s='',j=0;for(;j<4;j++)s+=('0'+(n>>>(j*8)&0xFF).toString(16)).slice(-2);return s;}
+    return rhex(a)+rhex(b)+rhex(c)+rhex(d);
+  }
+
+  function unlock(){
+    var val = document.getElementById('pw-input').value;
+    if(md5(val) === HASH){
+      document.getElementById('pw-gate').style.display = 'none';
+      document.getElementById('site').style.display = 'block';
+    } else {
+      document.getElementById('pw-error').textContent = 'Ongeldig wachtwoord.';
+    }
+  }
+
+  document.getElementById('pw-btn').addEventListener('click', unlock);
+  document.getElementById('pw-input').addEventListener('keydown', function(e){ if(e.key==='Enter') unlock(); });
+})();
+
+function handleForm(e){
+  e.preventDefault();
+  var btn = e.target.querySelector('button[type=submit]');
+  btn.textContent = 'Verstuurd! ✓';
+  btn.style.background = '#2d6a2d';
+  setTimeout(function(){ btn.textContent = 'Verstuur bericht →'; btn.style.background = ''; }, 3000);
+}
+
+document.getElementById('menuToggle').addEventListener('click', function(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+</script>
+</body>
+</html>
