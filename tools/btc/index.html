@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BTC Tracker — Privé</title>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#000; font-family:'Courier New',monospace; color:#4ade80; min-height:100vh; }
+    body::before {
+      content:''; position:fixed; inset:0; z-index:10; pointer-events:none;
+      background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#000 3px,#000 4px);
+      opacity:.04;
+    }
+
+    /* ── LOCK SCREEN ── */
+    #lock-screen {
+      position:fixed; inset:0; background:#000; z-index:1000;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .lock-box { border:1px solid #14532d; padding:2.5rem 2rem; width:320px; }
+    .lock-title { font-size:.9rem; letter-spacing:.2em; color:#4ade80; margin-bottom:.5rem; }
+    .lock-sub { font-size:.55rem; color:#166534; letter-spacing:.12em; margin-bottom:1.5rem; }
+    #lock-input {
+      width:100%; background:#000; border:1px solid #14532d; color:#4ade80;
+      font-family:'Courier New',monospace; font-size:1rem; padding:.6rem .75rem;
+      outline:none; letter-spacing:.2em; margin-bottom:.75rem; text-align:center;
+    }
+    #lock-input:focus { border-color:#4ade80; }
+    #lock-input::placeholder { color:#166534; letter-spacing:.05em; font-size:.65rem; }
+    #lock-err { font-size:.55rem; color:#dc2626; letter-spacing:.1em; min-height:.8rem; margin-bottom:.5rem; }
+    .lock-hint { font-size:.5rem; color:#14532d; text-align:center; margin-top:1rem; }
+
+    /* ── MAIN ── */
+    #app { display:none; }
+    .wrap { max-width:900px; margin:0 auto; padding:2rem 1.5rem 5rem; position:relative; z-index:20; }
+
+    /* Header */
+    header { border:1px solid #14532d; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
+    .header-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; }
+    .crumb { font-size:.5rem; color:#166534; letter-spacing:.15em; margin-bottom:.6rem; }
+    .crumb a { color:#166534; text-decoration:none; }
+    .crumb a:hover { color:#4ade80; }
+    h1 { font-size:1rem; color:#4ade80; letter-spacing:.2em; }
+    .price-block { text-align:right; }
+    .btc-price { font-size:1.4rem; font-weight:bold; color:#4ade80; letter-spacing:.05em; }
+    .price-meta { font-size:.5rem; color:#166534; letter-spacing:.1em; margin-top:.2rem; }
+    .price-change-pos { color:#4ade80; }
+    .price-change-neg { color:#dc2626; }
+
+    /* Section label */
+    .section-label {
+      font-size:.55rem; color:#166534; letter-spacing:.25em; margin-bottom:.75rem;
+      display:flex; align-items:center; gap:.75rem;
+    }
+    .section-label::after { content:''; flex:1; border-top:1px solid #14532d40; }
+
+    /* Stats grid */
+    .stats { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:.5rem; margin-bottom:1.5rem; }
+    .stat-card { border:1px solid #14532d; padding:.85rem 1rem; }
+    .stat-label { font-size:.48rem; color:#166534; letter-spacing:.15em; margin-bottom:.4rem; }
+    .stat-val { font-size:1rem; color:#4ade80; font-weight:bold; }
+    .stat-val.pos { color:#4ade80; }
+    .stat-val.neg { color:#dc2626; }
+    .stat-sub { font-size:.5rem; color:#166534; margin-top:.2rem; }
+
+    /* Add form */
+    .add-form { border:1px solid #14532d; padding:1.25rem; margin-bottom:1.5rem; }
+    .form-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); gap:.6rem; margin-bottom:.75rem; }
+    .form-group label { font-size:.5rem; color:#166534; letter-spacing:.1em; display:block; margin-bottom:.35rem; }
+    .form-group input {
+      width:100%; background:#000; border:1px solid #14532d; color:#4ade80;
+      font-family:'Courier New',monospace; font-size:.75rem; padding:.5rem .65rem;
+      outline:none; letter-spacing:.03em;
+    }
+    .form-group input:focus { border-color:#4ade80; }
+    .form-group input::placeholder { color:#166534; }
+    .form-group input[readonly] { color:#166534; cursor:default; }
+    .form-row { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .btn {
+      background:#000; border:1px solid #4ade80; color:#4ade80;
+      font-family:'Courier New',monospace; font-size:.6rem; letter-spacing:.1em;
+      padding:.5rem 1.1rem; cursor:pointer; transition:background .15s; white-space:nowrap;
+    }
+    .btn:hover { background:#4ade8015; }
+    .btn-dim { border-color:#14532d; color:#166534; }
+    .btn-dim:hover { border-color:#4ade8060; color:#4ade8090; background:#4ade800a; }
+    .btn-danger { border-color:#7f1d1d; color:#dc2626; }
+    .btn-danger:hover { background:#dc262615; }
+
+    /* Table */
+    .table-wrap { overflow-x:auto; margin-bottom:1.5rem; }
+    table { width:100%; border-collapse:collapse; font-size:.65rem; }
+    thead tr { border-bottom:1px solid #14532d; }
+    th { padding:.5rem .65rem; text-align:left; color:#166534; font-size:.48rem; letter-spacing:.12em; font-weight:normal; white-space:nowrap; }
+    th.r, td.r { text-align:right; }
+    td { padding:.55rem .65rem; border-bottom:1px solid #14532d20; vertical-align:middle; white-space:nowrap; }
+    tr:hover td { background:#4ade800a; }
+    .pos { color:#4ade80; }
+    .neg { color:#dc2626; }
+    .muted { color:#166534; }
+    .del-btn {
+      background:none; border:none; color:#7f1d1d; font-family:'Courier New',monospace;
+      font-size:.55rem; cursor:pointer; padding:.2rem .4rem; letter-spacing:.05em;
+    }
+    .del-btn:hover { color:#dc2626; }
+    .empty-row td { color:#14532d; text-align:center; padding:2rem; font-size:.6rem; letter-spacing:.1em; }
+
+    /* DCA insight */
+    .insight { border:1px solid #14532d; padding:1rem 1.25rem; margin-bottom:1.5rem; display:none; }
+    .insight-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.75rem; margin-top:.75rem; }
+    .insight-item { font-size:.6rem; }
+    .insight-item .lbl { color:#166534; font-size:.5rem; letter-spacing:.1em; margin-bottom:.2rem; }
+    .insight-item .val { color:#4ade80; }
+
+    /* Footer */
+    .footer-bar {
+      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem;
+      border-top:1px solid #14532d40; padding-top:1rem; font-size:.5rem; color:#14532d;
+    }
+    .footer-bar a { color:#14532d; text-decoration:none; }
+    .footer-bar a:hover { color:#4ade80; }
+    .footer-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-title">██ BTC TRACKER</div>
+    <div class="lock-sub">PRIVÉ TOEGANG VEREIST</div>
+    <input id="lock-input" type="password" placeholder="voer pincode in" maxlength="20" autocomplete="off"/>
+    <div id="lock-err"></div>
+    <button class="btn" id="lock-btn" style="width:100%;justify-content:center;">ONTGRENDEL</button>
+    <div class="lock-hint">EERSTE KEER? KIES JE EIGEN PINCODE</div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+<div class="wrap">
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="crumb"><a href="/">USELESSSITE.NL</a> / <a href="/tools/">TOOLS</a> / BTC TRACKER</div>
+        <h1>₿ BITCOIN PORTFOLIO TRACKER</h1>
+      </div>
+      <div class="price-block">
+        <div class="btc-price" id="live-price">—</div>
+        <div class="price-meta">
+          <span id="price-change" class="price-change-pos"></span>
+          &nbsp;·&nbsp;<span id="price-updated">ophalen...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="section-label">PORTFOLIO OVERZICHT</div>
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">TOTAAL BTC</div>
+      <div class="stat-val" id="s-btc">0.00000000</div>
+      <div class="stat-sub">BTC in bezit</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">GEÏNVESTEERD</div>
+      <div class="stat-val" id="s-invested">€ 0</div>
+      <div class="stat-sub">Totale inkoopkosten</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">HUIDIGE WAARDE</div>
+      <div class="stat-val" id="s-value">€ 0</div>
+      <div class="stat-sub">Tegen live koers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">WINST / VERLIES</div>
+      <div class="stat-val" id="s-pnl">€ 0</div>
+      <div class="stat-sub" id="s-pnl-pct">0.00%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">GEM. INKOOPPRIJS</div>
+      <div class="stat-val" id="s-avg">€ 0</div>
+      <div class="stat-sub">Gewogen gemiddelde</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">BREAK-EVEN</div>
+      <div class="stat-val" id="s-be">— %</div>
+      <div class="stat-sub">Tot gem. inkoopprijs</div>
+    </div>
+  </div>
+
+  <!-- ADD PURCHASE -->
+  <div class="section-label">INKOOP TOEVOEGEN</div>
+  <div class="add-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>DATUM</label>
+        <input type="date" id="f-date"/>
+      </div>
+      <div class="form-group">
+        <label>HOEVEELHEID BTC</label>
+        <input type="number" id="f-btc" placeholder="0.00500000" step="0.00000001" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>PRIJS PER BTC (€)</label>
+        <input type="number" id="f-price" placeholder="85000" step="1" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>TOTAAL BETAALD (€)</label>
+        <input type="number" id="f-total" placeholder="auto" step="0.01" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>PLATFORM / NOTA</label>
+        <input type="text" id="f-note" placeholder="Bitvavo, Kraken..." maxlength="40"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn" id="add-btn">+ INKOOP TOEVOEGEN</button>
+      <button class="btn btn-dim" id="fill-price-btn">↓ LIVE PRIJS INVULLEN</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="section-label">INKOPEN</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>DATUM</th>
+          <th class="r">BTC</th>
+          <th class="r">INKOOPPRIJS</th>
+          <th class="r">BETAALD (€)</th>
+          <th class="r">WAARDE NU (€)</th>
+          <th class="r">W/V (€)</th>
+          <th class="r">W/V %</th>
+          <th>NOTA</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="purchase-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- INSIGHT -->
+  <div class="insight" id="insight-box">
+    <div class="section-label" style="margin-bottom:.5rem;">DCA ANALYSE</div>
+    <div class="insight-grid" id="insight-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <span>ALLE DATA LOKAAL OPGESLAGEN — GEEN SERVER — GEEN CLOUD</span>
+    <div class="footer-actions">
+      <button class="btn btn-dim" id="export-btn">EXPORTEER JSON</button>
+      <button class="btn btn-dim" id="import-btn">IMPORTEER JSON</button>
+      <button class="btn btn-danger" id="logout-btn">VERGRENDEL</button>
+    </div>
+  </div>
+  <input type="file" id="import-file" accept=".json" style="display:none"/>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var STORE_KEY = 'btc_tracker_v1';
+  var PIN_KEY   = 'btc_pin_hash';
+
+  /* ── simple hash ── */
+  function hashPin(pin){
+    var h = 5381;
+    for(var i=0;i<pin.length;i++) h = ((h<<5)+h)^pin.charCodeAt(i);
+    return (h>>>0).toString(36);
+  }
+
+  /* ── LOCK ── */
+  var lockInput = document.getElementById('lock-input');
+  var lockErr   = document.getElementById('lock-err');
+
+  function tryUnlock(){
+    var pin = lockInput.value.trim();
+    if(!pin){ lockErr.textContent = 'VOER EEN PINCODE IN'; return; }
+    var stored = localStorage.getItem(PIN_KEY);
+    if(!stored){
+      // first time: set pin
+      localStorage.setItem(PIN_KEY, hashPin(pin));
+      unlock();
+    } else {
+      if(hashPin(pin) === stored){ unlock(); }
+      else { lockErr.textContent = 'ONJUISTE PINCODE'; lockInput.value = ''; lockInput.focus(); }
+    }
+  }
+
+  function unlock(){
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
+  }
+
+  document.getElementById('lock-btn').addEventListener('click', tryUnlock);
+  lockInput.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+  document.getElementById('logout-btn').addEventListener('click', function(){
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('lock-screen').style.display = 'flex';
+    lockInput.value = ''; lockErr.textContent = '';
+  });
+
+  /* ── DATA ── */
+  function load(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY))||[]; }catch(e){ return []; } }
+  function save(d){ localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
+
+  /* ── PRICE ── */
+  var livePrice = null;
+  var price24h  = null;
+
+  function fetchPrice(){
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur&include_24hr_change=true')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        livePrice = d.bitcoin.eur;
+        price24h  = d.bitcoin.eur_24h_change;
+        var priceEl   = document.getElementById('live-price');
+        var changeEl  = document.getElementById('price-change');
+        var updatedEl = document.getElementById('price-updated');
+        priceEl.textContent = '€ '+fmt(livePrice, 0);
+        var chg = price24h.toFixed(2);
+        changeEl.textContent = (price24h>=0?'+':'')+chg+'% (24u)';
+        changeEl.className = price24h >= 0 ? 'price-change-pos' : 'price-change-neg';
+        var now = new Date();
+        updatedEl.textContent = 'bijgewerkt '+pad(now.getHours())+':'+pad(now.getMinutes());
+        renderAll();
+      })
+      .catch(function(){
+        document.getElementById('price-updated').textContent = 'koers niet beschikbaar';
+      });
+  }
+
+  function pad(n){ return n<10?'0'+n:n; }
+  function fmt(n, dec){
+    if(n===null||n===undefined||isNaN(n)) return '—';
+    dec = dec===undefined?2:dec;
+    return n.toLocaleString('nl-NL',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+  }
+  function fmtBtc(n){ return n.toLocaleString('nl-NL',{minimumFractionDigits:8,maximumFractionDigits:8}); }
+
+  /* ── STATS + TABLE ── */
+  function renderAll(){
+    var data = load();
+    renderStats(data);
+    renderTable(data);
+    renderInsight(data);
+  }
+
+  function renderStats(data){
+    var totalBtc = 0, totalPaid = 0;
+    data.forEach(function(r){ totalBtc += r.btc; totalPaid += r.total; });
+    var curVal = livePrice ? totalBtc * livePrice : null;
+    var pnl    = curVal !== null ? curVal - totalPaid : null;
+    var pnlPct = totalPaid > 0 && pnl !== null ? (pnl/totalPaid)*100 : null;
+    var avgBuy = totalBtc > 0 ? totalPaid/totalBtc : null;
+    var beGap  = avgBuy !== null && livePrice ? ((livePrice-avgBuy)/avgBuy)*100 : null;
+
+    document.getElementById('s-btc').textContent      = fmtBtc(totalBtc);
+    document.getElementById('s-invested').textContent = '€ '+fmt(totalPaid,0);
+    document.getElementById('s-value').textContent    = curVal!==null ? '€ '+fmt(curVal,0) : '—';
+    var pnlEl  = document.getElementById('s-pnl');
+    var pnlPctEl = document.getElementById('s-pnl-pct');
+    pnlEl.textContent = pnl!==null ? (pnl>=0?'+ ':'- ')+'€ '+fmt(Math.abs(pnl),0) : '—';
+    pnlEl.className = 'stat-val '+(pnl===null?'':(pnl>=0?'pos':'neg'));
+    pnlPctEl.textContent = pnlPct!==null ? (pnlPct>=0?'+':'')+fmt(pnlPct,2)+'%' : '—';
+    document.getElementById('s-avg').textContent = avgBuy!==null ? '€ '+fmt(avgBuy,0) : '—';
+    var beEl = document.getElementById('s-be');
+    beEl.textContent = beGap!==null ? (beGap>=0?'+':'')+fmt(beGap,2)+'%' : '—';
+    beEl.className = 'stat-val '+(beGap===null?'':(beGap>=0?'pos':'neg'));
+  }
+
+  function renderTable(data){
+    var tbody = document.getElementById('purchase-tbody');
+    tbody.innerHTML = '';
+    if(data.length === 0){
+      var tr = document.createElement('tr'); tr.className='empty-row';
+      var td = document.createElement('td'); td.colSpan=9;
+      td.textContent = '— GEEN INKOPEN GEREGISTREERD —';
+      tr.appendChild(td); tbody.appendChild(tr); return;
+    }
+    // sort newest first
+    data.slice().sort(function(a,b){ return b.date.localeCompare(a.date); }).forEach(function(r,i){
+      var curVal = livePrice ? r.btc * livePrice : null;
+      var pnl    = curVal !== null ? curVal - r.total : null;
+      var pnlPct = r.total > 0 && pnl !== null ? (pnl/r.total)*100 : null;
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="muted">'+r.date+'</td>'+
+        '<td class="r">'+fmtBtc(r.btc)+'</td>'+
+        '<td class="r muted">€ '+fmt(r.price,0)+'</td>'+
+        '<td class="r">€ '+fmt(r.total,0)+'</td>'+
+        '<td class="r">'+(curVal!==null?'€ '+fmt(curVal,0):'—')+'</td>'+
+        '<td class="r '+(pnl===null?'':(pnl>=0?'pos':'neg'))+'">'+(pnl!==null?(pnl>=0?'+ ':'- ')+'€ '+fmt(Math.abs(pnl),0):'—')+'</td>'+
+        '<td class="r '+(pnlPct===null?'':(pnlPct>=0?'pos':'neg'))+'">'+(pnlPct!==null?(pnlPct>=0?'+':'')+fmt(pnlPct,2)+'%':'—')+'</td>'+
+        '<td class="muted">'+escHtml(r.note||'')+'</td>'+
+        '<td><button class="del-btn" data-id="'+r.id+'">✕</button></td>';
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.del-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = parseInt(btn.getAttribute('data-id'));
+        if(!confirm('Inkoop verwijderen?')) return;
+        var d = load().filter(function(r){ return r.id !== id; });
+        save(d); renderAll();
+      });
+    });
+  }
+
+  function renderInsight(data){
+    var box = document.getElementById('insight-box');
+    if(data.length < 2){ box.style.display='none'; return; }
+    box.style.display = 'block';
+    var sorted = data.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+    var first = sorted[0], last = sorted[sorted.length-1];
+    var totalBtc = 0, totalPaid = 0, minPrice = Infinity, maxPrice = -Infinity;
+    data.forEach(function(r){
+      totalBtc += r.btc; totalPaid += r.total;
+      if(r.price < minPrice) minPrice = r.price;
+      if(r.price > maxPrice) maxPrice = r.price;
+    });
+    var avg = totalBtc > 0 ? totalPaid/totalBtc : 0;
+    var days = Math.round((new Date(last.date)-new Date(first.date))/(1000*60*60*24))+1;
+    var grid = document.getElementById('insight-grid');
+    grid.innerHTML = '';
+    var items = [
+      ['AANTAL INKOPEN', data.length],
+      ['PERIODE', days+' DAGEN ('+first.date+' → '+last.date+')'],
+      ['LAAGSTE INKOOPPRIJS', '€ '+fmt(minPrice,0)],
+      ['HOOGSTE INKOOPPRIJS', '€ '+fmt(maxPrice,0)],
+      ['PRIJSSPREIDING', '€ '+fmt(maxPrice-minPrice,0)+' ('+fmt(((maxPrice-minPrice)/minPrice)*100,1)+'%)'],
+      ['GEM. INKOOPPRIJS (DCA)', '€ '+fmt(avg,0)+' per BTC'],
+    ];
+    items.forEach(function(it){
+      var div = document.createElement('div'); div.className='insight-item';
+      div.innerHTML = '<div class="lbl">'+it[0]+'</div><div class="val">'+it[1]+'</div>';
+      grid.appendChild(div);
+    });
+  }
+
+  function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ── FORM ── */
+  var fDate  = document.getElementById('f-date');
+  var fBtc   = document.getElementById('f-btc');
+  var fPrice = document.getElementById('f-price');
+  var fTotal = document.getElementById('f-total');
+  var fNote  = document.getElementById('f-note');
+
+  // default date = today
+  fDate.valueAsDate = new Date();
+
+  // auto-calculate total when btc or price changes
+  function autoTotal(){
+    var b = parseFloat(fBtc.value), p = parseFloat(fPrice.value);
+    if(b>0 && p>0) fTotal.value = (b*p).toFixed(2);
+    else fTotal.value = '';
+  }
+  fBtc.addEventListener('input', autoTotal);
+  fPrice.addEventListener('input', autoTotal);
+
+  document.getElementById('fill-price-btn').addEventListener('click', function(){
+    if(livePrice){ fPrice.value = Math.round(livePrice); autoTotal(); fBtc.focus(); }
+    else alert('Live prijs nog niet beschikbaar. Probeer opnieuw.');
+  });
+
+  document.getElementById('add-btn').addEventListener('click', function(){
+    var date  = fDate.value;
+    var btc   = parseFloat(fBtc.value);
+    var price = parseFloat(fPrice.value);
+    var total = parseFloat(fTotal.value);
+    var note  = fNote.value.trim();
+    if(!date){ alert('Vul een datum in.'); return; }
+    if(!(btc>0)){ alert('Vul een geldige BTC hoeveelheid in.'); return; }
+    if(!(price>0)){ alert('Vul een geldige inkoopprijs in.'); return; }
+    if(!(total>0)) total = btc*price;
+    var data = load();
+    data.push({ id: Date.now(), date, btc, price, total, note });
+    save(data);
+    fBtc.value = ''; fPrice.value = ''; fTotal.value = ''; fNote.value = '';
+    fDate.valueAsDate = new Date();
+    renderAll();
+  });
+
+  /* ── EXPORT / IMPORT ── */
+  document.getElementById('export-btn').addEventListener('click', function(){
+    var d = load();
+    var blob = new Blob([JSON.stringify({exported: new Date().toISOString(), purchases: d}, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'btc-portfolio-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+  });
+
+  var importFile = document.getElementById('import-file');
+  document.getElementById('import-btn').addEventListener('click', function(){ importFile.click(); });
+  importFile.addEventListener('change', function(){
+    var file = importFile.files[0]; if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var obj = JSON.parse(e.target.result);
+        var purchases = Array.isArray(obj) ? obj : (obj.purchases||[]);
+        if(!confirm('Importeer '+purchases.length+' inkopen? Huidige data blijft behouden.')) return;
+        var existing = load();
+        var existingIds = new Set(existing.map(function(r){ return r.id; }));
+        purchases.forEach(function(r){ if(!existingIds.has(r.id)) existing.push(r); });
+        save(existing); renderAll();
+      } catch(err){ alert('Ongeldig JSON bestand.'); }
+    };
+    reader.readAsText(file);
+    importFile.value = '';
+  });
+
+  /* ── INIT ── */
+  function init(){
+    renderAll();
+    fetchPrice();
+    setInterval(fetchPrice, 60000);
+  }
+
+})();
+</script>
+</body>
+</html>
