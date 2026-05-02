@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>REIN.DEV — PORTFOLIO</title>
+  <title>REIN.DEV — QUICK LINKS</title>
   <meta name="description" content="Have you tried turning it off and on again?"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,52 +11,63 @@
     a { color: inherit; text-decoration: none; }
     body::before { content: ''; position: fixed; inset: 0; z-index: 30; pointer-events: none; background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #000 3px, #000 4px); opacity: .04; }
     body::after  { content: ''; position: fixed; inset: 0; z-index: 20; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
-    .boot { border: 1px solid #14532d; padding: 1.25rem; margin-bottom: 2.5rem; }
-    .boot-topbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap:.5rem; font-size:.7rem; letter-spacing:.15em; color:#166534; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid #14532d55; }
+    .wrap { max-width: 768px; margin: 0 auto; padding: 2.5rem 1rem 4rem; position: relative; z-index: 10; }
+
+    /* BOOT */
+    .boot { border: 1px solid #14532d; padding: 1.25rem; margin-bottom: 2rem; }
+    .boot-topbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; font-size: .7rem; letter-spacing: .15em; color: #166534; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #14532d55; }
     .pulse { animation: pulse 2s infinite; } @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
-    .terminal { font-size:.85rem; line-height:1.8; }
-    .prompt { color:#166534; } .cmd { color:#86efac; }
-    .out { color:#bbf7d0; padding-left:1rem; } .out strong { color:#fff; }
-    .cursor::after { content:'█'; animation: pulse 1s infinite; }
-    .boot-links { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1rem; padding-top:1rem; border-top:1px solid #14532d55; }
-    .boot-links a { font-size:.7rem; border:1px solid #166534; padding:.4rem 1rem; transition:border-color .2s,background .2s,color .2s; }
-    .boot-links a:hover { border-color:#4ade80; background:#052e16; color:#d1fae5; }
-    .sec-header { display:flex; align-items:center; gap:.75rem; font-size:.7rem; color:#166534; margin-bottom:.75rem; }
-    .sec-header .line { flex:1; border-top:1px solid #14532d55; }
-    section { margin-bottom:2.5rem; }
-    .card { position:relative; border:1px solid #14532d99; padding:1rem; margin-bottom:.5rem; transition:border-color .2s,background .2s; display:block; }
-    .card:hover { border-color:#4ade8088; background:#052e1620; }
-    .corner { position:absolute; font-size:.65rem; line-height:1; color:#14532d; transition:color .2s; pointer-events:none; }
-    .card:hover .corner { color:#166534; }
-    .tl{top:0;left:0} .tr{top:0;right:0} .bl{bottom:0;left:0} .br{bottom:0;right:0}
-    .card-top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:.5rem; margin-bottom:.4rem; }
-    .card-left  { display:flex; align-items:center; gap:.75rem; }
-    .card-right { display:flex; align-items:center; gap:.75rem; flex-shrink:0; }
-    .card-id    { font-size:.65rem; color:#166534; white-space:nowrap; }
-    .card-title { font-weight:bold; font-size:.85rem; color:#86efac; letter-spacing:.05em; transition:color .2s; }
-    .card:hover .card-title { color:#d1fae5; }
-    .card-tag   { font-size:.65rem; color:#166534; }
-    .card-open  { font-size:.65rem; color:#166534; transition:color .2s; }
-    .card:hover .card-open { color:#4ade80; }
-    .card-desc  { font-size:.7rem; color:#166534; line-height:1.6; margin-bottom:.6rem; }
-    .card-stack { display:flex; flex-wrap:wrap; gap:.2rem .75rem; font-size:.65rem; color:#14532d; }
-    .card-stack span+span::before { content:'· '; }
-    .stack-box { border:1px solid #14532d99; padding:1rem; font-size:.7rem; color:#166534; display:flex; flex-wrap:wrap; gap:.2rem .5rem; margin-bottom:2.5rem; }
-    .stack-box span { cursor:default; transition:color .2s; } .stack-box span:hover { color:#4ade80; }
-    .stack-box span+span::before { content:' · '; color:#14532d; }
-    footer { border-top:1px solid #14532d55; padding-top:1.25rem; font-size:.7rem; color:#14532d; }
-    .footer-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:.25rem; }
-    footer a:hover { color:#4ade80; }
-    .tip { font-size:.6rem; opacity:.5; margin-top:.25rem; }
+    .terminal { font-size: .85rem; line-height: 1.8; }
+    .prompt { color: #166534; } .cmd { color: #86efac; }
+    .out { color: #bbf7d0; padding-left: 1rem; } .out strong { color: #fff; }
+    .cursor::after { content: '█'; animation: pulse 1s infinite; }
+    .boot-links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #14532d55; }
+    .boot-links a { font-size: .7rem; border: 1px solid #166534; padding: .4rem 1rem; transition: border-color .2s, background .2s, color .2s; }
+    .boot-links a:hover { border-color: #4ade80; background: #052e16; color: #d1fae5; }
+
+    /* SECTION */
+    .section { margin-bottom: 1.75rem; }
+    .sec-header { display: flex; align-items: center; gap: .75rem; font-size: .7rem; color: #166534; margin-bottom: .5rem; }
+    .sec-header .line { flex: 1; border-top: 1px solid #14532d55; }
+
+    /* LINK ROWS */
+    .link-block { border: 1px solid #14532d99; }
+    .link-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .55rem .75rem; border-bottom: 1px solid #14532d22; transition: background .15s; }
+    .link-row:last-child { border-bottom: none; }
+    .link-row:hover { background: #052e1640; }
+    .link-row.dimmed { opacity: .4; cursor: default; }
+    .row-left { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+    .row-arrow { color: #166534; font-size: .75rem; flex-shrink: 0; }
+    .row-label { font-size: .75rem; font-weight: bold; color: #86efac; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .15s; }
+    .link-row:hover .row-label { color: #d1fae5; }
+    .row-label.api { color: #166534; font-family: 'Courier New', monospace; }
+    .row-lock { font-size: .65rem; flex-shrink: 0; }
+    .row-right { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+    .row-note { font-size: .6rem; color: #14532d; white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: none; }
+    @media (min-width: 540px) { .row-note { display: block; } }
+    .row-tag { font-size: .6rem; color: #166534; border: 1px solid #14532d66; padding: .1rem .35rem; white-space: nowrap; }
+    .row-open { font-size: .65rem; color: #166534; transition: color .15s; }
+    .link-row:hover .row-open { color: #4ade80; }
+
+    /* STACK */
+    .stack-box { border: 1px solid #14532d99; padding: 1rem; font-size: .7rem; color: #166534; display: flex; flex-wrap: wrap; gap: .2rem .5rem; margin-bottom: 1.75rem; }
+    .stack-box span { cursor: default; transition: color .2s; } .stack-box span:hover { color: #4ade80; }
+    .stack-box span + span::before { content: ' · '; color: #14532d; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid #14532d55; padding-top: 1.25rem; font-size: .7rem; color: #14532d; }
+    .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-bottom: .25rem; }
+    footer a:hover { color: #4ade80; }
+    .tip { font-size: .6rem; opacity: .5; margin-top: .25rem; }
   </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- BOOT HEADER -->
   <div class="boot">
     <div class="boot-topbar">
-      <span>REIN.DEV PORTFOLIO SYSTEEM v2.0</span>
+      <span>REIN.DEV SYSTEEM v2.0 &mdash; QUICK LINKS</span>
       <span>STATUS: <span class="pulse" style="color:#4ade80">&#9679; ONLINE</span></span>
     </div>
     <div class="terminal">
@@ -64,125 +75,161 @@
       <div class="out">GEBRUIKER........... REIN</div>
       <div class="out">ROL................. FULL-STACK DEVELOPER</div>
       <div class="out">STATUS............. <strong>BESCHIKBAAR VOOR PROJECTEN</strong></div>
-      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cmd">motd</span></div>
-      <div class="out"><strong>"Have you tried turning it off and on again?"</strong></div>
+      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cmd">ls -la --all</span></div>
+      <div class="out">TOTAAL.............. <strong>27 LINKS GEVONDEN</strong></div>
+      <div class="out">SECTIES............. <strong>6 MAPPEN</strong></div>
       <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cursor cmd"></span></div>
     </div>
     <div class="boot-links">
-      <a href="/feed/">[ USELESSSITE COMMUNITY &#8594; ]</a>
       <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer" style="color:#166534">[ GITHUB &#8594; ]</a>
     </div>
   </div>
 
-  <section>
+  <!-- PROJECTEN -->
+  <div class="section">
     <div class="sec-header"><span>&#9552;&#9552; PROJECTEN</span><span class="line"></span><span>4 bestanden</span></div>
+    <div class="link-block">
+      <a class="link-row" href="/eemlandbouw/">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">EEMLANDBOUW WEBSITE</span><span class="row-lock">&#128274;</span></div>
+        <div class="row-right"><span class="row-note">Concept site voor eemlandbouw.nl &middot; wachtwoord beveiligd</span><span class="row-tag">AGRARISCH</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/airsoft/">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">3D AIRSOFT PATCHES</span></div>
+        <div class="row-right"><span class="row-note">Webshop voor custom 3D-geprinte PLA airsoft patches</span><span class="row-tag">WEBSHOP</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/feed">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">USELESSSITE COMMUNITY</span></div>
+        <div class="row-right"><span class="row-note">Community om setups te delen en te beoordelen</span><span class="row-tag">PLATFORM</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/scrum">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SCRUM GUIDE NL</span></div>
+        <div class="row-right"><span class="row-note">Nederlandstalige uitleg van het Scrum-framework</span><span class="row-tag">ARTIKEL</span><span class="row-open">&#8594;</span></div>
+      </a>
+    </div>
+  </div>
 
-    <a class="card" href="/eemlandbouw/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-001</span><span class="card-title">EEMLANDBOUW WEBSITE</span></div>
-        <div class="card-right"><span class="card-tag">[AGRARISCH]</span><span class="card-open">&#128274; OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Concept website voor www.eemlandbouw.nl &mdash; agrarisch familiebedrijf in het Eemland. Akkerbouw, melkveehouderij en loonwerk. Wachtwoord beveiligd.</p>
-      <div class="card-stack"><span>HTML</span><span>CSS</span><span>JAVASCRIPT</span></div>
-    </a>
+  <!-- COMMUNITY -->
+  <div class="section">
+    <div class="sec-header"><span>&#9552;&#9552; COMMUNITY</span><span class="line"></span><span>3 paginas</span></div>
+    <div class="link-block">
+      <a class="link-row" href="/feed">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">FEED</span></div>
+        <div class="row-right"><span class="row-note">Alle setup-posts van de community</span><span class="row-tag">OVERZICHT</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/leaderboard">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">LEADERBOARD</span></div>
+        <div class="row-right"><span class="row-note">Gebruikers gerangschikt op score en activiteit</span><span class="row-tag">RANGLIJST</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/submit">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SUBMIT</span></div>
+        <div class="row-right"><span class="row-note">Dien een nieuwe post in met jouw setup</span><span class="row-tag">FORMULIER</span><span class="row-open">&#8594;</span></div>
+      </a>
+    </div>
+  </div>
 
-    <a class="card" href="/airsoft/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-002</span><span class="card-title">3D AIRSOFT PATCHES</span></div>
-        <div class="card-right"><span class="card-tag">[WEBSHOP]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Webshop voor custom 3D-geprinte PLA airsoft patches en accessoires. Statisch gebouwd met HTML, CSS en JavaScript inclusief winkelmandje.</p>
-      <div class="card-stack"><span>HTML</span><span>CSS</span><span>JAVASCRIPT</span></div>
-    </a>
-
-    <a class="card" href="/feed/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-003</span><span class="card-title">USELESSSITE COMMUNITY</span></div>
-        <div class="card-right"><span class="card-tag">[PLATFORM]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Full-stack community waar gebruikers hun setup delen en laten beoordelen. Met accounts, ratings, comments en leaderboard. Gebouwd door &eacute;&eacute;n persoon &mdash; nee, niet Moss.</p>
-      <div class="card-stack"><span>NEXT.JS 14</span><span>TYPESCRIPT</span><span>PRISMA</span><span>POSTGRESQL</span></div>
-    </a>
-
-    <a class="card" href="/scrum/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">PRJ-004</span><span class="card-title">SCRUM GUIDE NL</span></div>
-        <div class="card-right"><span class="card-tag">[ARTIKEL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Nederlandstalige uitleg van het Scrum-framework. Rollen, ceremonies, artefacten, implementatieplan. Gebaseerd op de offici&euml;le Scrum Guide 2020.</p>
-      <div class="card-stack"><span>SCRUM</span><span>AGILE</span><span>KENNISDELING</span></div>
-    </a>
-  </section>
-
-  <section>
+  <!-- TOOLS -->
+  <div class="section">
     <div class="sec-header"><span>&#9552;&#9552; TOOLS</span><span class="line"></span><span>6 executables</span></div>
+    <div class="link-block">
+      <a class="link-row" href="/tools/json">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">JSON FORMATTER</span></div>
+        <div class="row-right"><span class="row-note">Format, minify of valideer JSON in de browser</span><span class="row-tag">DEV</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/tools/sap">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SAP IMPORT GENERATOR</span></div>
+        <div class="row-right"><span class="row-note">Genereer SAP-compatibele CSV-importbestanden</span><span class="row-tag">BEDRIJF</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/tools/sprint">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SPRINT PLANNER</span></div>
+        <div class="row-right"><span class="row-note">Plan sprint-capaciteit op basis van team en velocity</span><span class="row-tag">AGILE</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/tools/wachtwoord">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">WACHTWOORD GENERATOR</span></div>
+        <div class="row-right"><span class="row-note">Veilige wachtwoorden via crypto.getRandomValues()</span><span class="row-tag">SECURITY</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/tools/signature">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">EMAIL HANDTEKENING GEN.</span></div>
+        <div class="row-right"><span class="row-note">Maak een Outlook-klare e-mailhandtekening</span><span class="row-tag">PRODUCTIVITEIT</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/tools/wipe">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">DISK WIPE SCRIPT</span><span class="row-lock">&#128274;</span></div>
+        <div class="row-right"><span class="row-note">PowerShell diskpart wipe script &middot; wachtwoord vereist</span><span class="row-tag">PRIV&Eacute;</span><span class="row-open">&#8594;</span></div>
+      </a>
+    </div>
+  </div>
 
-    <a class="card" href="/tools/sap/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-001</span><span class="card-title">SAP IMPORT GENERATOR</span></div>
-        <div class="card-right"><span class="card-tag">[BEDRIJFSTOOL]</span><span class="card-open">OPEN &#8594;</span></div>
+  <!-- ACCOUNT -->
+  <div class="section">
+    <div class="sec-header"><span>&#9552;&#9552; ACCOUNT</span><span class="line"></span><span>5 paginas</span></div>
+    <div class="link-block">
+      <a class="link-row" href="/login">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">INLOGGEN</span></div>
+        <div class="row-right"><span class="row-note">Log in op je UselessSite account</span><span class="row-tag">AUTH</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/register">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">REGISTREREN</span></div>
+        <div class="row-right"><span class="row-note">Maak een nieuw account aan</span><span class="row-tag">AUTH</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/settings">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">INSTELLINGEN</span></div>
+        <div class="row-right"><span class="row-note">Beheer profiel, avatar en voorkeuren</span><span class="row-tag">ACCOUNT</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/bookmarks">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">BLADWIJZERS</span></div>
+        <div class="row-right"><span class="row-note">Bekijk opgeslagen posts</span><span class="row-tag">ACCOUNT</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <div class="link-row dimmed">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">GEBRUIKERSPROFIEL</span></div>
+        <div class="row-right"><span class="row-note">Publiek profiel van een gebruiker &middot; /u/{naam}</span><span class="row-tag">PROFIEL</span><span class="row-open">&#8594;</span></div>
       </div>
-      <p class="card-desc">Genereer SAP-compatibele CSV-importbestanden voor inkooporders, materiaalstam, leveranciers en kostenplaatsen. Geen IT-afdeling nodig.</p>
-      <div class="card-stack"><span>SAP</span><span>CSV</span><span>EXCEL</span></div>
-    </a>
+    </div>
+  </div>
 
-    <a class="card" href="/tools/sprint/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-002</span><span class="card-title">SPRINT PLANNER</span></div>
-        <div class="card-right"><span class="card-tag">[AGILE TOOL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Plan sprint-capaciteit op basis van teamgrootte, beschikbare dagen en velocity. Inclusief backlog en overload-indicator.</p>
-      <div class="card-stack"><span>SCRUM</span><span>PLANNING</span><span>AGILE</span></div>
-    </a>
+  <!-- ADMIN -->
+  <div class="section">
+    <div class="sec-header"><span>&#9552;&#9552; ADMIN</span><span class="line"></span><span>4 paginas</span></div>
+    <div class="link-block">
+      <a class="link-row" href="/admin">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">ADMIN DASHBOARD</span></div>
+        <div class="row-right"><span class="row-note">Overzicht statistieken en beheer</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/admin/users">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">GEBRUIKERSBEHEER</span></div>
+        <div class="row-right"><span class="row-note">Gebruikers inzien en modereren</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/admin/posts">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">POSTBEHEER</span></div>
+        <div class="row-right"><span class="row-note">Posts beoordelen en verwijderen</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
+      </a>
+      <a class="link-row" href="/admin/reports">
+        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">RAPPORTENBEHEER</span></div>
+        <div class="row-right"><span class="row-note">Gerapporteerde content afhandelen</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
+      </a>
+    </div>
+  </div>
 
-    <a class="card" href="/tools/wachtwoord/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-003</span><span class="card-title">WACHTWOORD GENERATOR</span></div>
-        <div class="card-right"><span class="card-tag">[SECURITY]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Genereer sterke wachtwoorden via crypto.getRandomValues(). Alles lokaal &mdash; er wordt niets verstuurd. Zelfs niet naar Denholm.</p>
-      <div class="card-stack"><span>CRYPTO</span><span>SECURITY</span><span>PRIVACY</span></div>
-    </a>
+  <!-- API -->
+  <div class="section">
+    <div class="sec-header"><span>&#9552;&#9552; API</span><span class="line"></span><span>14 endpoints</span></div>
+    <div class="link-block">
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|POST /api/posts</span></div><div class="row-right"><span class="row-note">Posts ophalen of aanmaken</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH|DELETE /api/posts/[id]</span></div><div class="row-right"><span class="row-note">Specifieke post beheren</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/rate</span></div><div class="row-right"><span class="row-note">Post beoordelen</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|POST /api/posts/[id]/comments</span></div><div class="row-right"><span class="row-note">Reacties ophalen of plaatsen</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/bookmark</span></div><div class="row-right"><span class="row-note">Post opslaan als bladwijzer</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/report</span></div><div class="row-right"><span class="row-note">Post rapporteren</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/users/me</span></div><div class="row-right"><span class="row-note">Huidig ingelogde gebruiker</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/users/[id]/follow</span></div><div class="row-right"><span class="row-note">Gebruiker volgen / ontvolgen</span><span class="row-tag">REST</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/auth/register</span></div><div class="row-right"><span class="row-note">Nieuw account aanmaken</span><span class="row-tag">AUTH</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/upload</span></div><div class="row-right"><span class="row-note">Afbeeldingen uploaden via Cloudinary</span><span class="row-tag">MEDIA</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET /api/admin/stats</span></div><div class="row-right"><span class="row-note">Platformstatistieken voor admins</span><span class="row-tag">ADMIN</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/posts</span></div><div class="row-right"><span class="row-note">Posts beheren als admin</span><span class="row-tag">ADMIN</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/users</span></div><div class="row-right"><span class="row-note">Gebruikers beheren als admin</span><span class="row-tag">ADMIN</span></div></div>
+      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/reports</span></div><div class="row-right"><span class="row-note">Rapportages afhandelen als admin</span><span class="row-tag">ADMIN</span></div></div>
+    </div>
+  </div>
 
-    <a class="card" href="/tools/json/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-004</span><span class="card-title">JSON FORMATTER</span></div>
-        <div class="card-right"><span class="card-tag">[DEV TOOL]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Format, minify of valideer JSON direct in je browser. Statistieken, foutmeldingen met uitleg en een kopieerknop. Roy zou het gebruiken.</p>
-      <div class="card-stack"><span>JSON</span><span>DEVELOPER</span><span>FORMATTER</span></div>
-    </a>
-
-    <a class="card" href="/tools/signature/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-005</span><span class="card-title">EMAIL HANDTEKENING GEN.</span></div>
-        <div class="card-right"><span class="card-tag">[PRODUCTIVITEIT]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">Maak een professionele e-mailhandtekening met naam, functie, foto en contactinfo. Drie stijlen, kleurkiezer, live preview, Outlook-klaar.</p>
-      <div class="card-stack"><span>OUTLOOK</span><span>EMAIL</span><span>HTML</span></div>
-    </a>
-
-    <a class="card" href="/tools/wipe/">
-      <span class="corner tl">&#9484;</span><span class="corner tr">&#9488;</span><span class="corner bl">&#9492;</span><span class="corner br">&#9496;</span>
-      <div class="card-top">
-        <div class="card-left"><span class="card-id">T-006</span><span class="card-title">DISK WIPE SCRIPT</span></div>
-        <div class="card-right"><span class="card-tag">[PRIV&Eacute;]</span><span class="card-open">OPEN &#8594;</span></div>
-      </div>
-      <p class="card-desc">PowerShell script voor het wissen van schijven via diskpart. Wachtwoord vereist.</p>
-      <div class="card-stack"><span>POWERSHELL</span><span>DISKPART</span><span>WINDOWS</span></div>
-    </a>
-  </section>
-
-  <div class="sec-header"><span>&#9552;&#9552; TECH STACK</span><span class="line"></span></div>
+  <!-- TECH STACK -->
   <div class="stack-box">
     <span>NEXT.JS</span><span>TYPESCRIPT</span><span>REACT</span><span>TAILWIND</span><span>PRISMA</span><span>POSTGRESQL</span><span>NODE.JS</span><span>GIT</span>
   </div>
