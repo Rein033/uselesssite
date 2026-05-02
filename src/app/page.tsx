@@ -12,6 +12,15 @@ export const metadata: Metadata = {
 const PROJECTS = [
   {
     id: 'PRJ-001',
+    href: '/eemlandbouw',
+    external: false,
+    title: 'EEMLANDBOUW WEBSITE',
+    tag: 'AGRARISCH',
+    desc: 'Concept website voor www.eemlandbouw.nl — agrarisch familiebedrijf in het Eemland. Akkerbouw, melkveehouderij en loonwerk. Wachtwoord beveiligd. 🔒',
+    stack: ['HTML', 'CSS', 'JAVASCRIPT'],
+  },
+  {
+    id: 'PRJ-002',
     href: '/airsoft/',
     external: true,
     title: '3D AIRSOFT PATCHES',
@@ -20,7 +29,7 @@ const PROJECTS = [
     stack: ['HTML', 'CSS', 'JAVASCRIPT'],
   },
   {
-    id: 'PRJ-002',
+    id: 'PRJ-003',
     href: '/feed',
     external: false,
     title: 'USELESSSITE COMMUNITY',
@@ -29,7 +38,7 @@ const PROJECTS = [
     stack: ['NEXT.JS 14', 'TYPESCRIPT', 'PRISMA', 'POSTGRESQL'],
   },
   {
-    id: 'PRJ-003',
+    id: 'PRJ-004',
     href: '/scrum',
     external: false,
     title: 'SCRUM GUIDE NL',
