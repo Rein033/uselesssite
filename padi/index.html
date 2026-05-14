@@ -1,530 +1,625 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>PADI eCard — Rein Eijkelboom</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --blue:   #1a56d6;
-      --navy:   #0d1f4c;
-      --gray:   #8b95a8;
-      --gray-lt:#f0f2f5;
-      --border: #e2e6ed;
-      --white:  #ffffff;
-      --text:   #1a1f2e;
-    }
-
-    html, body {
-      height: 100%;
-      background: linear-gradient(160deg, #1848c8 0%, #1a56d6 50%, #1265e0 100%);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem .75rem;
-      min-height: 100vh;
-    }
-
-    /* ── PHONE SHELL ── */
-    .phone {
-      width: 100%;
-      max-width: 390px;
-      background: var(--white);
-      border-radius: 44px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 10px #0d2a7a,
-        0 0 0 12px #1535a0,
-        0 30px 80px rgba(0,0,0,.5);
-      display: flex;
-      flex-direction: column;
-      max-height: 90vh;
-      position: relative;
-    }
-
-    /* ── STATUS BAR ── */
-    .status-bar {
-      background: var(--white);
-      padding: .7rem 1.4rem .2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: .75rem;
-      font-weight: 600;
-      color: var(--text);
-      flex-shrink: 0;
-    }
-    .status-right { display: flex; gap: .4rem; align-items: center; }
-    .sig { display: flex; gap: 2px; align-items: flex-end; }
-    .sig i { width: 3px; background: var(--text); border-radius: 1px; display: block; }
-    .sig i:nth-child(1){height:4px} .sig i:nth-child(2){height:7px}
-    .sig i:nth-child(3){height:10px} .sig i:nth-child(4){height:13px}
-    .bat { width: 22px; height: 11px; border: 1.5px solid var(--text); border-radius: 2.5px; position: relative; display: flex; align-items: center; padding: 1.5px 1.5px; }
-    .bat::after { content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%); width:3px; height:5px; background:var(--text); border-radius:0 1px 1px 0; }
-    .bat-fill { height:100%; width:30%; background:#e53535; border-radius:1px; }
-
-    /* ── SCROLL AREA ── */
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .scroll-area::-webkit-scrollbar { display: none; }
-
-    /* ── APP HEADER (back + title) ── */
-    .app-header {
-      background: var(--white);
-      padding: .55rem 1.1rem .55rem;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .back-btn {
-      color: var(--blue);
-      font-size: .9rem;
-      font-weight: 400;
-      display: flex;
-      align-items: center;
-      gap: .1rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-      padding: 0;
-      text-decoration: none;
-    }
-    .back-chevron { font-size: 1.3rem; line-height: 1; margin-top: -1px; }
-    .page-title {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: .95rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    /* ── SECTION LABEL ── */
-    .section-label {
-      background: var(--gray-lt);
-      padding: .6rem 1.1rem;
-      font-size: .65rem;
-      font-weight: 600;
-      color: var(--gray);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* ── HERO IMAGE ── */
-    .hero-img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 45%, #20B2AA 45%, #008B8B 100%);
-    }
-    /* Sky */
-    .hero-img::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 30% at 80% 25%, rgba(255,255,255,.6) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 15% at 20% 20%, rgba(255,255,255,.4) 0%, transparent 50%);
-    }
-    .hero-inner { position: relative; z-index: 1; width: 100%; height: 100%; }
-    .padi-watermark {
-      position: absolute;
-      bottom: 10px;
-      left: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1px;
-    }
-    .padi-wm-globe { width: 30px; height: 30px; }
-    .padi-wm-word {
-      font-size: .75rem;
-      font-weight: 900;
-      letter-spacing: .2em;
-      color: white;
-      font-style: italic;
-      text-shadow: 0 1px 3px rgba(0,0,0,.4);
-    }
-
-    /* ── PERSON SECTION ── */
-    .person-row {
-      display: flex;
-      align-items: flex-start;
-      gap: .9rem;
-      padding: .9rem 1.1rem .3rem;
-      background: var(--white);
-    }
-    .person-photo {
-      width: 90px;
-      height: 90px;
-      border-radius: 8px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #e8edf5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-    }
-    .person-info { flex: 1; padding-top: .2rem; }
-    .person-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.1;
-      margin-bottom: .55rem;
-    }
-    .person-field-lbl {
-      font-size: .62rem;
-      font-weight: 600;
-      color: var(--gray);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: .1rem;
-    }
-    .person-field-val {
-      font-size: .88rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .edit-photo-btn {
-      display: block;
-      color: var(--blue);
-      font-size: .82rem;
-      font-weight: 500;
-      padding: .3rem 1.1rem .7rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      text-align: left;
-    }
-
-    /* ── CERT DETAILS ── */
-    .cert-section {
-      background: var(--white);
-      padding: .8rem 1.1rem 0;
-      border-top: 1px solid var(--border);
-    }
-    .cert-field-lbl {
-      font-size: .62rem;
-      font-weight: 600;
-      color: var(--gray);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: .15rem;
-    }
-    .cert-field-val {
-      font-size: .95rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: .75rem;
-    }
-    .cert-two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      padding-bottom: .5rem;
-    }
-    .cert-col .cert-field-val { font-size: .9rem; }
-
-    /* ── BUTTONS ── */
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .6rem;
-      padding: .8rem 1.1rem 1rem;
-      background: var(--white);
-      border-top: 1px solid var(--border);
-    }
-    .btn-filled {
-      background: var(--blue);
-      color: #fff;
-      font-size: .9rem;
-      font-weight: 600;
-      text-align: center;
-      padding: .8rem .5rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .btn-stroke {
-      background: transparent;
-      color: var(--blue);
-      font-size: .9rem;
-      font-weight: 600;
-      text-align: center;
-      padding: .8rem .5rem;
-      border-radius: 10px;
-      border: 1.5px solid var(--blue);
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    /* ── BOTTOM NAV ── */
-    .bottom-nav {
-      background: var(--white);
-      border-top: 1px solid var(--border);
-      display: flex;
-      padding: .4rem 0 calc(.55rem + env(safe-area-inset-bottom, 10px));
-      flex-shrink: 0;
-    }
-    .nav-tab {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .15rem;
-      padding: .3rem .2rem .1rem;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .nav-tab svg { width: 25px; height: 25px; color: var(--gray); }
-    .nav-tab.active svg { color: var(--blue); }
-    .nav-lbl {
-      font-size: .6rem;
-      font-weight: 500;
-      color: var(--gray);
-    }
-    .nav-tab.active .nav-lbl { color: var(--blue); font-weight: 700; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>PADI — Rein Eijkelboom</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a56d6;--navy:#0d1f4c;--bg:#f0f2f5;--white:#fff;
+  --gray:#8b95a8;--border:#e2e6ed;--text:#1a1f2e;
+}
+html,body{
+  height:100%;
+  background:linear-gradient(160deg,#1848c8 0%,#1265e0 100%);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem .75rem;min-height:100vh;
+}
+.phone{
+  width:100%;max-width:390px;
+  height:min(844px,95vh);
+  background:var(--bg);border-radius:44px;overflow:hidden;
+  box-shadow:0 0 0 2px #0a1a5c,0 0 0 10px #0d1f5a,0 0 0 12px #1535a0,0 40px 100px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;position:relative;
+}
+.dynamic-island{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:100;
+}
+.status-bar{
+  background:var(--white);height:54px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding:0 1.4rem .3rem;font-size:.75rem;font-weight:600;color:var(--text);
+  flex-shrink:0;position:relative;z-index:50;
+}
+.status-right{display:flex;gap:.4rem;align-items:center}
+.sig{display:flex;gap:2px;align-items:flex-end}
+.sig i{width:3px;background:var(--text);border-radius:1px;display:block}
+.sig i:nth-child(1){height:4px}.sig i:nth-child(2){height:7px}
+.sig i:nth-child(3){height:10px}.sig i:nth-child(4){height:13px;opacity:.3}
+.bat{width:24px;height:12px;border:1.5px solid var(--text);border-radius:3px;position:relative;display:flex;align-items:center;padding:1.5px}
+.bat::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:3px;height:6px;background:var(--text);border-radius:0 2px 2px 0}
+.bat-fill{height:100%;width:28%;background:#e53535;border-radius:1.5px}
+.screen-wrap{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;display:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block}
+/* PADI header */
+.padi-hdr{background:var(--white);padding:.7rem 1rem .75rem;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border)}
+.padi-row{display:flex;align-items:center;gap:.5rem}
+.padi-col{display:flex;flex-direction:column}
+.padi-word{font-size:1.6rem;font-weight:900;letter-spacing:.18em;color:var(--navy);line-height:1;font-style:italic}
+.padi-yrs{background:var(--blue);color:#fff;font-size:.42rem;font-weight:700;letter-spacing:.2em;padding:.15rem .4rem;text-align:center;margin-top:.2rem;border-radius:2px}
+/* Nav title */
+.nav-title{background:var(--white);padding:.75rem 1rem .6rem;font-size:1rem;font-weight:700;color:var(--text);text-align:center;border-bottom:1px solid var(--border)}
+/* Buttons */
+.btn-primary{display:block;width:100%;background:var(--blue);color:#fff;font-size:.92rem;font-weight:700;text-align:center;padding:.85rem;border-radius:10px;border:none;cursor:pointer;margin-bottom:.55rem;font-family:inherit}
+.btn-outline{display:block;width:100%;background:transparent;color:var(--blue);font-size:.92rem;font-weight:700;text-align:center;padding:.82rem;border-radius:10px;border:1.5px solid var(--blue);cursor:pointer;font-family:inherit}
+/* Home */
+.signin-card{background:var(--white);margin:.75rem;border-radius:14px;padding:1.25rem;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.eyebrow{font-size:.72rem;color:var(--gray);margin-bottom:.35rem}
+.signin-title{font-size:1.2rem;font-weight:800;color:var(--text);line-height:1.25;margin-bottom:.45rem}
+.signin-body{font-size:.8rem;color:var(--gray);line-height:1.5;margin-bottom:1rem}
+.hero-card{margin:0 .75rem .75rem;border-radius:14px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.hero-body{background:#fff;padding:.9rem 1rem}
+.hero-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:.25rem}
+.hero-sub{font-size:.78rem;color:var(--gray);line-height:1.4}
+/* Tiles */
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:.7rem}
+.tile{background:var(--white);border-radius:14px;padding:1.3rem .9rem 1rem;box-shadow:0 1px 5px rgba(0,0,0,.07);display:flex;flex-direction:column;align-items:center;gap:.55rem;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s;border:none;width:100%}
+.tile:active{transform:scale(.97)}
+.tile-icon{width:52px;height:52px}
+.tile-name{font-size:.88rem;font-weight:700;color:var(--text);text-align:center;line-height:1.2}
+.tile-sub{font-size:.7rem;color:var(--gray);text-align:center;line-height:1.3}
+/* List rows */
+.sec-lbl{padding:.9rem 1rem .35rem;font-size:.68rem;font-weight:600;color:var(--gray);letter-spacing:.07em;text-transform:uppercase}
+.list-block{background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.list-row{display:flex;align-items:center;padding:.85rem 1rem;border-bottom:1px solid var(--border);gap:.75rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.list-row:last-child{border-bottom:none}
+.list-row:active{background:var(--bg)}
+.lico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lico.blue{background:#e0ecff}.lico.gray{background:#eaedf3}.lico.green{background:#e0f7ea}.lico.orange{background:#fff0dd}
+.list-lbl{flex:1;font-size:.88rem;color:var(--text);font-weight:500}
+.list-arr{color:#c5ccd8;font-size:.9rem}.list-ext{color:#c5ccd8;font-size:.8rem}.list-lock{font-size:.8rem;color:var(--gray)}
+/* More */
+.more-strip{background:var(--white);padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border)}
+.more-strip-txt{flex:1;font-size:.82rem;color:var(--gray);line-height:1.3}
+.btn-sm{background:var(--blue);color:#fff;font-size:.78rem;font-weight:700;padding:.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* eCard */
+.ec-hdr{background:var(--white);padding:.6rem 1rem;display:flex;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.back-btn{color:var(--blue);font-size:.9rem;font-weight:400;display:flex;align-items:center;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;-webkit-tap-highlight-color:transparent}
+.back-chev{font-size:1.4rem;line-height:1}
+.ec-title{position:absolute;left:50%;transform:translateX(-50%);font-size:.95rem;font-weight:700;color:var(--text)}
+.ec-sec{background:var(--bg);padding:.6rem 1rem;font-size:.65rem;font-weight:600;color:var(--gray);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.ec-hero-wrap{position:relative;width:100%}
+.ec-hero{width:100%;display:block;aspect-ratio:4/3}
+.padi-wm{position:absolute;bottom:12px;left:14px;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.padi-wm-word{font-size:.82rem;font-weight:900;letter-spacing:.22em;color:#fff;font-style:italic;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.person-sec{background:var(--white);padding:1rem 1rem .25rem;display:flex;align-items:flex-start;gap:.9rem}
+.person-photo{width:90px;height:90px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#dde3f0;border:1px solid var(--border)}
+.person-name{font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.55rem;line-height:1.15}
+.flbl{font-size:.6rem;font-weight:600;color:var(--gray);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.1rem}
+.fval{font-size:.88rem;font-weight:500;color:var(--text)}
+.edit-photo{display:block;color:var(--blue);font-size:.82rem;font-weight:500;padding:.3rem 1rem .75rem;background:var(--white);border:none;cursor:pointer;font-family:inherit;text-align:left;width:100%}
+.cert-sec{background:var(--white);padding:.85rem 1rem 0;border-top:1px solid var(--border)}
+.cert-two{display:grid;grid-template-columns:1fr 1fr;padding-bottom:.6rem}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:.8rem 1rem 1rem;background:var(--white);border-top:1px solid var(--border)}
+.btn-share{background:var(--blue);color:#fff;font-size:.9rem;font-weight:600;padding:.82rem;border-radius:10px;border:none;cursor:pointer;font-family:inherit}
+.btn-buy{background:transparent;color:var(--blue);font-size:.9rem;font-weight:600;padding:.82rem;border-radius:10px;border:1.5px solid var(--blue);cursor:pointer;font-family:inherit}
+/* Bottom nav */
+.bottom-nav{background:var(--white);border-top:1px solid var(--border);display:flex;padding:.45rem 0 calc(.5rem + env(safe-area-inset-bottom,8px));flex-shrink:0}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.25rem .2rem .05rem;cursor:pointer;-webkit-tap-highlight-color:transparent;background:none;border:none;font-family:inherit}
+.ntab svg{width:26px;height:26px;color:var(--gray);transition:color .12s}
+.nlbl{font-size:.6rem;font-weight:500;color:var(--gray);transition:color .12s}
+.ntab.active svg{color:var(--blue)}
+.ntab.active .nlbl{color:var(--blue);font-weight:700}
+</style>
 </head>
 <body>
-
 <div class="phone">
+<div class="dynamic-island"></div>
 
-  <!-- STATUS BAR -->
-  <div class="status-bar">
-    <span>22:52</span>
-    <div class="status-right">
-      <div class="sig"><i></i><i></i><i></i><i></i></div>
-      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-        <path d="M8 2.4C10.2 2.4 12.2 3.3 13.6 4.8L15 3.3C13.2 1.3 10.7 0 8 0C5.3 0 2.8 1.3 1 3.3L2.4 4.8C3.8 3.3 5.8 2.4 8 2.4Z" fill="currentColor"/>
-        <path d="M8 5.2C9.5 5.2 10.8 5.8 11.8 6.8L13.2 5.3C11.8 3.9 9.9 3 8 3C6.1 3 4.2 3.9 2.8 5.3L4.2 6.8C5.2 5.8 6.5 5.2 8 5.2Z" fill="currentColor"/>
-        <circle cx="8" cy="10" r="2" fill="currentColor"/>
-      </svg>
-      <div class="bat"><div class="bat-fill"></div></div>
-    </div>
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span>22:52</span>
+  <div class="status-right">
+    <div class="sig"><i></i><i></i><i></i><i></i></div>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+      <path d="M8 9a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
+      <path d="M8 6c-1.7 0-3.2.7-4.3 1.8l1.1 1.1C5.6 8 6.7 7.5 8 7.5s2.4.5 3.2 1.4l1.1-1.1C11.2 6.7 9.7 6 8 6z"/>
+      <path d="M8 3C5.3 3 2.9 4.1 1.2 5.9l1.1 1.1C3.8 5.5 5.8 4.5 8 4.5s4.2 1 5.7 2.5l1.1-1.1C13.1 4.1 10.7 3 8 3z"/>
+      <path d="M8 0C4.3 0 1 1.5-.4 4l1.1 1.1C2.1 2.8 4.9 1.5 8 1.5s5.9 1.3 7.3 3.6L16.4 4C15 1.5 11.7 0 8 0z" opacity=".4"/>
+    </svg>
+    <div class="bat"><div class="bat-fill"></div></div>
   </div>
-
-  <!-- SCROLL AREA -->
-  <div class="scroll-area">
-
-    <!-- APP HEADER -->
-    <div class="app-header">
-      <a class="back-btn" href="/portfolio/">
-        <span class="back-chevron">‹</span>
-      </a>
-      <span class="page-title">Open Water</span>
-    </div>
-
-    <!-- SECTION LABEL -->
-    <div class="section-label">Certification / Program Details</div>
-
-    <!-- HERO IMAGE -->
-    <div class="hero-img">
-      <div class="hero-inner">
-        <!-- Ocean scene SVG -->
-        <svg width="100%" height="100%" viewBox="0 0 390 292" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <!-- Sky gradient -->
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#6CC6E8"/>
-              <stop offset="100%" stop-color="#9DD8F0"/>
-            </linearGradient>
-            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#2CB5C0"/>
-              <stop offset="100%" stop-color="#0E7A8C"/>
-            </linearGradient>
-            <linearGradient id="underwaterLight" x1=".5" y1="0" x2=".5" y2="1">
-              <stop offset="0%" stop-color="rgba(100,220,230,.25)"/>
-              <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Sky -->
-          <rect width="390" height="135" fill="url(#sky)"/>
-
-          <!-- Clouds -->
-          <ellipse cx="290" cy="45" rx="55" ry="22" fill="white" opacity=".85"/>
-          <ellipse cx="320" cy="38" rx="38" ry="18" fill="white" opacity=".9"/>
-          <ellipse cx="260" cy="50" rx="30" ry="14" fill="white" opacity=".75"/>
-          <ellipse cx="70" cy="55" rx="48" ry="18" fill="white" opacity=".7"/>
-          <ellipse cx="50" cy="48" rx="32" ry="15" fill="white" opacity=".8"/>
-
-          <!-- Island far right -->
-          <ellipse cx="350" cy="132" rx="45" ry="12" fill="#4AAD52" opacity=".9"/>
-          <ellipse cx="355" cy="128" rx="32" ry="9" fill="#5DC164"/>
-
-          <!-- Waterline -->
-          <path d="M0 135 C65 130, 130 140, 195 135 C260 130, 325 140, 390 135 L390 292 L0 292Z" fill="url(#water)"/>
-
-          <!-- Underwater light rays -->
-          <path d="M150 135 L100 292" stroke="rgba(255,255,255,.06)" stroke-width="25"/>
-          <path d="M230 135 L200 292" stroke="rgba(255,255,255,.06)" stroke-width="20"/>
-          <path d="M310 135 L340 292" stroke="rgba(255,255,255,.07)" stroke-width="18"/>
-
-          <!-- Sea turtle body -->
-          <g transform="translate(165, 165) rotate(-12)">
-            <!-- Shell -->
-            <ellipse cx="0" cy="0" rx="52" ry="38" fill="#4A7A3A"/>
-            <!-- Shell pattern -->
-            <ellipse cx="0" cy="0" rx="38" ry="28" fill="#5A8F48" opacity=".7"/>
-            <ellipse cx="0" cy="-8" rx="18" ry="14" fill="#3D6630" opacity=".6"/>
-            <ellipse cx="-16" cy="8" rx="12" ry="9" fill="#3D6630" opacity=".5"/>
-            <ellipse cx="16" cy="8" rx="12" ry="9" fill="#3D6630" opacity=".5"/>
-            <!-- Head -->
-            <ellipse cx="52" cy="-4" rx="18" ry="14" fill="#4A7A3A"/>
-            <ellipse cx="57" cy="-8" rx="7" ry="5" fill="#5A8F48" opacity=".6"/>
-            <!-- Eye -->
-            <circle cx="64" cy="-7" r="3.5" fill="#1a1a1a"/>
-            <circle cx="65" cy="-8" r="1.2" fill="white" opacity=".6"/>
-            <!-- Front flippers -->
-            <ellipse cx="30" cy="-45" rx="12" ry="32" fill="#4A7A3A" transform="rotate(30 30 -45)"/>
-            <ellipse cx="-28" cy="-44" rx="10" ry="28" fill="#4A7A3A" transform="rotate(-25 -28 -44)"/>
-            <!-- Back flippers -->
-            <ellipse cx="-40" cy="30" rx="8" ry="20" fill="#4A7A3A" transform="rotate(20 -40 30)"/>
-            <ellipse cx="22" cy="38" rx="7" ry="18" fill="#4A7A3A" transform="rotate(-15 22 38)"/>
-            <!-- Bubbles -->
-            <circle cx="75" cy="-18" r="4" fill="rgba(255,255,255,.5)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-            <circle cx="82" cy="-30" r="2.5" fill="rgba(255,255,255,.4)" stroke="rgba(255,255,255,.25)" stroke-width=".8"/>
-            <circle cx="70" cy="-38" r="3" fill="rgba(255,255,255,.45)" stroke="rgba(255,255,255,.3)" stroke-width=".8"/>
-          </g>
-
-          <!-- Water surface shimmer -->
-          <path d="M0 135 C65 132, 130 138, 195 135 C260 132, 325 138, 390 135" stroke="rgba(255,255,255,.5)" stroke-width="1.5" fill="none"/>
-          <path d="M0 140 C50 137, 100 143, 160 140 C220 137, 300 144, 390 140" stroke="rgba(255,255,255,.2)" stroke-width="1" fill="none"/>
-
-          <!-- Underwater light overlay -->
-          <rect x="0" y="135" width="390" height="157" fill="url(#underwaterLight)"/>
-        </svg>
-
-        <!-- PADI watermark bottom-left -->
-        <div class="padi-watermark">
-          <svg class="padi-wm-globe" viewBox="0 0 34 34" fill="none">
-            <circle cx="17" cy="17" r="15" fill="#1a56d6"/>
-            <circle cx="17" cy="17" r="15" fill="none" stroke="white" stroke-width="1"/>
-            <ellipse cx="17" cy="17" rx="7" ry="15" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".8"/>
-            <ellipse cx="17" cy="17" rx="15" ry="7" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".8"/>
-            <path d="M9 12 C11 9, 15 9, 17 11 C18 12, 19 11, 20 12 C22 13.5, 21 16, 19 16 C17 16, 16 14, 14 15 C12 16, 9 15, 9 12Z" fill="white" opacity=".9"/>
-            <path d="M19 15.5 C21 14, 25 14, 27 16 C28 17, 28 19, 26 20 C24 20, 22 19, 20 18Z" fill="white" opacity=".8"/>
-          </svg>
-          <span class="padi-wm-word">PADI</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERSON INFO -->
-    <div class="person-row">
-      <div class="person-photo">
-        <!-- Silhouette placeholder -->
-        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
-          <rect width="90" height="90" fill="#dde4f0"/>
-          <circle cx="45" cy="33" r="16" fill="#b0bcd8"/>
-          <path d="M10 85 C10 60, 80 60, 80 85" fill="#b0bcd8"/>
-        </svg>
-      </div>
-      <div class="person-info">
-        <div class="person-name">Rein Eijkelboom</div>
-        <div class="person-field-lbl">Birthdate</div>
-        <div class="person-field-val">••-••••-••••</div>
-      </div>
-    </div>
-    <button class="edit-photo-btn">edit photo</button>
-
-    <!-- CERT DETAILS -->
-    <div class="cert-section">
-      <div class="cert-field-lbl">Certification</div>
-      <div class="cert-field-val">Open Water Diver</div>
-
-      <div class="cert-two-col">
-        <div class="cert-col">
-          <div class="cert-field-lbl">Cert. Date</div>
-          <div class="cert-field-val">15-Aug-2024</div>
-        </div>
-        <div class="cert-col">
-          <div class="cert-field-lbl">PADI No.</div>
-          <div class="cert-field-val">NL-OWD-3312</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BUTTONS -->
-    <div class="btn-row">
-      <button class="btn-filled">Share</button>
-      <button class="btn-stroke">Buy Cert. Card</button>
-    </div>
-
-  </div><!-- /scroll-area -->
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-
-    <div class="nav-tab">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-        <path d="M9 21V13h6v8"/>
-      </svg>
-      <span class="nav-lbl">Home</span>
-    </div>
-
-    <div class="nav-tab">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M12 3L2 8l10 5 10-5-10-5z" stroke-linejoin="round"/>
-        <path d="M2 8v7M22 8v7M7 11v5l5 2.5L17 16v-5" stroke-linecap="round"/>
-      </svg>
-      <span class="nav-lbl">Learn</span>
-    </div>
-
-    <div class="nav-tab active">
-      <!-- Dive / wave icon -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M3 12 C5 9, 7 9, 9 12 C11 15, 13 15, 15 12 C17 9, 19 9, 21 12" stroke-linecap="round"/>
-        <path d="M3 17 C5 14, 7 14, 9 17 C11 20, 13 20, 15 17 C17 14, 19 14, 21 17" stroke-linecap="round" opacity=".5"/>
-        <circle cx="12" cy="7" r="2" fill="currentColor" stroke="none"/>
-        <path d="M12 9v3" stroke-linecap="round"/>
-      </svg>
-      <span class="nav-lbl">Dive</span>
-    </div>
-
-    <div class="nav-tab">
-      <!-- Pro / shield-person icon -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M12 3L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6L12 3z" stroke-linejoin="round"/>
-        <circle cx="12" cy="10" r="2.5"/>
-        <path d="M8 18c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke-linecap="round"/>
-      </svg>
-      <span class="nav-lbl">Pro</span>
-    </div>
-
-    <div class="nav-tab">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="5" cy="12" r="1.8"/>
-        <circle cx="12" cy="12" r="1.8"/>
-        <circle cx="19" cy="12" r="1.8"/>
-      </svg>
-      <span class="nav-lbl">More</span>
-    </div>
-
-  </nav>
-
 </div>
 
+<div class="screen-wrap">
+
+<!-- ═══ HOME ═══ -->
+<div class="screen" id="screen-home">
+  <div class="padi-hdr">
+    <div class="padi-row">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+        <circle cx="21" cy="21" r="19" fill="#1a56d6"/>
+        <circle cx="21" cy="21" r="19" fill="none" stroke="white" stroke-width="1.2"/>
+        <ellipse cx="21" cy="21" rx="9" ry="19" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".9"/>
+        <ellipse cx="21" cy="21" rx="19" ry="8.5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".9"/>
+        <line x1="2" y1="21" x2="40" y2="21" stroke="rgba(255,255,255,.4)" stroke-width=".9"/>
+        <line x1="21" y1="2" x2="21" y2="40" stroke="rgba(255,255,255,.4)" stroke-width=".9"/>
+        <path d="M10 15C12 11,17 11,19 13C20 14,21 13,22 14C24.5 15.5,24 18.5,22 18.5C20 18.5,19 16.5,17 17.5C15 18.5,11 17.5,10 15Z" fill="white" opacity=".88"/>
+        <path d="M22 14.5C24.5 13,28 13.5,30 16C31 17,31 19.5,29 20C27 20,25 18.5,23 17.5C22 17,21.5 15.5,22 14.5Z" fill="white" opacity=".85"/>
+        <path d="M13 22C15 20.5,17.5 21,18.5 23.5C19.5 26,17.5 29,15.5 29C13.5 29,12 27,12.5 25C12.8 23.5,12.5 22.5,13 22Z" fill="white" opacity=".8"/>
+      </svg>
+      <div class="padi-col">
+        <span class="padi-word">PADI</span>
+        <div class="padi-yrs">60 YEARS</div>
+      </div>
+    </div>
+  </div>
+  <div class="signin-card">
+    <div class="eyebrow">PADI Recommendation</div>
+    <div class="signin-title">Get the most of the app by signing in!</div>
+    <div class="signin-body">Sign in or create an account to access your PADI eCards, diver checklists, and more.</div>
+    <button class="btn-primary" onclick="showEcard()">Create an account</button>
+    <button class="btn-outline" onclick="showEcard()">Sign In</button>
+  </div>
+  <div class="hero-card">
+    <svg width="100%" viewBox="0 0 390 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:block">
+      <defs>
+        <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#071d5c"/>
+          <stop offset="100%" stop-color="#041030"/>
+        </linearGradient>
+        <radialGradient id="hl" cx="50%" cy="0%" r="80%">
+          <stop offset="0%" stop-color="rgba(80,160,255,.2)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <rect width="390" height="220" fill="url(#hg)"/>
+      <rect width="390" height="220" fill="url(#hl)"/>
+      <path d="M195 0L150 220" stroke="rgba(100,180,255,.06)" stroke-width="35"/>
+      <path d="M250 0L230 220" stroke="rgba(100,180,255,.05)" stroke-width="25"/>
+      <path d="M290 0L330 220" stroke="rgba(100,180,255,.04)" stroke-width="20"/>
+      <path d="M120 0L80 220" stroke="rgba(100,180,255,.04)" stroke-width="18"/>
+      <!-- Whale shark -->
+      <path d="M15 100C55 58,135 53,198 63C262 73,315 85,360 100C315 118,262 128,198 130C135 132,55 128,15 100Z" fill="#1a3d72" opacity=".95"/>
+      <path d="M45 100C90 90,155 88,218 92C270 95,320 103,358 111C315 121,262 127,200 127C138 127,85 120,45 100Z" fill="#2a5fa2" opacity=".5"/>
+      <!-- Spots -->
+      <circle cx="75" cy="87" r="4.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="108" cy="79" r="3.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="140" cy="73" r="4" fill="rgba(130,205,255,.52)"/>
+      <circle cx="174" cy="71" r="3.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="206" cy="72" r="4.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="238" cy="76" r="3.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="268" cy="82" r="4" fill="rgba(130,205,255,.52)"/>
+      <circle cx="296" cy="88" r="3.5" fill="rgba(130,205,255,.52)"/>
+      <circle cx="92" cy="103" r="3.5" fill="rgba(130,205,255,.42)"/>
+      <circle cx="128" cy="97" r="3" fill="rgba(130,205,255,.42)"/>
+      <circle cx="163" cy="93" r="4" fill="rgba(130,205,255,.42)"/>
+      <circle cx="198" cy="93" r="3" fill="rgba(130,205,255,.42)"/>
+      <circle cx="230" cy="96" r="3.5" fill="rgba(130,205,255,.42)"/>
+      <circle cx="260" cy="100" r="3" fill="rgba(130,205,255,.42)"/>
+      <!-- Tail -->
+      <path d="M342 87L372 58L370 90L372 122L342 110Z" fill="#12275a" opacity=".9"/>
+      <!-- Dorsal -->
+      <path d="M188 63L198 28L217 60Z" fill="#102050" opacity=".9"/>
+      <!-- Pec fin -->
+      <path d="M118 98L86 132L143 113Z" fill="#102050" opacity=".8"/>
+      <!-- Head -->
+      <path d="M15 93C19 86,30 84,33 89C30 100,19 102,15 93Z" fill="#0c1d48" opacity=".9"/>
+      <!-- Eye -->
+      <circle cx="35" cy="91" r="4.5" fill="#080f28"/>
+      <circle cx="36.5" cy="89.5" r="1.8" fill="white" opacity=".3"/>
+      <!-- Gill slits -->
+      <path d="M52 84L47 108" stroke="#0c1d48" stroke-width="1.5" opacity=".55"/>
+      <path d="M59 82L54 107" stroke="#0c1d48" stroke-width="1.5" opacity=".45"/>
+      <path d="M66 81L62 106" stroke="#0c1d48" stroke-width="1.5" opacity=".35"/>
+      <!-- Small fish school -->
+      <ellipse cx="312" cy="44" rx="7" ry="3" fill="rgba(140,200,255,.6)" transform="rotate(-15 312 44)"/>
+      <ellipse cx="328" cy="37" rx="6" ry="2.5" fill="rgba(140,200,255,.6)" transform="rotate(-10 328 37)"/>
+      <ellipse cx="320" cy="29" rx="5" ry="2" fill="rgba(140,200,255,.6)" transform="rotate(-22 320 29)"/>
+      <ellipse cx="300" cy="34" rx="5.5" ry="2.3" fill="rgba(140,200,255,.6)" transform="rotate(-5 300 34)"/>
+      <ellipse cx="310" cy="27" rx="4.5" ry="2" fill="rgba(140,200,255,.6)" transform="rotate(-28 310 27)"/>
+      <!-- Bubbles -->
+      <circle cx="28" cy="74" r="3" fill="none" stroke="rgba(140,210,255,.4)" stroke-width="1"/>
+      <circle cx="36" cy="58" r="2" fill="none" stroke="rgba(140,210,255,.35)" stroke-width=".8"/>
+      <circle cx="23" cy="48" r="2.5" fill="none" stroke="rgba(140,210,255,.3)" stroke-width=".8"/>
+    </svg>
+    <div class="hero-body">
+      <div class="hero-title">Show off your PADI pride!</div>
+      <div class="hero-sub">New limited edition certification card designs are here. Get yours now!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LEARN ═══ -->
+<div class="screen" id="screen-learn">
+  <div class="nav-title">Learn</div>
+  <div class="tile-grid">
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <rect x="14" y="12" width="24" height="29" rx="3" stroke="#1a56d6" stroke-width="2" fill="none"/>
+        <path d="M14 20h24" stroke="#1a56d6" stroke-width="1.8"/>
+        <path d="M19 27h14M19 32h10" stroke="#1a56d6" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M21 12v-3M31 12v-3" stroke="#1a56d6" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div class="tile-name">Courses</div>
+      <div class="tile-sub">Find your next certification</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <path d="M26 10l3.5 7.5 8.2 1.2-6 5.8 1.4 8.2-7.1-3.7-7.1 3.7 1.4-8.2-6-5.8 8.2-1.2L26 10z" stroke="#1a56d6" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <circle cx="26" cy="39" r="2.5" fill="#1a56d6" opacity=".35"/>
+      </svg>
+      <div class="tile-name">Specialties</div>
+      <div class="tile-sub">Expand your diving skills</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <rect x="11" y="15" width="30" height="21" rx="3" stroke="#1a56d6" stroke-width="2" fill="none"/>
+        <path d="M26 36v4M21 40h10" stroke="#1a56d6" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="34" cy="22" r="2.5" fill="#1a56d6" opacity=".45"/>
+        <path d="M16 22h13M16 27h9" stroke="#1a56d6" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <div class="tile-name">Touch</div>
+      <div class="tile-sub">Interactive learning</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <rect x="11" y="13" width="13" height="26" rx="2" stroke="#1a56d6" stroke-width="1.8" fill="none"/>
+        <rect x="25" y="13" width="16" height="26" rx="2" stroke="#1a56d6" stroke-width="1.8" fill="none"/>
+        <path d="M28 20h10M28 25h10M28 30h7" stroke="#1a56d6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="tile-name">Encyclopedia of Diving</div>
+      <div class="tile-sub">Reference &amp; knowledge base</div>
+    </button>
+  </div>
+</div>
+
+<!-- ═══ DIVE ═══ -->
+<div class="screen active" id="screen-dive">
+  <div class="nav-title">Dive</div>
+  <div class="tile-grid">
+    <button class="tile" onclick="showEcard()">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <rect x="8" y="14" width="36" height="24" rx="3.5" fill="#1a56d6"/>
+        <rect x="11" y="18" width="14" height="10" rx="2" fill="rgba(255,255,255,.22)"/>
+        <rect x="28" y="18" width="12" height="3" rx="1.5" fill="rgba(255,255,255,.72)"/>
+        <rect x="28" y="23" width="9" height="3" rx="1.5" fill="rgba(255,255,255,.5)"/>
+        <rect x="11" y="31" width="29" height="2.5" rx="1.2" fill="rgba(255,255,255,.28)"/>
+      </svg>
+      <div class="tile-name">eCards</div>
+      <div class="tile-sub">Your digital certification cards</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <path d="M26 11C26 11,12 24,12 32C12 39.7,18.3 46,26 46C33.7 46,40 39.7,40 32C40 24,26 11,26 11Z" fill="#1a56d6"/>
+        <circle cx="26" cy="33" r="5.5" fill="white" opacity=".72"/>
+      </svg>
+      <div class="tile-name">Dive Shop Locator</div>
+      <div class="tile-sub">Find shops globally</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <circle cx="26" cy="26" r="14" fill="#1a56d6"/>
+        <ellipse cx="26" cy="26" rx="6" ry="14" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
+        <ellipse cx="26" cy="26" rx="14" ry="6" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
+        <path d="M16 21C18 18,22 18,24 20C25 21,26 20,27 21C29.5 23,29 26,27 26C25 26,24 24,22 25C20 26,16 25,16 21Z" fill="rgba(255,255,255,.82)"/>
+      </svg>
+      <div class="tile-name">PADI Adventures</div>
+      <div class="tile-sub">Book your next dive adventure</div>
+    </button>
+    <button class="tile">
+      <svg class="tile-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#e8effc"/>
+        <rect x="15" y="11" width="16" height="22" rx="2.5" fill="#8baee8"/>
+        <rect x="17" y="13" width="14" height="22" rx="2" fill="#1a56d6"/>
+        <path d="M26 29l3.5 3.5L36 25" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="20" y="18" width="8" height="2" rx="1" fill="white" opacity=".55"/>
+        <rect x="20" y="22" width="6" height="2" rx="1" fill="white" opacity=".4"/>
+      </svg>
+      <div class="tile-name">Checklists</div>
+      <div class="tile-sub">Handy diver's checklists</div>
+    </button>
+  </div>
+</div>
+
+<!-- ═══ PRO ═══ -->
+<div class="screen" id="screen-pro">
+  <div class="nav-title">Pro</div>
+  <div class="sec-lbl">PROFESSIONAL TOOLS</div>
+  <div class="list-block">
+    <div class="list-row">
+      <div class="lico blue"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L3 5v6c0 4 3 7.5 7 9 4-1.5 7-5 7-9V5L10 2z" stroke="#1a56d6" stroke-width="1.6" stroke-linejoin="round"/><circle cx="10" cy="9.5" r="2.2" stroke="#1a56d6" stroke-width="1.4"/><path d="M6.5 16C6.5 14,8 12.5 10 12.5s3.5 1.5 3.5 3.5" stroke="#1a56d6" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">Instructor Resources</span>
+      <span class="list-lock">🔒</span><span class="list-arr">›</span>
+    </div>
+    <div class="list-row">
+      <div class="lico blue"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#1a56d6" stroke-width="1.5" fill="none"/><path d="M10 3C10 3,7 6,7 10s3 7,3 7" stroke="#1a56d6" stroke-width="1.1" opacity=".45"/><path d="M2.5 10h15" stroke="#1a56d6" stroke-width="1.1" opacity=".45"/><circle cx="15" cy="5" r="3.5" fill="#1a56d6"/><path d="M13.5 5l1.2 1.2L17 4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <span class="list-lbl">Find a Course Director</span>
+      <span class="list-arr">›</span>
+    </div>
+    <div class="list-row">
+      <div class="lico green"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="#1a9a4a" stroke-width="1.5" fill="none"/><path d="M6 9h8M6 12.5h5" stroke="#1a9a4a" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">PADI Pros Website</span>
+      <span class="list-ext">↗</span>
+    </div>
+  </div>
+  <div class="sec-lbl">TRAINING MATERIALS</div>
+  <div class="list-block">
+    <div class="list-row">
+      <div class="lico gray"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="2" width="12" height="16" rx="2" stroke="#666" stroke-width="1.5" fill="none"/><path d="M7 7h6M7 10.5h6M7 14h4" stroke="#666" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">Crew-Paks</span>
+      <span class="list-lock">🔒</span><span class="list-arr">›</span>
+    </div>
+    <div class="list-row">
+      <div class="lico gray"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5.5H18l-4.5 4 1.8 5.5L10 14l-5.3 3 1.8-5.5L2 7.5h5.5L10 2z" stroke="#666" stroke-width="1.4" stroke-linejoin="round" fill="none"/></svg></div>
+      <span class="list-lbl">Instructor Updates</span>
+      <span class="list-lock">🔒</span><span class="list-arr">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MORE ═══ -->
+<div class="screen" id="screen-more">
+  <div class="padi-hdr">
+    <div class="padi-row">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+        <circle cx="21" cy="21" r="19" fill="#1a56d6"/>
+        <circle cx="21" cy="21" r="19" fill="none" stroke="white" stroke-width="1.2"/>
+        <ellipse cx="21" cy="21" rx="9" ry="19" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".9"/>
+        <ellipse cx="21" cy="21" rx="19" ry="8.5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".9"/>
+        <line x1="2" y1="21" x2="40" y2="21" stroke="rgba(255,255,255,.4)" stroke-width=".9"/>
+        <line x1="21" y1="2" x2="21" y2="40" stroke="rgba(255,255,255,.4)" stroke-width=".9"/>
+        <path d="M10 15C12 11,17 11,19 13C20 14,21 13,22 14C24.5 15.5,24 18.5,22 18.5C20 18.5,19 16.5,17 17.5C15 18.5,11 17.5,10 15Z" fill="white" opacity=".88"/>
+        <path d="M22 14.5C24.5 13,28 13.5,30 16C31 17,31 19.5,29 20C27 20,25 18.5,23 17.5C22 17,21.5 15.5,22 14.5Z" fill="white" opacity=".85"/>
+        <path d="M13 22C15 20.5,17.5 21,18.5 23.5C19.5 26,17.5 29,15.5 29C13.5 29,12 27,12.5 25C12.8 23.5,12.5 22.5,13 22Z" fill="white" opacity=".8"/>
+      </svg>
+      <div class="padi-col">
+        <span class="padi-word">PADI</span>
+        <div class="padi-yrs">60 YEARS</div>
+      </div>
+    </div>
+  </div>
+  <div class="more-strip">
+    <div class="more-strip-txt">Get the most of the app by signing in!</div>
+    <button class="btn-sm" onclick="showEcard()">Sign In</button>
+  </div>
+  <div class="sec-lbl">GENERAL</div>
+  <div class="list-block">
+    <div class="list-row">
+      <div class="lico gray"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#555" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="2.5" stroke="#555" stroke-width="1.4" fill="none"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2" stroke="#555" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">Settings</span><span class="list-arr">›</span>
+    </div>
+    <div class="list-row">
+      <div class="lico gray"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#555" stroke-width="1.5" fill="none"/><path d="M10 9v5.5M10 7v.5" stroke="#555" stroke-width="1.9" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">About</span><span class="list-arr">›</span>
+    </div>
+  </div>
+  <div class="sec-lbl">SUPPORT</div>
+  <div class="list-block">
+    <div class="list-row">
+      <div class="lico blue"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="#1a56d6" stroke-width="1.5" fill="none"/><path d="M8 8c0-1.1.9-2 2-2s2 .9 2 2c0 1.5-2 2-2 3.2M10 14.5v.5" stroke="#1a56d6" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">Help &amp; Support</span><span class="list-ext">↗</span>
+    </div>
+    <div class="list-row">
+      <div class="lico orange"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="#e07800" stroke-width="1.5" fill="none"/><path d="M2 6.5l8 5.5 8-5.5" stroke="#e07800" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="list-lbl">Feedback</span><span class="list-ext">↗</span>
+    </div>
+  </div>
+  <div style="padding:1.25rem 1rem .5rem;text-align:center">
+    <a href="/portfolio/" style="font-size:.78rem;color:var(--blue);text-decoration:none;display:block;padding:.4rem">← Terug naar portfolio</a>
+  </div>
+</div>
+
+<!-- ═══ eCARD ═══ -->
+<div class="screen" id="screen-ecard">
+  <div class="ec-hdr">
+    <button class="back-btn" onclick="goBack()"><span class="back-chev">‹</span></button>
+    <span class="ec-title">Open Water</span>
+  </div>
+  <div class="ec-sec">Certification / Program Details</div>
+  <div class="ec-hero-wrap">
+    <svg class="ec-hero" viewBox="0 0 390 292" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="esky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5ec5eb"/>
+          <stop offset="100%" stop-color="#92daf5"/>
+        </linearGradient>
+        <linearGradient id="ewat" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#20b8cc"/>
+          <stop offset="100%" stop-color="#0a7a8a"/>
+        </linearGradient>
+        <linearGradient id="eglow" x1=".5" y1="0" x2=".5" y2="1">
+          <stop offset="0%" stop-color="rgba(50,220,230,.3)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </linearGradient>
+        <radialGradient id="esun" cx="78%" cy="18%" r="22%">
+          <stop offset="0%" stop-color="rgba(255,250,200,.65)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <!-- Sky -->
+      <rect width="390" height="292" fill="url(#esky)"/>
+      <rect width="390" height="292" fill="url(#esun)"/>
+      <!-- Clouds -->
+      <ellipse cx="295" cy="42" rx="68" ry="27" fill="white" opacity=".92"/>
+      <ellipse cx="338" cy="33" rx="44" ry="21" fill="white" opacity=".96"/>
+      <ellipse cx="258" cy="50" rx="36" ry="17" fill="white" opacity=".82"/>
+      <ellipse cx="62" cy="52" rx="55" ry="22" fill="white" opacity=".78"/>
+      <ellipse cx="40" cy="44" rx="36" ry="18" fill="white" opacity=".88"/>
+      <ellipse cx="100" cy="48" rx="30" ry="14" fill="white" opacity=".72"/>
+      <ellipse cx="178" cy="28" rx="28" ry="11" fill="white" opacity=".62"/>
+      <!-- Island -->
+      <ellipse cx="345" cy="127" rx="54" ry="15" fill="#3a8a3a"/>
+      <ellipse cx="352" cy="121" rx="38" ry="11" fill="#4aac4a"/>
+      <!-- Palm -->
+      <line x1="348" y1="122" x2="344" y2="97" stroke="#2d6a2d" stroke-width="3.5"/>
+      <ellipse cx="339" cy="97" rx="14" ry="6" fill="#3a8a3a" transform="rotate(-22 339 97)"/>
+      <ellipse cx="354" cy="95" rx="13" ry="5.5" fill="#3a8a3a" transform="rotate(16 354 95)"/>
+      <ellipse cx="344" cy="92" rx="8" ry="4" fill="#2d6a2d" transform="rotate(-5 344 92)"/>
+      <!-- Water -->
+      <path d="M0 128C50 122,112 135,196 128C280 121,342 134,390 126L390 292L0 292Z" fill="url(#ewat)"/>
+      <!-- Surface shimmer -->
+      <path d="M0 128C50 124,112 132,196 128C280 124,342 132,390 128" stroke="rgba(255,255,255,.6)" stroke-width="2" fill="none"/>
+      <path d="M0 135C45 131,105 139,168 135C231 131,315 140,390 136" stroke="rgba(255,255,255,.22)" stroke-width="1" fill="none"/>
+      <!-- Underwater light -->
+      <rect x="0" y="128" width="390" height="164" fill="url(#eglow)"/>
+      <!-- Light rays -->
+      <path d="M196 128L155 292" stroke="rgba(255,255,255,.07)" stroke-width="32"/>
+      <path d="M268 128L298 292" stroke="rgba(255,255,255,.06)" stroke-width="22"/>
+      <path d="M128 128L98 292" stroke="rgba(255,255,255,.05)" stroke-width="18"/>
+      <!-- SEA TURTLE -->
+      <g transform="translate(188,192) rotate(-9)">
+        <!-- Shell -->
+        <ellipse cx="0" cy="0" rx="57" ry="42" fill="#3a6b30"/>
+        <ellipse cx="0" cy="-2" rx="42" ry="31" fill="#4a8040" opacity=".68"/>
+        <ellipse cx="0" cy="-5" rx="21" ry="17" fill="#2e5524" opacity=".62"/>
+        <ellipse cx="-23" cy="5" rx="15" ry="12" fill="#2e5524" opacity=".48"/>
+        <ellipse cx="23" cy="5" rx="15" ry="12" fill="#2e5524" opacity=".48"/>
+        <path d="M-40 -20C-48 -11,-52 5,-43 18" stroke="#264a1e" stroke-width="1.5" fill="none" opacity=".4"/>
+        <path d="M40 -20C48 -11,52 5,43 18" stroke="#264a1e" stroke-width="1.5" fill="none" opacity=".4"/>
+        <!-- Head -->
+        <ellipse cx="60" cy="-3" rx="21" ry="16" fill="#3a6b30"/>
+        <path d="M53 -9C60 -14,69 -12,73 -6C73 1,68 7,60 7C54 7,48 3,49 -3C50 -7,52 -8,53 -9Z" fill="#4a8040" opacity=".5"/>
+        <!-- Eye -->
+        <circle cx="72" cy="-7" r="4.5" fill="#1a1a08"/>
+        <circle cx="73.5" cy="-8.5" r="1.8" fill="white" opacity=".55"/>
+        <!-- Nostrils -->
+        <circle cx="79" cy="-1" r="1.3" fill="#2a4d1e" opacity=".65"/>
+        <circle cx="79" cy="3.5" r="1.3" fill="#2a4d1e" opacity=".65"/>
+        <!-- Front left flipper -->
+        <path d="M-8 -34C-3 -53,18 -58,28 -50C34 -46,29 -37,18 -30C8 -24,-6 -26,-8 -34Z" fill="#2e5524"/>
+        <path d="M2 -43C8 -52,18 -52,23 -44" stroke="#264a1e" stroke-width="1.2" fill="none" opacity=".45"/>
+        <!-- Front right flipper -->
+        <path d="M-12 33C-5 52,-2 60,9 59C20 58,23 48,16 39C10 30,-6 29,-12 33Z" fill="#2e5524"/>
+        <!-- Back flippers -->
+        <path d="M-44 -22C-55 -16,-60 -4,-56 7C-52 14,-44 12,-39 5C-34 0,-35 -13,-44 -22Z" fill="#3a6b30"/>
+        <path d="M-44 24C-55 20,-59 29,-55 37C-51 43,-43 41,-38 33C-34 27,-34 18,-44 24Z" fill="#3a6b30"/>
+        <!-- Bubbles -->
+        <circle cx="85" cy="-22" r="5.5" fill="rgba(255,255,255,.5)" stroke="rgba(255,255,255,.3)" stroke-width="1.2"/>
+        <circle cx="94" cy="-37" r="4" fill="rgba(255,255,255,.42)" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+        <circle cx="82" cy="-50" r="3" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.2)" stroke-width=".8"/>
+        <circle cx="98" cy="-53" r="2.2" fill="rgba(255,255,255,.3)" stroke="rgba(255,255,255,.18)" stroke-width=".7"/>
+      </g>
+    </svg>
+    <!-- PADI watermark -->
+    <div class="padi-wm">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="13" fill="#1a56d6"/>
+        <circle cx="15" cy="15" r="13" fill="none" stroke="white" stroke-width="1"/>
+        <ellipse cx="15" cy="15" rx="6" ry="13" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".8"/>
+        <ellipse cx="15" cy="15" rx="13" ry="6" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".8"/>
+        <path d="M8 11C10 8,13 8,15 10C16 11,17 10,18 11C19.5 12.5,19 15,17 15C15 15,14 13,12 14C10 15,8 14,8 11Z" fill="white" opacity=".9"/>
+      </svg>
+      <span class="padi-wm-word">PADI</span>
+    </div>
+  </div>
+  <!-- Person -->
+  <div class="person-sec">
+    <div class="person-photo">
+      <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+        <rect width="90" height="90" fill="#dde4f0"/>
+        <circle cx="45" cy="34" r="18" fill="#b0bcd8"/>
+        <path d="M7 87C7 61,83 61,83 87" fill="#b0bcd8"/>
+      </svg>
+    </div>
+    <div>
+      <div class="person-name">Rein Eijkelboom</div>
+      <div class="flbl">Birthdate</div>
+      <div class="fval">17-November-2004</div>
+    </div>
+  </div>
+  <button class="edit-photo">edit photo</button>
+  <!-- Cert details -->
+  <div class="cert-sec">
+    <div class="flbl">Certification</div>
+    <div class="fval" style="font-size:1rem;margin-bottom:.75rem">Open Water Diver</div>
+    <div class="cert-two">
+      <div><div class="flbl">Cert. Date</div><div class="fval">15-Aug-2024</div></div>
+      <div><div class="flbl">PADI No.</div><div class="fval">NL-OWD-3312</div></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-share">Share</button>
+    <button class="btn-buy">Buy Cert. Card</button>
+  </div>
+</div>
+
+</div><!-- /screen-wrap -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="ntab" id="tab-home" onclick="switchTab('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+      <path d="M9 21V13h6v8"/>
+    </svg>
+    <span class="nlbl">Home</span>
+  </button>
+  <button class="ntab" id="tab-learn" onclick="switchTab('learn')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3L2 8l10 5 10-5-10-5z"/>
+      <path d="M6 10.5v5.5l6 3 6-3v-5.5"/>
+      <path d="M20 8.5v6"/>
+    </svg>
+    <span class="nlbl">Learn</span>
+  </button>
+  <button class="ntab active" id="tab-dive" onclick="switchTab('dive')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M3 11C6.5 7,9.5 7,12 11C14.5 15,17.5 15,21 11"/>
+      <path d="M3 16C6.5 12,9.5 12,12 16C14.5 20,17.5 20,21 16" opacity=".42"/>
+    </svg>
+    <span class="nlbl">Dive</span>
+  </button>
+  <button class="ntab" id="tab-pro" onclick="switchTab('pro')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L4 5v7c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5L12 2z"/>
+      <circle cx="12" cy="10" r="2.5"/>
+      <path d="M8 18.5c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
+    </svg>
+    <span class="nlbl">Pro</span>
+  </button>
+  <button class="ntab" id="tab-more" onclick="switchTab('more')">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="5" cy="12" r="1.9"/>
+      <circle cx="12" cy="12" r="1.9"/>
+      <circle cx="19" cy="12" r="1.9"/>
+    </svg>
+    <span class="nlbl">More</span>
+  </button>
+</nav>
+
+</div>
+<script>
+var prev='dive';
+function switchTab(n){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.ntab').forEach(function(t){t.classList.remove('active')});
+  prev=n;
+  document.getElementById('screen-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+  document.getElementById('screen-'+n).scrollTop=0;
+}
+function showEcard(){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('screen-ecard').classList.add('active');
+  document.getElementById('screen-ecard').scrollTop=0;
+  document.querySelectorAll('.ntab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('tab-dive').classList.add('active');
+}
+function goBack(){switchTab(prev||'dive')}
+</script>
 </body>
 </html>
