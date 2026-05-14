@@ -3,293 +3,107 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>PADI App</title>
+  <title>PADI eCard — Rein Eijkelboom</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --blue:    #1a56d6;
-      --blue-lt: #e8effc;
-      --navy:    #0d1f4c;
-      --gray:    #8b95a8;
-      --gray-lt: #f0f2f5;
-      --white:   #ffffff;
-      --border:  #e2e6ed;
-      --text:    #1a1f2e;
-      --red:     #e53535;
+      --blue:   #1a56d6;
+      --navy:   #0d1f4c;
+      --gray:   #8b95a8;
+      --gray-lt:#f0f2f5;
+      --border: #e2e6ed;
+      --white:  #ffffff;
+      --text:   #1a1f2e;
     }
 
     html, body {
       height: 100%;
-      background: #000;
+      background: linear-gradient(160deg, #1848c8 0%, #1a56d6 50%, #1265e0 100%);
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem .75rem;
+      min-height: 100vh;
     }
 
     /* ── PHONE SHELL ── */
     .phone {
       width: 100%;
       max-width: 390px;
-      height: 100vh;
-      max-height: 844px;
-      margin: 0 auto;
-      background: var(--gray-lt);
+      background: var(--white);
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 10px #0d2a7a,
+        0 0 0 12px #1535a0,
+        0 30px 80px rgba(0,0,0,.5);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      max-height: 90vh;
       position: relative;
     }
 
     /* ── STATUS BAR ── */
     .status-bar {
       background: var(--white);
-      padding: .65rem 1.25rem .3rem;
+      padding: .7rem 1.4rem .2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: .72rem;
+      font-size: .75rem;
       font-weight: 600;
       color: var(--text);
       flex-shrink: 0;
     }
-    .status-right { display: flex; gap: .45rem; align-items: center; }
+    .status-right { display: flex; gap: .4rem; align-items: center; }
     .sig { display: flex; gap: 2px; align-items: flex-end; }
     .sig i { width: 3px; background: var(--text); border-radius: 1px; display: block; }
     .sig i:nth-child(1){height:4px} .sig i:nth-child(2){height:7px}
     .sig i:nth-child(3){height:10px} .sig i:nth-child(4){height:13px}
-    .wifi-icon { font-size: .75rem; }
-    .bat {
-      width: 22px; height: 11px;
-      border: 1.5px solid var(--text); border-radius: 2.5px;
-      position: relative; display: flex; align-items: center; padding: 1px;
-    }
-    .bat::after {
-      content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%);
-      width:3px; height:5px; background: var(--text); border-radius:0 1px 1px 0;
-    }
+    .bat { width: 22px; height: 11px; border: 1.5px solid var(--text); border-radius: 2.5px; position: relative; display: flex; align-items: center; padding: 1.5px 1.5px; }
+    .bat::after { content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%); width:3px; height:5px; background:var(--text); border-radius:0 1px 1px 0; }
     .bat-fill { height:100%; width:30%; background:#e53535; border-radius:1px; }
 
-    /* ── SCREEN ── */
-    .screen { flex: 1; overflow-y: auto; overflow-x: hidden; display: none; }
-    .screen.active { display: block; }
-    .screen-inner { display: flex; flex-direction: column; min-height: 100%; }
+    /* ── SCROLL AREA ── */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
 
-    /* ── PADI HEADER ── */
-    .padi-header {
+    /* ── APP HEADER (back + title) ── */
+    .app-header {
       background: var(--white);
-      padding: .6rem 1rem .8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .padi-logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-    }
-    .padi-globe-row {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-    }
-    .globe-svg { width: 38px; height: 38px; }
-    .padi-text-block { display: flex; flex-direction: column; }
-    .padi-wordmark {
-      font-size: 1.55rem;
-      font-weight: 900;
-      letter-spacing: .15em;
-      color: var(--navy);
-      line-height: 1;
-    }
-    .padi-years-banner {
-      background: var(--blue);
-      color: #fff;
-      font-size: .45rem;
-      font-weight: 700;
-      letter-spacing: .18em;
-      padding: .12rem .35rem;
-      text-align: center;
-      margin-top: .15rem;
-      border-radius: 2px;
-    }
-
-    /* ── SECTION HEADER (nav title) ── */
-    .nav-title {
-      background: var(--gray-lt);
-      padding: .7rem 1rem .5rem;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* ── HOME SCREEN ── */
-    .signin-card {
-      background: var(--white);
-      margin: .75rem;
-      border-radius: 14px;
-      padding: 1.25rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,.07);
-    }
-    .signin-eyebrow {
-      font-size: .72rem;
-      color: var(--gray);
-      margin-bottom: .4rem;
-    }
-    .signin-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1.25;
-      margin-bottom: .5rem;
-    }
-    .signin-body {
-      font-size: .82rem;
-      color: var(--gray);
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-    .btn-primary {
-      display: block;
-      width: 100%;
-      background: var(--blue);
-      color: #fff;
-      font-size: .95rem;
-      font-weight: 700;
-      text-align: center;
-      padding: .85rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      margin-bottom: .6rem;
-      font-family: inherit;
-    }
-    .btn-outline {
-      display: block;
-      width: 100%;
-      background: transparent;
-      color: var(--blue);
-      font-size: .95rem;
-      font-weight: 700;
-      text-align: center;
-      padding: .82rem;
-      border-radius: 10px;
-      border: 1.5px solid var(--blue);
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .hero-card {
-      margin: 0 .75rem .75rem;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,.1);
-    }
-    .hero-img {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, #0a1a5c 0%, #0a3d8c 40%, #0056b3 70%, #1a7acc 100%);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .hero-img::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 60% 55%, rgba(30,120,210,.5) 0%, transparent 70%),
-        radial-gradient(ellipse 30% 20% at 30% 70%, rgba(100,180,255,.15) 0%, transparent 60%);
-    }
-    .shark-svg { position: relative; z-index: 1; width: 80%; max-width: 260px; opacity: .9; }
-    .hero-body {
-      background: var(--white);
-      padding: .9rem 1rem;
-    }
-    .hero-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: .3rem;
-    }
-    .hero-sub {
-      font-size: .8rem;
-      color: var(--gray);
-      line-height: 1.45;
-    }
-
-    /* ── DIVE SCREEN ── */
-    .dive-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .75rem;
-      padding: .75rem;
-    }
-    .dive-tile {
-      background: var(--white);
-      border-radius: 14px;
-      padding: 1.4rem .9rem 1.1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,.07);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .6rem;
-      cursor: pointer;
-      transition: transform .12s, box-shadow .12s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .dive-tile:active { transform: scale(.97); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
-    .tile-icon {
-      width: 52px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .tile-name {
-      font-size: .88rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      line-height: 1.2;
-    }
-    .tile-sub {
-      font-size: .72rem;
-      color: var(--gray);
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    /* ── ECARD SCREEN ── */
-    .ecard-header {
-      background: var(--white);
-      padding: .55rem 1rem .55rem;
+      padding: .55rem 1.1rem .55rem;
       display: flex;
       align-items: center;
       border-bottom: 1px solid var(--border);
-      position: relative;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
     .back-btn {
       color: var(--blue);
       font-size: .9rem;
-      font-weight: 500;
+      font-weight: 400;
       display: flex;
       align-items: center;
-      gap: .2rem;
+      gap: .1rem;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
       background: none;
       border: none;
       font-family: inherit;
       padding: 0;
+      text-decoration: none;
     }
-    .back-chevron { font-size: 1.1rem; font-weight: 400; }
-    .ecard-title {
+    .back-chevron { font-size: 1.3rem; line-height: 1; margin-top: -1px; }
+    .page-title {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
@@ -298,206 +112,177 @@
       color: var(--text);
     }
 
-    .cert-card-wrap {
-      padding: 1rem .75rem .5rem;
+    /* ── SECTION LABEL ── */
+    .section-label {
+      background: var(--gray-lt);
+      padding: .6rem 1.1rem;
+      font-size: .65rem;
+      font-weight: 600;
+      color: var(--gray);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
     }
 
-    /* The actual PADI eCard */
-    .cert-card {
+    /* ── HERO IMAGE ── */
+    .hero-img {
       width: 100%;
-      aspect-ratio: 85.6 / 54;
-      border-radius: 13px;
-      overflow: hidden;
-      box-shadow: 0 6px 28px rgba(0,30,100,.22), 0 2px 6px rgba(0,0,0,.12);
+      aspect-ratio: 4/3;
       position: relative;
-      background: linear-gradient(125deg, #002d8a 0%, #0044c8 55%, #0059e6 100%);
-      cursor: pointer;
+      overflow: hidden;
+      background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 45%, #20B2AA 45%, #008B8B 100%);
     }
-    /* Subtle wave texture */
-    .cert-card::before {
+    /* Sky */
+    .hero-img::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 80% 110%, rgba(255,255,255,.06) 0%, transparent 60%),
-        repeating-linear-gradient(
-          -20deg,
-          transparent 0px, transparent 12px,
-          rgba(255,255,255,.025) 12px, rgba(255,255,255,.025) 13px
-        );
+        radial-gradient(ellipse 60% 30% at 80% 25%, rgba(255,255,255,.6) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 15% at 20% 20%, rgba(255,255,255,.4) 0%, transparent 50%);
     }
-    .cert-inner { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; padding: 5.5% 5.5% 0; }
-    .cert-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .cert-padi-block {}
-    .cert-padi-word {
-      font-size: clamp(.9rem, 3.8vw, 1.4rem);
-      font-weight: 900;
-      letter-spacing: .18em;
-      color: #fff;
-      font-style: italic;
-      line-height: 1;
-    }
-    .cert-padi-sub {
-      font-size: clamp(.22rem, .9vw, .32rem);
-      letter-spacing: .1em;
-      color: rgba(255,255,255,.5);
-      margin-top: .05em;
-      font-style: normal;
-    }
-    .cert-globe { width: clamp(22px, 8vw, 34px); opacity: .85; }
-    .cert-mid {
-      flex: 1;
-      display: flex;
-      align-items: flex-end;
-      padding-bottom: 4%;
-      gap: 4%;
-    }
-    .cert-photo {
-      width: clamp(28px, 10vw, 42px);
-      aspect-ratio: 3/4;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.25);
-      border-radius: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .cert-info { flex: 1; min-width: 0; }
-    .cert-level {
-      font-size: clamp(.32rem, 1.2vw, .48rem);
-      letter-spacing: .1em;
-      color: #ffc94d;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: .15em;
-    }
-    .cert-name {
-      font-size: clamp(.55rem, 2.2vw, .85rem);
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: .03em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .cert-country {
-      font-size: clamp(.28rem, 1vw, .4rem);
-      color: rgba(255,255,255,.55);
-      letter-spacing: .08em;
-      margin-top: .2em;
-    }
-    .cert-num {
-      font-size: clamp(.24rem, .9vw, .36rem);
-      color: rgba(255,255,255,.35);
-      letter-spacing: .06em;
-      margin-top: .3em;
-    }
-    .cert-bar {
-      height: 5.5%;
-      background: linear-gradient(90deg, #f5a000 0%, #e08800 100%);
-      margin-top: auto;
-    }
-
-    .ecard-share-row {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: .6rem 1rem .2rem;
-    }
-    .share-btn {
+    .hero-inner { position: relative; z-index: 1; width: 100%; height: 100%; }
+    .padi-watermark {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: .25rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      -webkit-tap-highlight-color: transparent;
+      align-items: flex-start;
+      gap: 1px;
     }
-    .share-icon-wrap {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--blue-lt);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.15rem;
+    .padi-wm-globe { width: 30px; height: 30px; }
+    .padi-wm-word {
+      font-size: .75rem;
+      font-weight: 900;
+      letter-spacing: .2em;
+      color: white;
+      font-style: italic;
+      text-shadow: 0 1px 3px rgba(0,0,0,.4);
     }
-    .share-lbl { font-size: .62rem; color: var(--gray); font-weight: 500; }
 
-    .cert-details-card {
-      background: var(--white);
-      margin: .5rem .75rem;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .detail-row {
+    /* ── PERSON SECTION ── */
+    .person-row {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-start;
+      gap: .9rem;
+      padding: .9rem 1.1rem .3rem;
+      background: var(--white);
+    }
+    .person-photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #e8edf5;
+      display: flex;
       align-items: center;
-      padding: .75rem 1rem;
-      border-bottom: 1px solid var(--border);
+      justify-content: center;
+      border: 1px solid var(--border);
     }
-    .detail-row:last-child { border-bottom: none; }
-    .detail-lbl { font-size: .82rem; color: var(--gray); }
-    .detail-val { font-size: .85rem; font-weight: 600; color: var(--text); text-align: right; max-width: 58%; }
-    .badge-green {
-      background: #e6f8ee;
-      color: #1a9e4a;
-      font-size: .68rem;
+    .person-info { flex: 1; padding-top: .2rem; }
+    .person-name {
+      font-size: 1.25rem;
       font-weight: 700;
-      padding: .22rem .6rem;
-      border-radius: 99px;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: .55rem;
     }
-
-    /* ── MORE SCREEN ── */
-    .more-section-header {
-      padding: .9rem 1rem .3rem;
-      font-size: .72rem;
+    .person-field-lbl {
+      font-size: .62rem;
       font-weight: 600;
       color: var(--gray);
       letter-spacing: .06em;
       text-transform: uppercase;
+      margin-bottom: .1rem;
     }
-    .more-list {
-      background: var(--white);
-      margin: 0 0 .75rem;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    .person-field-val {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--text);
     }
-    .more-row {
-      display: flex;
-      align-items: center;
-      padding: .85rem 1rem;
-      border-bottom: 1px solid var(--border);
-      gap: .8rem;
+    .edit-photo-btn {
+      display: block;
+      color: var(--blue);
+      font-size: .82rem;
+      font-weight: 500;
+      padding: .3rem 1.1rem .7rem;
+      background: none;
+      border: none;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
+      text-align: left;
     }
-    .more-row:last-child { border-bottom: none; }
-    .more-row:active { background: var(--gray-lt); }
-    .more-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
+
+    /* ── CERT DETAILS ── */
+    .cert-section {
+      background: var(--white);
+      padding: .8rem 1.1rem 0;
+      border-top: 1px solid var(--border);
     }
-    .more-icon.gray  { background: #e2e6ed; }
-    .more-icon.blue  { background: var(--blue-lt); }
-    .more-icon.green { background: #e6f8ee; }
-    .more-icon.orange{ background: #fff0dd; }
-    .more-label { flex: 1; font-size: .88rem; color: var(--text); font-weight: 500; }
-    .more-arrow { color: #c8cdd8; font-size: .85rem; }
-    .more-ext { color: #c8cdd8; font-size: .8rem; }
+    .cert-field-lbl {
+      font-size: .62rem;
+      font-weight: 600;
+      color: var(--gray);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: .15rem;
+    }
+    .cert-field-val {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .75rem;
+    }
+    .cert-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding-bottom: .5rem;
+    }
+    .cert-col .cert-field-val { font-size: .9rem; }
+
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+      padding: .8rem 1.1rem 1rem;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+    }
+    .btn-filled {
+      background: var(--blue);
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 600;
+      text-align: center;
+      padding: .8rem .5rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-stroke {
+      background: transparent;
+      color: var(--blue);
+      font-size: .9rem;
+      font-weight: 600;
+      text-align: center;
+      padding: .8rem .5rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--blue);
+      cursor: pointer;
+      font-family: inherit;
+    }
 
     /* ── BOTTOM NAV ── */
     .bottom-nav {
       background: var(--white);
       border-top: 1px solid var(--border);
       display: flex;
-      padding: .5rem 0 calc(.5rem + env(safe-area-inset-bottom, 8px));
+      padding: .4rem 0 calc(.55rem + env(safe-area-inset-bottom, 10px));
       flex-shrink: 0;
     }
     .nav-tab {
@@ -505,36 +290,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: .18rem;
+      gap: .15rem;
+      padding: .3rem .2rem .1rem;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      padding: .2rem .3rem .1rem;
-      position: relative;
     }
-    .nav-pill {
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 56px; height: 32px;
-      border-radius: 99px;
-      background: var(--gray-lt);
-      display: none;
-    }
-    .nav-tab.active .nav-pill { display: block; }
-    .nav-icon-svg {
-      width: 24px; height: 24px;
-      position: relative; z-index: 1;
-    }
+    .nav-tab svg { width: 25px; height: 25px; color: var(--gray); }
+    .nav-tab.active svg { color: var(--blue); }
     .nav-lbl {
-      font-size: .62rem;
+      font-size: .6rem;
       font-weight: 500;
       color: var(--gray);
-      position: relative; z-index: 1;
     }
-    .nav-tab.active .nav-lbl { color: var(--navy); font-weight: 700; }
-
-    /* Scrollbar hide */
-    .screen::-webkit-scrollbar { display: none; }
-    .screen { scrollbar-width: none; }
+    .nav-tab.active .nav-lbl { color: var(--blue); font-weight: 700; }
   </style>
 </head>
 <body>
@@ -546,418 +314,217 @@
     <span>22:52</span>
     <div class="status-right">
       <div class="sig"><i></i><i></i><i></i><i></i></div>
-      <span class="wifi-icon">📶</span>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 2.4C10.2 2.4 12.2 3.3 13.6 4.8L15 3.3C13.2 1.3 10.7 0 8 0C5.3 0 2.8 1.3 1 3.3L2.4 4.8C3.8 3.3 5.8 2.4 8 2.4Z" fill="currentColor"/>
+        <path d="M8 5.2C9.5 5.2 10.8 5.8 11.8 6.8L13.2 5.3C11.8 3.9 9.9 3 8 3C6.1 3 4.2 3.9 2.8 5.3L4.2 6.8C5.2 5.8 6.5 5.2 8 5.2Z" fill="currentColor"/>
+        <circle cx="8" cy="10" r="2" fill="currentColor"/>
+      </svg>
       <div class="bat"><div class="bat-fill"></div></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ HOME ══ -->
-  <div class="screen active" id="screen-home">
-    <div class="screen-inner">
-      <div class="padi-header">
-        <div class="padi-logo">
-          <div class="padi-globe-row">
-            <!-- Globe SVG -->
-            <svg class="globe-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" fill="#1a56d6"/>
-              <circle cx="20" cy="20" r="18" fill="none" stroke="white" stroke-width="1"/>
-              <!-- Grid lines -->
-              <ellipse cx="20" cy="20" rx="8" ry="18" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <ellipse cx="20" cy="20" rx="18" ry="8" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <line x1="2" y1="20" x2="38" y2="20" stroke="white" stroke-width=".8" opacity=".6"/>
-              <line x1="20" y1="2" x2="20" y2="38" stroke="white" stroke-width=".8" opacity=".6"/>
-              <!-- Continents approximation -->
-              <path d="M12 14 C14 11, 18 11, 20 13 C21 14, 22 13, 23 14 C25 15, 24 18, 22 18 C20 18, 19 16, 17 17 C15 18, 12 17, 12 14Z" fill="white" opacity=".85"/>
-              <path d="M22 17 C24 16, 28 16, 30 18 C31 19, 31 21, 29 22 C27 22, 25 21, 23 20 C22 19, 21 18, 22 17Z" fill="white" opacity=".85"/>
-              <path d="M14 22 C15 21, 17 21, 18 23 C19 25, 17 27, 15 27 C13 27, 12 25, 13 23 C13.5 22.5, 13.5 22, 14 22Z" fill="white" opacity=".85"/>
-            </svg>
-            <div class="padi-text-block">
-              <span class="padi-wordmark">PADI</span>
-              <div class="padi-years-banner">60 YEARS</div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!-- SCROLL AREA -->
+  <div class="scroll-area">
 
-      <div class="signin-card">
-        <div class="signin-eyebrow">PADI Recommendation</div>
-        <div class="signin-title">Get the most of the app by signing in!</div>
-        <div class="signin-body">Sign in or create an account to access your PADI eCards, diver checklists, and more.</div>
-        <button class="btn-primary" onclick="showEcard()">Create an account</button>
-        <button class="btn-outline" onclick="showEcard()">Sign In</button>
-      </div>
+    <!-- APP HEADER -->
+    <div class="app-header">
+      <a class="back-btn" href="/portfolio/">
+        <span class="back-chevron">‹</span>
+      </a>
+      <span class="page-title">Open Water</span>
+    </div>
 
-      <div class="hero-card">
-        <div class="hero-img">
-          <!-- Whale shark SVG illustration -->
-          <svg class="shark-svg" viewBox="0 0 280 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="sg" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#1a6bc4" stop-opacity=".8"/>
-                <stop offset="100%" stop-color="#0a2a6e" stop-opacity=".4"/>
-              </radialGradient>
-            </defs>
-            <!-- Body -->
-            <path d="M10 65 C30 40, 80 30, 140 32 C200 34, 250 45, 268 60 C250 75, 200 82, 140 80 C80 78, 30 72, 10 65Z" fill="#1a4a8c" opacity=".9"/>
-            <!-- Belly lighter -->
-            <path d="M30 65 C60 58, 120 56, 180 58 C220 60, 250 65, 265 68 C240 75, 195 78, 145 77 C95 76, 50 72, 30 65Z" fill="#2d6ab5" opacity=".6"/>
-            <!-- Spots -->
-            <circle cx="70" cy="55" r="3.5" fill="rgba(150,210,255,.55)"/>
-            <circle cx="95" cy="48" r="2.5" fill="rgba(150,210,255,.55)"/>
-            <circle cx="115" cy="44" r="3" fill="rgba(150,210,255,.55)"/>
-            <circle cx="145" cy="42" r="3.5" fill="rgba(150,210,255,.55)"/>
-            <circle cx="170" cy="44" r="2.5" fill="rgba(150,210,255,.55)"/>
-            <circle cx="190" cy="48" r="3" fill="rgba(150,210,255,.55)"/>
-            <circle cx="85" cy="65" r="2.5" fill="rgba(150,210,255,.45)"/>
-            <circle cx="110" cy="60" r="3" fill="rgba(150,210,255,.45)"/>
-            <circle cx="135" cy="58" r="2.5" fill="rgba(150,210,255,.45)"/>
-            <circle cx="160" cy="60" r="3" fill="rgba(150,210,255,.45)"/>
-            <circle cx="210" cy="53" r="2.5" fill="rgba(150,210,255,.45)"/>
-            <!-- Tail fin -->
-            <path d="M255 55 L275 35 L272 58 L275 82 L255 62Z" fill="#1a4a8c" opacity=".85"/>
-            <!-- Dorsal fin -->
-            <path d="M160 32 L170 10 L185 30Z" fill="#163d78" opacity=".85"/>
-            <!-- Pectoral fin -->
-            <path d="M100 68 L80 90 L120 75Z" fill="#163d78" opacity=".75"/>
-            <!-- Mouth -->
-            <path d="M10 60 C12 56, 18 54, 20 57 C18 62, 12 64, 10 60Z" fill="#0a2560" opacity=".8"/>
+    <!-- SECTION LABEL -->
+    <div class="section-label">Certification / Program Details</div>
+
+    <!-- HERO IMAGE -->
+    <div class="hero-img">
+      <div class="hero-inner">
+        <!-- Ocean scene SVG -->
+        <svg width="100%" height="100%" viewBox="0 0 390 292" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sky gradient -->
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6CC6E8"/>
+              <stop offset="100%" stop-color="#9DD8F0"/>
+            </linearGradient>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2CB5C0"/>
+              <stop offset="100%" stop-color="#0E7A8C"/>
+            </linearGradient>
+            <linearGradient id="underwaterLight" x1=".5" y1="0" x2=".5" y2="1">
+              <stop offset="0%" stop-color="rgba(100,220,230,.25)"/>
+              <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Sky -->
+          <rect width="390" height="135" fill="url(#sky)"/>
+
+          <!-- Clouds -->
+          <ellipse cx="290" cy="45" rx="55" ry="22" fill="white" opacity=".85"/>
+          <ellipse cx="320" cy="38" rx="38" ry="18" fill="white" opacity=".9"/>
+          <ellipse cx="260" cy="50" rx="30" ry="14" fill="white" opacity=".75"/>
+          <ellipse cx="70" cy="55" rx="48" ry="18" fill="white" opacity=".7"/>
+          <ellipse cx="50" cy="48" rx="32" ry="15" fill="white" opacity=".8"/>
+
+          <!-- Island far right -->
+          <ellipse cx="350" cy="132" rx="45" ry="12" fill="#4AAD52" opacity=".9"/>
+          <ellipse cx="355" cy="128" rx="32" ry="9" fill="#5DC164"/>
+
+          <!-- Waterline -->
+          <path d="M0 135 C65 130, 130 140, 195 135 C260 130, 325 140, 390 135 L390 292 L0 292Z" fill="url(#water)"/>
+
+          <!-- Underwater light rays -->
+          <path d="M150 135 L100 292" stroke="rgba(255,255,255,.06)" stroke-width="25"/>
+          <path d="M230 135 L200 292" stroke="rgba(255,255,255,.06)" stroke-width="20"/>
+          <path d="M310 135 L340 292" stroke="rgba(255,255,255,.07)" stroke-width="18"/>
+
+          <!-- Sea turtle body -->
+          <g transform="translate(165, 165) rotate(-12)">
+            <!-- Shell -->
+            <ellipse cx="0" cy="0" rx="52" ry="38" fill="#4A7A3A"/>
+            <!-- Shell pattern -->
+            <ellipse cx="0" cy="0" rx="38" ry="28" fill="#5A8F48" opacity=".7"/>
+            <ellipse cx="0" cy="-8" rx="18" ry="14" fill="#3D6630" opacity=".6"/>
+            <ellipse cx="-16" cy="8" rx="12" ry="9" fill="#3D6630" opacity=".5"/>
+            <ellipse cx="16" cy="8" rx="12" ry="9" fill="#3D6630" opacity=".5"/>
+            <!-- Head -->
+            <ellipse cx="52" cy="-4" rx="18" ry="14" fill="#4A7A3A"/>
+            <ellipse cx="57" cy="-8" rx="7" ry="5" fill="#5A8F48" opacity=".6"/>
             <!-- Eye -->
-            <circle cx="22" cy="60" r="3" fill="#0a2560"/>
-            <circle cx="22" cy="60" r="1.5" fill="white" opacity=".4"/>
+            <circle cx="64" cy="-7" r="3.5" fill="#1a1a1a"/>
+            <circle cx="65" cy="-8" r="1.2" fill="white" opacity=".6"/>
+            <!-- Front flippers -->
+            <ellipse cx="30" cy="-45" rx="12" ry="32" fill="#4A7A3A" transform="rotate(30 30 -45)"/>
+            <ellipse cx="-28" cy="-44" rx="10" ry="28" fill="#4A7A3A" transform="rotate(-25 -28 -44)"/>
+            <!-- Back flippers -->
+            <ellipse cx="-40" cy="30" rx="8" ry="20" fill="#4A7A3A" transform="rotate(20 -40 30)"/>
+            <ellipse cx="22" cy="38" rx="7" ry="18" fill="#4A7A3A" transform="rotate(-15 22 38)"/>
+            <!-- Bubbles -->
+            <circle cx="75" cy="-18" r="4" fill="rgba(255,255,255,.5)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+            <circle cx="82" cy="-30" r="2.5" fill="rgba(255,255,255,.4)" stroke="rgba(255,255,255,.25)" stroke-width=".8"/>
+            <circle cx="70" cy="-38" r="3" fill="rgba(255,255,255,.45)" stroke="rgba(255,255,255,.3)" stroke-width=".8"/>
+          </g>
+
+          <!-- Water surface shimmer -->
+          <path d="M0 135 C65 132, 130 138, 195 135 C260 132, 325 138, 390 135" stroke="rgba(255,255,255,.5)" stroke-width="1.5" fill="none"/>
+          <path d="M0 140 C50 137, 100 143, 160 140 C220 137, 300 144, 390 140" stroke="rgba(255,255,255,.2)" stroke-width="1" fill="none"/>
+
+          <!-- Underwater light overlay -->
+          <rect x="0" y="135" width="390" height="157" fill="url(#underwaterLight)"/>
+        </svg>
+
+        <!-- PADI watermark bottom-left -->
+        <div class="padi-watermark">
+          <svg class="padi-wm-globe" viewBox="0 0 34 34" fill="none">
+            <circle cx="17" cy="17" r="15" fill="#1a56d6"/>
+            <circle cx="17" cy="17" r="15" fill="none" stroke="white" stroke-width="1"/>
+            <ellipse cx="17" cy="17" rx="7" ry="15" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".8"/>
+            <ellipse cx="17" cy="17" rx="15" ry="7" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".8"/>
+            <path d="M9 12 C11 9, 15 9, 17 11 C18 12, 19 11, 20 12 C22 13.5, 21 16, 19 16 C17 16, 16 14, 14 15 C12 16, 9 15, 9 12Z" fill="white" opacity=".9"/>
+            <path d="M19 15.5 C21 14, 25 14, 27 16 C28 17, 28 19, 26 20 C24 20, 22 19, 20 18Z" fill="white" opacity=".8"/>
           </svg>
-        </div>
-        <div class="hero-body">
-          <div class="hero-title">Show off your PADI pride!</div>
-          <div class="hero-sub">New limited edition certification card designs are here. Get yours now!</div>
+          <span class="padi-wm-word">PADI</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════ DIVE ══ -->
-  <div class="screen" id="screen-dive">
-    <div class="screen-inner">
-      <div class="nav-title">Dive</div>
-      <div class="dive-grid">
-
-        <div class="dive-tile" onclick="showEcard()">
-          <div class="tile-icon">
-            <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <rect width="42" height="42" rx="10" fill="#e8effc"/>
-              <rect x="8" y="13" width="26" height="18" rx="3" fill="#1a56d6"/>
-              <rect x="11" y="17" width="10" height="7" rx="1.5" fill="white" opacity=".3"/>
-              <rect x="24" y="17" width="7" height="2" rx="1" fill="white" opacity=".7"/>
-              <rect x="24" y="21" width="5" height="2" rx="1" fill="white" opacity=".5"/>
-              <rect x="11" y="26" width="18" height="1.5" rx=".75" fill="white" opacity=".4"/>
-            </svg>
-          </div>
-          <div class="tile-name">eCards</div>
-          <div class="tile-sub">Your digital certification cards</div>
-        </div>
-
-        <div class="dive-tile">
-          <div class="tile-icon">
-            <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <rect width="42" height="42" rx="10" fill="#e8effc"/>
-              <path d="M21 10 C21 10, 11 20, 11 26 C11 31.5, 15.5 36, 21 36 C26.5 36, 31 31.5, 31 26 C31 20, 21 10, 21 10Z" fill="#1a56d6"/>
-              <circle cx="21" cy="27" r="4" fill="white" opacity=".7"/>
-            </svg>
-          </div>
-          <div class="tile-name">Dive Shop Locator</div>
-          <div class="tile-sub">Find shops globally</div>
-        </div>
-
-        <div class="dive-tile">
-          <div class="tile-icon">
-            <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <rect width="42" height="42" rx="10" fill="#e8effc"/>
-              <circle cx="21" cy="21" r="11" fill="#1a56d6"/>
-              <circle cx="21" cy="21" r="11" fill="none" stroke="white" stroke-width=".8"/>
-              <ellipse cx="21" cy="21" rx="4.5" ry="11" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <ellipse cx="21" cy="21" rx="11" ry="4.5" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <path d="M14 17 C17 14, 21 14, 22 16 C23 17, 25 16, 26 17 C27 18.5, 26 21, 24 21 C22 21, 21 19, 19 20 C17 21, 14 20, 14 17Z" fill="white" opacity=".8"/>
-            </svg>
-          </div>
-          <div class="tile-name">PADI Adventures</div>
-          <div class="tile-sub">Book your next dive adventure online</div>
-        </div>
-
-        <div class="dive-tile">
-          <div class="tile-icon">
-            <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <rect width="42" height="42" rx="10" fill="#e8effc"/>
-              <rect x="12" y="11" width="14" height="18" rx="2" fill="#8baee8"/>
-              <rect x="14" y="13" width="10" height="16" rx="2" fill="#1a56d6"/>
-              <path d="M22 25 L24 27 L28 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="17" y="16" width="6" height="1.5" rx=".75" fill="white" opacity=".6"/>
-              <rect x="17" y="19" width="4" height="1.5" rx=".75" fill="white" opacity=".6"/>
-            </svg>
-          </div>
-          <div class="tile-name">Checklists</div>
-          <div class="tile-sub">Handy diver's checklists</div>
-        </div>
-
+    <!-- PERSON INFO -->
+    <div class="person-row">
+      <div class="person-photo">
+        <!-- Silhouette placeholder -->
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <rect width="90" height="90" fill="#dde4f0"/>
+          <circle cx="45" cy="33" r="16" fill="#b0bcd8"/>
+          <path d="M10 85 C10 60, 80 60, 80 85" fill="#b0bcd8"/>
+        </svg>
+      </div>
+      <div class="person-info">
+        <div class="person-name">Rein Eijkelboom</div>
+        <div class="person-field-lbl">Birthdate</div>
+        <div class="person-field-val">••-••••-••••</div>
       </div>
     </div>
-  </div>
+    <button class="edit-photo-btn">edit photo</button>
 
-  <!-- ══════════════════════════════════════ eCARD ══ -->
-  <div class="screen" id="screen-ecard">
-    <div class="screen-inner">
-      <div class="ecard-header">
-        <button class="back-btn" onclick="goBack()">
-          <span class="back-chevron">‹</span> Dive
-        </button>
-        <span class="ecard-title">eCards</span>
-      </div>
+    <!-- CERT DETAILS -->
+    <div class="cert-section">
+      <div class="cert-field-lbl">Certification</div>
+      <div class="cert-field-val">Open Water Diver</div>
 
-      <div class="cert-card-wrap">
-        <div class="cert-card">
-          <div class="cert-inner">
-            <div class="cert-top">
-              <div class="cert-padi-block">
-                <div class="cert-padi-word">PADI</div>
-                <div class="cert-padi-sub">PROFESSIONAL ASSOCIATION OF DIVING INSTRUCTORS</div>
-              </div>
-              <svg class="cert-globe" viewBox="0 0 34 34" fill="none">
-                <circle cx="17" cy="17" r="15" fill="rgba(255,255,255,.15)"/>
-                <circle cx="17" cy="17" r="15" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".8"/>
-                <ellipse cx="17" cy="17" rx="6" ry="15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".7"/>
-                <ellipse cx="17" cy="17" rx="15" ry="6" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".7"/>
-                <path d="M10 12 C12 10, 15 10, 16 12 C17 13, 18 12, 19 13 C20.5 14, 20 16, 18.5 16 C17 16, 16 14.5, 14.5 15 C13 15.5, 10 15, 10 12Z" fill="rgba(255,255,255,.7)"/>
-              </svg>
-            </div>
-            <div class="cert-mid">
-              <div class="cert-photo">
-                <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
-                  <circle cx="7" cy="6" r="4" fill="rgba(255,255,255,.5)"/>
-                  <path d="M1 18 C1 12.5, 13 12.5, 13 18" stroke="rgba(255,255,255,.5)" stroke-width="1.2" fill="none"/>
-                </svg>
-              </div>
-              <div class="cert-info">
-                <div class="cert-level">★ Open Water Diver</div>
-                <div class="cert-name">REIN —</div>
-                <div class="cert-country">NETHERLANDS · NL</div>
-                <div class="cert-num">CERT # NL-2024-OWD-003312</div>
-              </div>
-            </div>
-          </div>
-          <div class="cert-bar"></div>
+      <div class="cert-two-col">
+        <div class="cert-col">
+          <div class="cert-field-lbl">Cert. Date</div>
+          <div class="cert-field-val">15-Aug-2024</div>
         </div>
-      </div>
-
-      <div class="ecard-share-row">
-        <button class="share-btn">
-          <div class="share-icon-wrap">⬆</div>
-          <span class="share-lbl">Delen</span>
-        </button>
-        <button class="share-btn">
-          <div class="share-icon-wrap">📥</div>
-          <span class="share-lbl">Opslaan</span>
-        </button>
-        <button class="share-btn">
-          <div class="share-icon-wrap">🔗</div>
-          <span class="share-lbl">Kopieer link</span>
-        </button>
-      </div>
-
-      <div class="cert-details-card">
-        <div class="detail-row">
-          <span class="detail-lbl">Status</span>
-          <span class="badge-green">✓ Actief</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Certificering</span>
-          <span class="detail-val">Open Water Diver</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Max. diepte</span>
-          <span class="detail-val">18 meter</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Gecertificeerd op</span>
-          <span class="detail-val">15 augustus 2024</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Instructeur</span>
-          <span class="detail-val">J. de Vries</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Duikschool</span>
-          <span class="detail-val">Dive Center Nederland</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-lbl">Certificaatnummer</span>
-          <span class="detail-val">NL-2024-OWD-003312</span>
+        <div class="cert-col">
+          <div class="cert-field-lbl">PADI No.</div>
+          <div class="cert-field-val">NL-OWD-3312</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════ MORE ══ -->
-  <div class="screen" id="screen-more">
-    <div class="screen-inner">
-      <div class="padi-header">
-        <div class="padi-logo">
-          <div class="padi-globe-row">
-            <svg class="globe-svg" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="18" fill="#1a56d6"/>
-              <circle cx="20" cy="20" r="18" fill="none" stroke="white" stroke-width="1"/>
-              <ellipse cx="20" cy="20" rx="8" ry="18" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <ellipse cx="20" cy="20" rx="18" ry="8" fill="none" stroke="white" stroke-width=".8" opacity=".6"/>
-              <line x1="2" y1="20" x2="38" y2="20" stroke="white" stroke-width=".8" opacity=".6"/>
-              <line x1="20" y1="2" x2="20" y2="38" stroke="white" stroke-width=".8" opacity=".6"/>
-              <path d="M12 14 C14 11, 18 11, 20 13 C21 14, 22 13, 23 14 C25 15, 24 18, 22 18 C20 18, 19 16, 17 17 C15 18, 12 17, 12 14Z" fill="white" opacity=".85"/>
-              <path d="M22 17 C24 16, 28 16, 30 18 C31 19, 31 21, 29 22 C27 22, 25 21, 23 20 C22 19, 21 18, 22 17Z" fill="white" opacity=".85"/>
-              <path d="M14 22 C15 21, 17 21, 18 23 C19 25, 17 27, 15 27 C13 27, 12 25, 13 23 C13.5 22.5, 13.5 22, 14 22Z" fill="white" opacity=".85"/>
-            </svg>
-            <div class="padi-text-block">
-              <span class="padi-wordmark">PADI</span>
-              <div class="padi-years-banner">60 YEARS</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="background:var(--white); padding:.75rem 1rem; display:flex; gap:.75rem; align-items:center; border-bottom:1px solid var(--border);">
-        <div style="font-size:.82rem; color:var(--gray); flex:1">Get the most of the app by signing in!</div>
-        <button class="btn-primary" style="width:auto; padding:.5rem .9rem; font-size:.78rem; margin:0; border-radius:8px" onclick="showEcard()">Sign In</button>
-      </div>
-
-      <div class="more-section-header">GENERAL</div>
-      <div class="more-list">
-        <div class="more-row">
-          <div class="more-icon gray">⚙️</div>
-          <span class="more-label">Settings</span>
-          <span class="more-arrow">›</span>
-        </div>
-        <div class="more-row">
-          <div class="more-icon gray">@</div>
-          <span class="more-label">About</span>
-          <span class="more-arrow">›</span>
-        </div>
-      </div>
-
-      <div class="more-section-header">SUPPORT</div>
-      <div class="more-list">
-        <div class="more-row">
-          <div class="more-icon blue">❓</div>
-          <span class="more-label">Help &amp; Support</span>
-          <span class="more-ext">↗</span>
-        </div>
-        <div class="more-row">
-          <div class="more-icon orange">📣</div>
-          <span class="more-label">Feedback</span>
-          <span class="more-ext">↗</span>
-        </div>
-      </div>
-
-      <div style="padding: .75rem 1rem;">
-        <a href="/portfolio/" style="font-size:.75rem; color:var(--blue); text-decoration:none; display:block; text-align:center; padding:.5rem;">← Terug naar portfolio</a>
-      </div>
+    <!-- BUTTONS -->
+    <div class="btn-row">
+      <button class="btn-filled">Share</button>
+      <button class="btn-stroke">Buy Cert. Card</button>
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════ LOGBOOK ══ -->
-  <div class="screen" id="screen-logbook">
-    <div class="screen-inner">
-      <div class="nav-title">Logbook</div>
-      <div style="display:flex; flex-direction:column; align-items:center; padding: 3rem 1.5rem; gap: 1rem; text-align:center;">
-        <div style="font-size:3rem">📔</div>
-        <div style="font-size:1rem; font-weight:700; color:var(--text)">Logboek</div>
-        <div style="font-size:.85rem; color:var(--gray); line-height:1.5">Log in om je duiken bij te houden en je duikhistorie te bekijken.</div>
-        <button class="btn-primary" style="width:auto; padding:.7rem 2rem; margin-top:.5rem" onclick="showEcard()">Inloggen</button>
-      </div>
-    </div>
-  </div>
+  </div><!-- /scroll-area -->
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <div class="nav-tab active" id="tab-home" onclick="switchTab('home')">
-      <div class="nav-pill"></div>
-      <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.8" fill="none"/>
-        <path d="M9 21V12h6v9" stroke="currentColor" stroke-width="1.8"/>
+
+    <div class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        <path d="M9 21V13h6v8"/>
       </svg>
       <span class="nav-lbl">Home</span>
     </div>
-    <div class="nav-tab" id="tab-learn" onclick="switchTab('learn')">
-      <div class="nav-pill"></div>
-      <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none">
-        <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-        <path d="M2 8v8M22 8v8M7 10.5v5l5 2.5 5-2.5v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+
+    <div class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 3L2 8l10 5 10-5-10-5z" stroke-linejoin="round"/>
+        <path d="M2 8v7M22 8v7M7 11v5l5 2.5L17 16v-5" stroke-linecap="round"/>
       </svg>
       <span class="nav-lbl">Learn</span>
     </div>
-    <div class="nav-tab" id="tab-dive" onclick="switchTab('dive')">
-      <div class="nav-pill"></div>
-      <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none">
-        <path d="M7 4C7 4 5 6 5 10s2 4 2 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <rect x="7" y="4" width="4" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
-        <path d="M11 9h3M11 11h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M7 14l-3 4h13l1-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="18" cy="19" r="2" stroke="currentColor" stroke-width="1.8"/>
+
+    <div class="nav-tab active">
+      <!-- Dive / wave icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 12 C5 9, 7 9, 9 12 C11 15, 13 15, 15 12 C17 9, 19 9, 21 12" stroke-linecap="round"/>
+        <path d="M3 17 C5 14, 7 14, 9 17 C11 20, 13 20, 15 17 C17 14, 19 14, 21 17" stroke-linecap="round" opacity=".5"/>
+        <circle cx="12" cy="7" r="2" fill="currentColor" stroke="none"/>
+        <path d="M12 9v3" stroke-linecap="round"/>
       </svg>
       <span class="nav-lbl">Dive</span>
     </div>
-    <div class="nav-tab" id="tab-logbook" onclick="switchTab('logbook')">
-      <div class="nav-pill"></div>
-      <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none">
-        <path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.8" fill="none"/>
-        <path d="M4 4C4 4 4 2 8 2h12v16" stroke="currentColor" stroke-width="1.8"/>
-        <path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+
+    <div class="nav-tab">
+      <!-- Pro / shield-person icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 3L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6L12 3z" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="2.5"/>
+        <path d="M8 18c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke-linecap="round"/>
       </svg>
-      <span class="nav-lbl">Logbook</span>
+      <span class="nav-lbl">Pro</span>
     </div>
-    <div class="nav-tab" id="tab-more" onclick="switchTab('more')">
-      <div class="nav-pill"></div>
-      <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none">
-        <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
-        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-        <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+
+    <div class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="5" cy="12" r="1.8"/>
+        <circle cx="12" cy="12" r="1.8"/>
+        <circle cx="19" cy="12" r="1.8"/>
       </svg>
       <span class="nav-lbl">More</span>
     </div>
+
   </nav>
 
 </div>
-
-<script>
-  let prevTab = 'home';
-
-  function switchTab(tab) {
-    // Hide all screens
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-
-    // Show ecard screen is handled separately
-    if (tab === 'ecard') {
-      document.getElementById('screen-ecard').classList.add('active');
-      return;
-    }
-
-    prevTab = tab;
-    document.getElementById('screen-' + tab).classList.add('active');
-    document.getElementById('tab-' + tab).classList.add('active');
-
-    // Scroll to top
-    document.getElementById('screen-' + tab).scrollTop = 0;
-  }
-
-  function showEcard() {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-ecard').classList.add('active');
-    // Active tab stays on dive
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-dive').classList.add('active');
-    prevTab = 'dive';
-    document.getElementById('screen-ecard').scrollTop = 0;
-  }
-
-  function goBack() {
-    switchTab(prevTab || 'dive');
-  }
-</script>
 
 </body>
 </html>
