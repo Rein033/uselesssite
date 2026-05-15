@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
   <title>FROZEN DEEP — Ice Cave</title>
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-    html,body{width:100%;height:100%;background:#000;overflow:hidden;cursor:crosshair;}
+    html,body{width:100%;height:100%;background:#000;overflow:hidden;touch-action:none;}
+    body{cursor:crosshair;}
     canvas{display:block;}
 
     #ui{position:fixed;inset:0;pointer-events:none;z-index:10;}
@@ -18,35 +19,28 @@
       background:linear-gradient(to bottom,rgba(0,5,15,.7),transparent);}
     #back{pointer-events:all;color:#7ec8f0;text-decoration:none;
       font-family:'Courier New',monospace;font-size:.6rem;letter-spacing:.22em;opacity:.7;
-      transition:opacity .3s;}
-    #back:hover{opacity:1;}
+      transition:opacity .3s;-webkit-tap-highlight-color:transparent;}
+    #back:hover,#back:active{opacity:1;}
     #loc{font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:.2em;
       color:#4080a0;text-align:center;}
     #mute-btn{pointer-events:all;font-family:'Courier New',monospace;font-size:.6rem;
       letter-spacing:.2em;color:#7ec8f0;background:none;border:1px solid #7ec8f030;
-      padding:.3rem .7rem;cursor:pointer;opacity:.7;transition:all .3s;}
-    #mute-btn:hover{opacity:1;border-color:#7ec8f080;}
-
-    /* controls hint */
-    #ctrl{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
-      display:flex;gap:1.4rem;align-items:center;}
-    .key{font-family:'Courier New',monospace;font-size:.52rem;letter-spacing:.15em;
-      color:#4080a0;border:1px solid #4080a030;padding:.25rem .5rem;}
-    .key-desc{font-family:'Courier New',monospace;font-size:.48rem;letter-spacing:.15em;color:#2a5070;}
+      padding:.3rem .7rem;cursor:pointer;opacity:.7;transition:all .3s;
+      -webkit-tap-highlight-color:transparent;}
+    #mute-btn:hover,#mute-btn:active{opacity:1;border-color:#7ec8f080;}
 
     /* depth meter */
     #depth-wrap{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);
       display:flex;flex-direction:column;align-items:center;gap:.5rem;}
     #depth-bar{width:2px;height:120px;background:#4080a020;position:relative;}
-    #depth-fill{position:absolute;bottom:0;left:0;width:100%;background:#7ec8f0;
-      transition:height .4s ease;}
+    #depth-fill{position:absolute;bottom:0;left:0;width:100%;background:#7ec8f0;transition:height .4s ease;}
     #depth-label{font-family:'Courier New',monospace;font-size:.48rem;letter-spacing:.15em;
       color:#4080a040;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
 
     /* zone name */
     #zone{position:absolute;bottom:3.5rem;left:50%;transform:translateX(-50%);
       font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:.3em;
-      color:#7ec8f066;text-align:center;transition:opacity .8s;}
+      color:#7ec8f066;text-align:center;transition:opacity .8s;white-space:nowrap;}
 
     /* crosshair */
     #xhair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -55,40 +49,62 @@
     #xhair::before{width:1px;height:100%;left:50%;transform:translateX(-50%);}
     #xhair::after{height:1px;width:100%;top:50%;transform:translateY(-50%);}
 
-    /* click hint */
-    #click-hint{position:absolute;top:50%;left:50%;transform:translate(-50%, 28px);
-      font-family:'Courier New',monospace;font-size:.48rem;letter-spacing:.18em;
-      color:#7ec8f040;text-align:center;transition:opacity .5s;pointer-events:none;}
+    /* desktop controls hint */
+    #ctrl{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
+      display:flex;gap:1.4rem;align-items:center;}
+    .key{font-family:'Courier New',monospace;font-size:.52rem;letter-spacing:.15em;
+      color:#4080a0;border:1px solid #4080a030;padding:.25rem .5rem;}
+    .key-desc{font-family:'Courier New',monospace;font-size:.48rem;letter-spacing:.15em;color:#2a5070;}
 
-    /* frost overlay - top & bottom edges */
+    /* frost edges */
     #frost-t,#frost-b{position:absolute;left:0;right:0;pointer-events:none;}
-    #frost-t{top:0;height:60px;
-      background:linear-gradient(to bottom,rgba(100,180,240,.08),transparent);}
-    #frost-b{bottom:0;height:60px;
-      background:linear-gradient(to top,rgba(100,180,240,.08),transparent);}
+    #frost-t{top:0;height:60px;background:linear-gradient(to bottom,rgba(100,180,240,.08),transparent);}
+    #frost-b{bottom:0;height:60px;background:linear-gradient(to top,rgba(100,180,240,.08),transparent);}
+
+    /* ── MOBILE TOUCH CONTROLS ── */
+    #joy-zone{position:absolute;bottom:2rem;left:1.5rem;
+      width:110px;height:110px;border-radius:50%;
+      background:rgba(126,200,240,.06);border:1px solid rgba(126,200,240,.18);
+      display:none;align-items:center;justify-content:center;}
+    #joy-stick{position:absolute;width:42px;height:42px;border-radius:50%;
+      background:rgba(126,200,240,.22);border:1px solid rgba(126,200,240,.5);
+      top:50%;left:50%;transform:translate(-50%,-50%);
+      transition:transform .05s;}
+    #look-zone{position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:all;
+      display:none;}
+    #touch-hint{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
+      font-family:'Courier New',monospace;font-size:.5rem;letter-spacing:.18em;
+      color:#4080a050;text-align:center;display:none;white-space:nowrap;}
   </style>
 </head>
 <body>
+<div id="canvas-container" style="position:fixed;inset:0;"></div>
 <div id="ui">
   <div id="frost-t"></div>
   <div id="frost-b"></div>
   <div id="topbar">
     <a href="/portfolio/" id="back">← PORTFOLIO</a>
-    <div id="loc">FROZEN DEEP / DEPTH: <span id="depth-m">0</span>M</div>
+    <div id="loc">FROZEN DEEP / <span id="depth-m">0</span>M</div>
     <button id="mute-btn" onclick="toggleSound()">♪ SOUND</button>
   </div>
   <div id="xhair"></div>
-  <div id="click-hint">CLICK FORMATIONS TO CRACK</div>
   <div id="depth-wrap">
     <div id="depth-label">DEPTH</div>
     <div id="depth-bar"><div id="depth-fill" style="height:0%"></div></div>
   </div>
   <div id="zone">GLACIER ENTRY</div>
+
+  <!-- desktop hint -->
   <div id="ctrl">
     <span class="key">W A S D</span><span class="key-desc">MOVE</span>
     <span class="key">MOUSE</span><span class="key-desc">LOOK</span>
     <span class="key">Q / E</span><span class="key-desc">UP / DOWN</span>
   </div>
+
+  <!-- mobile controls -->
+  <div id="joy-zone"><div id="joy-stick"></div></div>
+  <div id="look-zone"></div>
+  <div id="touch-hint">LEFT DRAG: MOVE &nbsp;·&nbsp; RIGHT DRAG: LOOK</div>
 </div>
 
 <script type="importmap">
@@ -106,600 +122,462 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass }     from 'three/addons/postprocessing/ShaderPass.js';
 
+// ─── Mobile detection ────────────────────────────────────────────────────────
+const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+if (isMobile) {
+  document.getElementById('ctrl').style.display      = 'none';
+  document.getElementById('xhair').style.display     = 'none';
+  document.getElementById('joy-zone').style.display  = 'flex';
+  document.getElementById('look-zone').style.display = 'block';
+  document.getElementById('touch-hint').style.display= 'block';
+  document.body.style.cursor = 'default';
+}
+
 // ─── Renderer ────────────────────────────────────────────────────────────────
-const renderer = new THREE.WebGLRenderer({ antialias:true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const renderer = new THREE.WebGLRenderer({ antialias: !isMobile });
+renderer.setPixelRatio(isMobile ? 1 : Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+renderer.shadowMap.enabled = !isMobile;
+if (!isMobile) renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 // ─── Scene ───────────────────────────────────────────────────────────────────
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x010810, 0.028);
+scene.fog = new THREE.FogExp2(0x010810, isMobile ? 0.038 : 0.028);
 scene.background = new THREE.Color(0x010810);
 
 // ─── Camera ──────────────────────────────────────────────────────────────────
 const camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 200);
 camera.position.set(0, 1.7, 0);
 
-// Camera euler (yaw/pitch)
 let yaw = 0, pitch = 0;
 const camQuat = new THREE.Quaternion();
 const UP = new THREE.Vector3(0, 1, 0);
 
-// ─── Zones along the Z axis ──────────────────────────────────────────────────
+// ─── Zones ───────────────────────────────────────────────────────────────────
 const ZONES = [
-  { z:   0, name:'GLACIER ENTRY',     fogColor:0x010c18, ambient:0x1a3a5a, fogDensity:.028 },
-  { z: -40, name:'CRYSTAL FOREST',    fogColor:0x010a14, ambient:0x0d2e50, fogDensity:.032 },
-  { z: -80, name:'THE FROZEN LAKE',   fogColor:0x020b10, ambient:0x0a2030, fogDensity:.036 },
-  { z:-120, name:'BIOLUMINESCENT DEEP',fogColor:0x010610, ambient:0x102030, fogDensity:.040 },
-  { z:-160, name:'THE VOID CHAMBER',  fogColor:0x010409, ambient:0x080818, fogDensity:.045 },
+  { z:   0, name:'GLACIER ENTRY',      fogColor:0x010c18, ambient:0x1a3a5a, fogDensity: isMobile?.038:.028 },
+  { z: -40, name:'CRYSTAL FOREST',     fogColor:0x010a14, ambient:0x0d2e50, fogDensity: isMobile?.042:.032 },
+  { z: -80, name:'THE FROZEN LAKE',    fogColor:0x020b10, ambient:0x0a2030, fogDensity: isMobile?.046:.036 },
+  { z:-120, name:'BIOLUMINESCENT DEEP',fogColor:0x010610, ambient:0x102030, fogDensity: isMobile?.050:.040 },
+  { z:-160, name:'THE VOID CHAMBER',   fogColor:0x010409, ambient:0x080818, fogDensity: isMobile?.055:.045 },
 ];
 
 // ─── Lights ──────────────────────────────────────────────────────────────────
 const ambientLight = new THREE.AmbientLight(0x1a3a5a, 1.0);
 scene.add(ambientLight);
 
-// Entry: pale blue-white from above (glacier mouth)
 const entryLight = new THREE.SpotLight(0x90c8f8, 4, 60, Math.PI/5, .6);
 entryLight.position.set(0, 18, 2);
 entryLight.target.position.set(0, 0, 0);
-entryLight.castShadow = true;
-entryLight.shadow.mapSize.set(1024, 1024);
+if (!isMobile) { entryLight.castShadow = true; entryLight.shadow.mapSize.set(1024,1024); }
 scene.add(entryLight); scene.add(entryLight.target);
 
-// Crystal forest: multi-color point lights
 const crystalLights = [
-  { pos:[-6, 3, -38], col:0x40a8ff, int:2.5 },
-  { pos:[ 7, 4, -44], col:0x80d8c0, int:2.0 },
-  { pos:[-4, 2, -50], col:0x6080ff, int:1.8 },
-  { pos:[ 5, 5, -56], col:0x40c0e0, int:2.2 },
-].map(({pos,col,int}) => {
-  const l = new THREE.PointLight(col, int, 25);
-  l.position.set(...pos); scene.add(l); return l;
-});
+  {pos:[-6,3,-38],col:0x40a8ff,int:2.5},{pos:[7,4,-44],col:0x80d8c0,int:2.0},
+  {pos:[-4,2,-50],col:0x6080ff,int:1.8},{pos:[5,5,-56],col:0x40c0e0,int:2.2},
+].map(({pos,col,int})=>{const l=new THREE.PointLight(col,int,25);l.position.set(...pos);scene.add(l);return l;});
 
-// Lake: single overhead silver light
 const lakeLight = new THREE.PointLight(0x80b8d8, 3.5, 40);
-lakeLight.position.set(0, 12, -85);
-scene.add(lakeLight);
+lakeLight.position.set(0,12,-85); scene.add(lakeLight);
 
-// Deep: bioluminescent green-violet
 const deepLights = [
-  { pos:[ 0, 3,-118], col:0x00ff88, int:1.8 },
-  { pos:[-8, 2,-124], col:0x8040ff, int:1.5 },
-  { pos:[ 9, 4,-130], col:0x00ddaa, int:1.6 },
-  { pos:[ 0, 8,-148], col:0x4020a0, int:2.4 },
-].map(({pos,col,int}) => {
-  const l = new THREE.PointLight(col, int, 30);
-  l.position.set(...pos); scene.add(l); return l;
-});
+  {pos:[0,3,-118],col:0x00ff88,int:1.8},{pos:[-8,2,-124],col:0x8040ff,int:1.5},
+  {pos:[9,4,-130],col:0x00ddaa,int:1.6},{pos:[0,8,-148],col:0x4020a0,int:2.4},
+].map(({pos,col,int})=>{const l=new THREE.PointLight(col,int,30);l.position.set(...pos);scene.add(l);return l;});
 
-// Void center pulsing orb light
 const voidLight = new THREE.PointLight(0x2010a0, 5, 50);
-voidLight.position.set(0, 2, -165);
-scene.add(voidLight);
+voidLight.position.set(0,2,-165); scene.add(voidLight);
 
-// Moving fill light that follows camera
 const fillLight = new THREE.PointLight(0x4090c0, .5, 12);
 scene.add(fillLight);
 
-// ─── Utility ─────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function lerp(a,b,t){return a+(b-a)*t;}
 function rand(a,b){return a+Math.random()*(b-a);}
 function randInt(a,b){return Math.floor(rand(a,b+1));}
 
-// ─── Ice material factory ─────────────────────────────────────────────────────
-function iceMat(color=0xaad4f8, opacityVal=.5, emissive=null, emissiveInt=0) {
+function iceMat(color=0xaad4f8,opacityVal=.5,emissive=null,emissiveInt=0){
   return new THREE.MeshPhysicalMaterial({
-    color, transparent:true, opacity:opacityVal,
-    roughness:.04, metalness:0,
-    transmission:.75, thickness:2.5, ior:1.31,
-    envMapIntensity:1.4, side:THREE.DoubleSide,
-    emissive: emissive || color, emissiveIntensity: emissiveInt,
+    color,transparent:true,opacity:opacityVal,
+    roughness:.04,metalness:0,
+    transmission: isMobile?.6:.75, thickness:2.5,ior:1.31,
+    envMapIntensity:1.4,side:THREE.DoubleSide,
+    emissive:emissive||color,emissiveIntensity:emissiveInt,
   });
 }
 
-// Canvas frost texture
-function makeFrostTex(w=512, h=512, tint=[100,200,255]) {
-  const c = document.createElement('canvas'); c.width=w; c.height=h;
-  const cx = c.getContext('2d');
+function makeFrostTex(w=512,h=512,tint=[100,200,255]){
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const cx=c.getContext('2d');
   cx.fillStyle=`rgb(${Math.floor(tint[0]*.15)},${Math.floor(tint[1]*.15)},${Math.floor(tint[2]*.15)})`;
   cx.fillRect(0,0,w,h);
-  cx.strokeStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},0.15)`; cx.lineWidth=.8;
-  for (let i=0;i<80;i++) {
-    let px=Math.random()*w, py=Math.random()*h;
-    cx.beginPath(); cx.moveTo(px,py);
-    for (let j=0;j<10;j++){
-      px+=(Math.random()-.5)*60; py+=(Math.random()-.5)*60;
-      cx.lineTo(px,py);
-    }
-    cx.stroke();
-  }
-  // Sparkles
-  for (let i=0;i<200;i++){
-    const sx=Math.random()*w, sy=Math.random()*h;
+  cx.strokeStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},0.15)`;cx.lineWidth=.8;
+  for(let i=0;i<80;i++){let px=Math.random()*w,py=Math.random()*h;
+    cx.beginPath();cx.moveTo(px,py);
+    for(let j=0;j<10;j++){px+=(Math.random()-.5)*60;py+=(Math.random()-.5)*60;cx.lineTo(px,py);}
+    cx.stroke();}
+  for(let i=0;i<200;i++){const sx=Math.random()*w,sy=Math.random()*h;
     cx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${Math.random()*.5})`;
-    cx.fillRect(sx,sy,1+Math.random()*2,1+Math.random()*2);
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(4,4);
+    cx.fillRect(sx,sy,1+Math.random()*2,1+Math.random()*2);}
+  const tex=new THREE.CanvasTexture(c);
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(4,4);
   return tex;
 }
 
 // ─── Cave tunnel ─────────────────────────────────────────────────────────────
-(function buildTunnel() {
-  // Path meanders down -Z, with gentle lateral movement
-  const pts = [];
-  for (let i=0;i<=40;i++){
-    const t=i/40;
-    pts.push(new THREE.Vector3(
-      Math.sin(t*Math.PI*2.4)*3.5,
-      Math.cos(t*Math.PI*1.8)*1.2 + 1.5,
-      -t*175
-    ));
+(function buildTunnel(){
+  const pts=[];
+  for(let i=0;i<=40;i++){const t=i/40;pts.push(new THREE.Vector3(Math.sin(t*Math.PI*2.4)*3.5,Math.cos(t*Math.PI*1.8)*1.2+1.5,-t*175));}
+  const curve=new THREE.CatmullRomCurve3(pts);
+  const seg=isMobile?120:200;
+  const geo=new THREE.TubeGeometry(curve,seg,9,isMobile?8:12,false);
+  const pa=geo.attributes.position;
+  for(let i=0;i<pa.count;i++){
+    const n=new THREE.Vector3(pa.getX(i),pa.getY(i),pa.getZ(i)).normalize();
+    const d=(Math.random()-.5)*1.2;
+    pa.setX(i,pa.getX(i)+n.x*d);pa.setY(i,pa.getY(i)+n.y*d);pa.setZ(i,pa.getZ(i)+n.z*d);
   }
-  const curve = new THREE.CatmullRomCurve3(pts);
-  const geo = new THREE.TubeGeometry(curve, 200, 9, 12, false);
-
-  // Displace vertices inward for craggy feel
-  const pa = geo.attributes.position;
-  for (let i=0;i<pa.count;i++) {
-    const n = new THREE.Vector3(pa.getX(i),pa.getY(i),pa.getZ(i)).normalize();
-    const disp = (Math.random()-.5)*1.2;
-    pa.setX(i, pa.getX(i)+n.x*disp);
-    pa.setY(i, pa.getY(i)+n.y*disp);
-    pa.setZ(i, pa.getZ(i)+n.z*disp);
-  }
-  pa.needsUpdate=true; geo.computeVertexNormals();
-
-  const frostTex = makeFrostTex(512,512,[100,200,255]);
-  const mat = new THREE.MeshStandardMaterial({
-    map: frostTex,
-    color:0x6090b8, roughness:.35, metalness:.05,
-    side:THREE.BackSide,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.receiveShadow=true;
+  pa.needsUpdate=true;geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({
+    map:makeFrostTex(isMobile?256:512,isMobile?256:512,[100,200,255]),
+    color:0x6090b8,roughness:.35,metalness:.05,side:THREE.BackSide,
+  }));
+  mesh.receiveShadow=!isMobile;
   scene.add(mesh);
 })();
 
-// ─── Chamber expansions ───────────────────────────────────────────────────────
-[
-  { pos:[0,0,-40], r:18 },  // Crystal Forest
-  { pos:[0,0,-85], r:22 },  // The Lake
-  { pos:[0,0,-130], r:28 }, // Bioluminescent Deep
-  { pos:[0,0,-168], r:35 }, // Void Chamber
-].forEach(({pos,r}) => {
-  const geo = new THREE.SphereGeometry(r,20,14);
-  const pa = geo.attributes.position;
-  for (let i=0;i<pa.count;i++) {
-    const n = new THREE.Vector3(pa.getX(i),pa.getY(i),pa.getZ(i)).normalize();
-    const d = (Math.random()-.5)*2.5;
-    pa.setX(i,pa.getX(i)+n.x*d);
-    pa.setY(i,pa.getY(i)+n.y*d);
-    pa.setZ(i,pa.getZ(i)+n.z*d);
-  }
-  pa.needsUpdate=true; geo.computeVertexNormals();
-  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-    color:0x4a7a98, roughness:.4, metalness:.06, side:THREE.BackSide,
-  }));
-  mesh.position.set(...pos);
-  mesh.receiveShadow=true;
-  scene.add(mesh);
+// ─── Chambers ────────────────────────────────────────────────────────────────
+[{pos:[0,0,-40],r:18},{pos:[0,0,-85],r:22},{pos:[0,0,-130],r:28},{pos:[0,0,-168],r:35}]
+.forEach(({pos,r})=>{
+  const geo=new THREE.SphereGeometry(r,isMobile?14:20,isMobile?10:14);
+  const pa=geo.attributes.position;
+  for(let i=0;i<pa.count;i++){const n=new THREE.Vector3(pa.getX(i),pa.getY(i),pa.getZ(i)).normalize();const d=(Math.random()-.5)*2.5;pa.setX(i,pa.getX(i)+n.x*d);pa.setY(i,pa.getY(i)+n.y*d);pa.setZ(i,pa.getZ(i)+n.z*d);}
+  pa.needsUpdate=true;geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x4a7a98,roughness:.4,metalness:.06,side:THREE.BackSide}));
+  mesh.position.set(...pos);scene.add(mesh);
 });
 
-// ─── Floor ───────────────────────────────────────────────────────────────────
-(function buildFloor() {
-  const geo = new THREE.PlaneGeometry(40,200,40,200);
-  const pa = geo.attributes.position;
-  for (let i=0;i<pa.count;i++) {
-    pa.setZ(i, pa.getZ(i)+(Math.random()-.5)*.3+Math.sin(pa.getX(i)*.6)*.15);
-  }
-  pa.needsUpdate=true; geo.computeVertexNormals();
-  const mat = new THREE.MeshStandardMaterial({
-    color:0x7aaabb, roughness:.2, metalness:.12,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.rotation.x = -Math.PI/2;
-  mesh.position.set(0,0,-85);
-  mesh.receiveShadow=true;
-  scene.add(mesh);
-
-  // Frozen lake (mirror-smooth)
-  const lakeGeo = new THREE.CircleGeometry(16,48);
-  const lakeMat = new THREE.MeshPhysicalMaterial({
-    color:0x8ab4c8, roughness:.02, metalness:.3,
-    transparent:true, opacity:.8,
-    transmission:.4, thickness:1.0, ior:1.33,
-  });
-  const lake = new THREE.Mesh(lakeGeo, lakeMat);
-  lake.rotation.x = -Math.PI/2;
-  lake.position.set(0,.02,-85);
-  scene.add(lake);
+// ─── Floor & lake ─────────────────────────────────────────────────────────────
+(function buildFloor(){
+  const geo=new THREE.PlaneGeometry(40,200,20,100);
+  const pa=geo.attributes.position;
+  for(let i=0;i<pa.count;i++){pa.setZ(i,pa.getZ(i)+(Math.random()-.5)*.3+Math.sin(pa.getX(i)*.6)*.15);}
+  pa.needsUpdate=true;geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x7aaabb,roughness:.2,metalness:.12}));
+  mesh.rotation.x=-Math.PI/2;mesh.position.set(0,0,-85);scene.add(mesh);
+  const lake=new THREE.Mesh(new THREE.CircleGeometry(16,isMobile?24:48),new THREE.MeshPhysicalMaterial({
+    color:0x8ab4c8,roughness:.02,metalness:.3,transparent:true,opacity:.8,transmission:.4,thickness:1.0,ior:1.33,
+  }));
+  lake.rotation.x=-Math.PI/2;lake.position.set(0,.02,-85);scene.add(lake);
 })();
 
-// ─── Stalactites & stalagmites ────────────────────────────────────────────────
-function makePillar(x,y,z,h,r,flipped,glowCol) {
-  const geo = new THREE.ConeGeometry(r,h,rand(5,8)|0, 1, false);
-  const pa = geo.attributes.position;
-  for (let i=0;i<pa.count;i++){
-    pa.setX(i,pa.getX(i)+(Math.random()-.5)*r*.4);
-    pa.setZ(i,pa.getZ(i)+(Math.random()-.5)*r*.4);
-  }
-  pa.needsUpdate=true; geo.computeVertexNormals();
-  const emissive = glowCol || null;
-  const mat = iceMat(0xb8d8f0, rand(.35,.6), emissive, emissive?rand(.05,.15):0);
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(x,y,z);
-  if (flipped) mesh.rotation.z = Math.PI;
-  mesh.castShadow=true;
+// ─── Formations ──────────────────────────────────────────────────────────────
+function makePillar(x,y,z,h,r,flipped,glowCol){
+  const geo=new THREE.ConeGeometry(r,h,rand(5,7)|0,1,false);
+  const pa=geo.attributes.position;
+  for(let i=0;i<pa.count;i++){pa.setX(i,pa.getX(i)+(Math.random()-.5)*r*.4);pa.setZ(i,pa.getZ(i)+(Math.random()-.5)*r*.4);}
+  pa.needsUpdate=true;geo.computeVertexNormals();
+  const mat=iceMat(0xb8d8f0,rand(.35,.6),glowCol||null,glowCol?rand(.05,.15):0);
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(x,y,z);if(flipped)mesh.rotation.z=Math.PI;
+  if(!isMobile)mesh.castShadow=true;
   return mesh;
 }
 
-// Entry zone stalactites
-for (let i=0;i<30;i++) {
-  const z=rand(-2,-38), x=rand(-7,7);
-  const h=rand(1.5,5), r=rand(.1,.5);
-  const ceiling=8+Math.sin(z*.4)*.5;
-  scene.add(makePillar(x, ceiling, z, h, r, true, null));
+// Entry
+for(let i=0;i<(isMobile?16:30);i++){const z=rand(-2,-38),x=rand(-7,7),h=rand(1.5,5),r=rand(.1,.5),ceil=8+Math.sin(z*.4)*.5;scene.add(makePillar(x,ceil,z,h,r,true,null));}
+for(let i=0;i<(isMobile?12:20);i++){const z=rand(-2,-38),x=rand(-7,7);scene.add(makePillar(x,0,z,rand(.3,1.5),rand(.05,.25),false,null));}
+
+// Crystal forest
+const CCOLS=[0x4080ff,0x40e0c0,0x8060ff,0x00c8ff,0x80ff80];
+const forestCount=isMobile?40:80;
+for(let i=0;i<forestCount;i++){
+  const z=rand(-36,-62),x=rand(-8,8),col=CCOLS[randInt(0,CCOLS.length-1)];
+  scene.add(makePillar(x,6+Math.sin(z*.3)*.8,z,rand(1.2,6),rand(.08,.4),true,col));
+  if(Math.random()>.5)scene.add(makePillar(x+(Math.random()-.5)*.5,0,z+(Math.random()-.5)*.5,rand(.5,2.5),rand(.04,.2),false,col));
 }
-// Entry stalagmites
-for (let i=0;i<20;i++) {
-  const z=rand(-2,-38), x=rand(-7,7);
-  scene.add(makePillar(x, 0, z, rand(.3,1.5), rand(.05,.25), false, null));
+for(let c=0;c<(isMobile?10:20);c++){
+  const cx2=rand(-8,8),cz=rand(-40,-60),cy=Math.random()>.5?6.5:.02,flipped=cy>1,col=CCOLS[randInt(0,CCOLS.length-1)];
+  for(let s=0;s<6;s++){const m=makePillar(cx2+(Math.random()-.5)*.8,cy,cz+(Math.random()-.5)*.8,rand(.4,1.6),rand(.03,.1),flipped,col);m.rotation.z=(Math.random()-.5)*.5;m.rotation.x=(Math.random()-.5)*.3;scene.add(m);}
 }
 
-// Crystal Forest (dense, glowing)
-const CRYSTAL_COLORS = [0x4080ff, 0x40e0c0, 0x8060ff, 0x00c8ff, 0x80ff80];
-for (let i=0;i<80;i++) {
-  const z=rand(-36,-62), x=rand(-8,8);
-  const col = CRYSTAL_COLORS[randInt(0,CRYSTAL_COLORS.length-1)];
-  const h=rand(1.2,6), r=rand(.08,.4);
-  const ceiling=6+Math.sin(z*.3)*.8;
-  scene.add(makePillar(x, ceiling, z, h, r, true, col));
-  if (Math.random()>.5) scene.add(makePillar(x+(Math.random()-.5)*.5, 0, z+(Math.random()-.5)*.5, rand(.5,2.5), rand(.04,.2), false, col));
-}
-
-// Crystal clusters — groups of tiny spikes
-for (let c=0;c<20;c++) {
-  const cx2=rand(-8,8), cz=rand(-40,-60), cy=Math.random()>.5?6.5:.02;
-  const flipped=cy>1;
-  const col=CRYSTAL_COLORS[randInt(0,CRYSTAL_COLORS.length-1)];
-  for (let s=0;s<8;s++){
-    const sx=cx2+(Math.random()-.5)*.8, sz=cz+(Math.random()-.5)*.8;
-    const mesh=makePillar(sx,cy,sz,rand(.4,1.6),rand(.03,.1),flipped,col);
-    mesh.rotation.z=(Math.random()-.5)*.5;
-    mesh.rotation.x=(Math.random()-.5)*.3;
-    scene.add(mesh);
-  }
-}
-
-// Lake zone — large ice columns
-for (let i=0;i<12;i++) {
-  const z=rand(-72,-98), x=rand(-12,12);
-  const h=rand(3,10);
-  scene.add(makePillar(x,0,z,h,rand(.3,.8),false,0x80b8d8));
-  scene.add(makePillar(x,12+Math.random()*4,z,h,rand(.2,.7),true,0x80b8d8));
-}
+// Lake columns
+for(let i=0;i<(isMobile?6:12);i++){const z=rand(-72,-98),x=rand(-12,12),h=rand(3,10);scene.add(makePillar(x,0,z,h,rand(.3,.8),false,0x80b8d8));scene.add(makePillar(x,12+Math.random()*4,z,h,rand(.2,.7),true,0x80b8d8));}
 
 // Bioluminescent deep
-const BIO_COLS=[0x00ff88,0x8040ff,0x00ddaa,0x4000ff];
-for (let i=0;i<60;i++){
-  const z=rand(-115,-150), x=rand(-10,10);
-  const col=BIO_COLS[randInt(0,BIO_COLS.length-1)];
-  const h=rand(.8,4);
-  scene.add(makePillar(x,0,z,h,rand(.06,.3),false,col));
-  if(Math.random()>.4) scene.add(makePillar(x+(Math.random()-.5)*.4,10+Math.random()*5,z,rand(.6,3.5),rand(.05,.25),true,col));
+const BCOLS=[0x00ff88,0x8040ff,0x00ddaa,0x4000ff];
+for(let i=0;i<(isMobile?30:60);i++){
+  const z=rand(-115,-150),x=rand(-10,10),col=BCOLS[randInt(0,BCOLS.length-1)];
+  scene.add(makePillar(x,0,z,rand(.8,4),rand(.06,.3),false,col));
+  if(Math.random()>.4)scene.add(makePillar(x+(Math.random()-.5)*.4,10+Math.random()*5,z,rand(.6,3.5),rand(.05,.25),true,col));
 }
 
-// ─── Ice vein cracks ─────────────────────────────────────────────────────────
-function makeVein(pts, col, opacity) {
-  const curve = new THREE.CatmullRomCurve3(pts);
-  const geo = new THREE.TubeGeometry(curve, pts.length*4, .015, 4, false);
-  const mat = new THREE.MeshBasicMaterial({color:col, transparent:true, opacity});
-  return new THREE.Mesh(geo, mat);
+// ─── Ice veins ───────────────────────────────────────────────────────────────
+function makeVein(pts,col,opacity){
+  const curve=new THREE.CatmullRomCurve3(pts);
+  const geo=new THREE.TubeGeometry(curve,pts.length*4,.015,4,false);
+  return new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity}));
 }
-// Crack veins on walls
-for (let i=0;i<40;i++) {
-  const z=rand(-10,-160), x=rand(-8,8), y=rand(.5,7);
-  const pts=[];
-  let cx2=x,cy=y,cz=z;
+const veinCount=isMobile?20:40;
+for(let i=0;i<veinCount;i++){
+  const z=rand(-10,-160),x=rand(-8,8),y=rand(.5,7);
+  const pts=[];let cx2=x,cy=y,cz=z;
   for(let j=0;j<8;j++){cx2+=(Math.random()-.5)*1.5;cy+=(Math.random()-.5)*1;cz+=(Math.random()-.5)*.5;pts.push(new THREE.Vector3(cx2,cy,cz));}
-  const cols=[0x4080ff,0x00c8ff,0x8040ff,0x00ff88];
-  const veinCol=cols[randInt(0,cols.length-1)];
-  scene.add(makeVein(pts, veinCol, rand(.25,.6)));
+  scene.add(makeVein(pts,[0x4080ff,0x00c8ff,0x8040ff,0x00ff88][randInt(0,3)],rand(.25,.6)));
 }
 
 // ─── Frozen silhouettes ───────────────────────────────────────────────────────
-function makeSilhouette(x,z) {
-  const grp = new THREE.Group();
-  // Body
-  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.25,.9,4,8),
-    new THREE.MeshPhysicalMaterial({color:0x1a2840,transparent:true,opacity:.55,roughness:.1,transmission:.5,thickness:1.5}));
-  body.position.y=1;
-  grp.add(body);
-  // Head
-  const head=new THREE.Mesh(new THREE.SphereGeometry(.2,8,8),
-    new THREE.MeshPhysicalMaterial({color:0x1a2840,transparent:true,opacity:.55,roughness:.1,transmission:.5}));
-  head.position.y=2.1;
-  grp.add(head);
-  grp.position.set(x,.0,z);
-  grp.rotation.y=Math.random()*Math.PI*2;
-  scene.add(grp);
-}
-[-4,-2,5,8,-7].forEach((x,i)=>makeSilhouette(x, -50-i*3.5));
-[-3,6,-8,4,-5].forEach((x,i)=>makeSilhouette(x, -125-i*4));
-
-// ─── Void formation (deep center) ────────────────────────────────────────────
-(function buildVoidFormation(){
+function makeSilhouette(x,z){
   const grp=new THREE.Group();
-  // Core crystal spire
-  const spire=new THREE.Mesh(
-    new THREE.ConeGeometry(.8,12,7),
-    iceMat(0x200860,.6, new THREE.Color(0x4020c0),.3)
-  );
-  spire.position.y=6;
-  grp.add(spire);
-  // Orbiting shards
+  const silMat=new THREE.MeshPhysicalMaterial({color:0x1a2840,transparent:true,opacity:.55,roughness:.1,transmission:.5,thickness:1.5});
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.25,.9,4,8),silMat);body.position.y=1;grp.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.2,8,8),silMat.clone());head.position.y=2.1;grp.add(head);
+  grp.position.set(x,.0,z);grp.rotation.y=Math.random()*Math.PI*2;scene.add(grp);
+}
+[-4,-2,5,8,-7].forEach((x,i)=>makeSilhouette(x,-50-i*3.5));
+[-3,6,-8,4,-5].forEach((x,i)=>makeSilhouette(x,-125-i*4));
+
+// ─── Void formation ───────────────────────────────────────────────────────────
+(function buildVoid(){
+  const grp=new THREE.Group();
+  // [0] spire
+  const spire=new THREE.Mesh(new THREE.ConeGeometry(.8,12,7),iceMat(0x200860,.6,new THREE.Color(0x4020c0),.3));
+  spire.position.y=6; grp.add(spire);
+  // [1-8] orbiting shards
   for(let i=0;i<8;i++){
-    const ang=(i/8)*Math.PI*2;
-    const r=2.5+Math.sin(i)*1;
-    const shard=new THREE.Mesh(
-      new THREE.ConeGeometry(rand(.1,.3),rand(1,3),5),
-      iceMat(0x301080,.5,new THREE.Color(0x6030e0),.25)
-    );
+    const ang=(i/8)*Math.PI*2,r=2.5+Math.sin(i)*.8;
+    const shard=new THREE.Mesh(new THREE.ConeGeometry(rand(.1,.3),rand(1,3),5),iceMat(0x301080,.5,new THREE.Color(0x6030e0),.25));
     shard.position.set(Math.cos(ang)*r,rand(1,6),Math.sin(ang)*r);
     shard.rotation.set(rand(-.5,.5),ang,rand(-.8,.8));
     grp.add(shard);
   }
-  // Ethereal glow sphere
-  const glow=new THREE.Mesh(
-    new THREE.SphereGeometry(1.5,16,16),
-    new THREE.MeshBasicMaterial({color:0x2010a0,transparent:true,opacity:.12})
-  );
+  // [9] glow
+  const glow=new THREE.Mesh(new THREE.SphereGeometry(1.5,12,12),new THREE.MeshBasicMaterial({color:0x2010a0,transparent:true,opacity:.12}));
   grp.add(glow);
-
   grp.position.set(0,0,-168);
   scene.add(grp);
-
-  // Animate this formation in the render loop
   window._voidGroup=grp;
 })();
 
-// ─── Floating ice dust particles ──────────────────────────────────────────────
-const DUST_COUNT=2500;
+// ─── Dust particles ───────────────────────────────────────────────────────────
+const DUST_COUNT=isMobile?800:2500;
 const dustGeo=new THREE.BufferGeometry();
 const dustPos=new Float32Array(DUST_COUNT*3);
 const dustVel=new Float32Array(DUST_COUNT*3);
 for(let i=0;i<DUST_COUNT;i++){
-  dustPos[i*3]  =(Math.random()-.5)*20;
-  dustPos[i*3+1]=Math.random()*8;
-  dustPos[i*3+2]=Math.random()*180-5;
-  dustVel[i*3]  =(Math.random()-.5)*.008;
-  dustVel[i*3+1]=(Math.random()-.5)*.004;
-  dustVel[i*3+2]=(Math.random()-.5)*.006;
+  dustPos[i*3]=(Math.random()-.5)*20;dustPos[i*3+1]=Math.random()*8;dustPos[i*3+2]=Math.random()*180-5;
+  dustVel[i*3]=(Math.random()-.5)*.008;dustVel[i*3+1]=(Math.random()-.5)*.004;dustVel[i*3+2]=(Math.random()-.5)*.006;
 }
 dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPos,3));
-const dustMesh=new THREE.Points(dustGeo,
-  new THREE.PointsMaterial({color:0xc0dff8,size:.04,transparent:true,opacity:.55,
-    depthWrite:false,blending:THREE.AdditiveBlending}));
+const dustMesh=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0xc0dff8,size:.04,transparent:true,opacity:.55,depthWrite:false,blending:THREE.AdditiveBlending}));
 scene.add(dustMesh);
 
-// ─── Caustic projection ───────────────────────────────────────────────────────
-// Animated caustic texture baked into canvas, projected as decal-like plane
-const causticCanvas=document.createElement('canvas');
-causticCanvas.width=causticCanvas.height=256;
-const causticTex=new THREE.CanvasTexture(causticCanvas);
-const causticMat=new THREE.MeshBasicMaterial({
-  map:causticTex,transparent:true,opacity:.18,
-  blending:THREE.AdditiveBlending,depthWrite:false,
-});
-const causticPlane=new THREE.Mesh(new THREE.PlaneGeometry(20,20),causticMat);
-causticPlane.rotation.x=-Math.PI/2;
-causticPlane.position.set(0,.05,-85);
-scene.add(causticPlane);
-
+// ─── Caustics (desktop only) ──────────────────────────────────────────────────
+let causticTex=null, causticCanvas=null;
+if(!isMobile){
+  causticCanvas=document.createElement('canvas');causticCanvas.width=causticCanvas.height=256;
+  causticTex=new THREE.CanvasTexture(causticCanvas);
+  const causticPlane=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshBasicMaterial({map:causticTex,transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false}));
+  causticPlane.rotation.x=-Math.PI/2;causticPlane.position.set(0,.05,-85);scene.add(causticPlane);
+}
 function drawCaustics(t){
-  const cx2=causticCanvas.getContext('2d');
-  cx2.clearRect(0,0,256,256);
+  if(!causticCanvas)return;
+  const cx=causticCanvas.getContext('2d');cx.clearRect(0,0,256,256);
   for(let i=0;i<30;i++){
     const px=128+Math.sin(t*.7+i*1.2)*60+Math.cos(t*.5+i*.8)*40;
     const py=128+Math.cos(t*.6+i*1.5)*60+Math.sin(t*.4+i*.9)*40;
     const r=8+Math.sin(t*.9+i*.7)*5;
-    const gr=cx2.createRadialGradient(px,py,0,px,py,r);
-    gr.addColorStop(0,'rgba(100,200,255,.5)'); gr.addColorStop(1,'rgba(0,0,0,0)');
-    cx2.fillStyle=gr; cx2.beginPath(); cx2.arc(px,py,r,0,Math.PI*2); cx2.fill();
+    const gr=cx.createRadialGradient(px,py,0,px,py,r);
+    gr.addColorStop(0,'rgba(100,200,255,.5)');gr.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=gr;cx.beginPath();cx.arc(px,py,r,0,Math.PI*2);cx.fill();
   }
   causticTex.needsUpdate=true;
 }
 
-// ─── Crack particles (click feedback) ────────────────────────────────────────
+// ─── Crack particles ──────────────────────────────────────────────────────────
 const crackParts=[];
-function spawnCrack(pos, col){
-  const count=60;
-  const geo=new THREE.BufferGeometry();
-  const p=new Float32Array(count*3);
-  const v=[];
-  for(let i=0;i<count;i++){
-    p[i*3]=pos.x; p[i*3+1]=pos.y; p[i*3+2]=pos.z;
-    v.push(new THREE.Vector3((Math.random()-.5)*2,(Math.random()-.5)*2,(Math.random()-.5)*2));
-  }
+function spawnCrack(pos,col){
+  const count=40;const geo=new THREE.BufferGeometry();
+  const p=new Float32Array(count*3);const v=[];
+  for(let i=0;i<count;i++){p[i*3]=pos.x;p[i*3+1]=pos.y;p[i*3+2]=pos.z;v.push(new THREE.Vector3((Math.random()-.5)*2,(Math.random()-.5)*2,(Math.random()-.5)*2));}
   geo.setAttribute('position',new THREE.BufferAttribute(p,3));
-  const mesh=new THREE.Points(geo,new THREE.PointsMaterial({
-    color:col,size:.06,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending}));
-  scene.add(mesh);
-  crackParts.push({mesh,geo,v,life:1.0});
+  const mesh=new THREE.Points(geo,new THREE.PointsMaterial({color:col,size:.06,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending}));
+  scene.add(mesh);crackParts.push({mesh,geo,v,life:1.0});
 }
 
 // ─── Post-processing ──────────────────────────────────────────────────────────
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
 const chromaPass=new ShaderPass({
-  uniforms:{
-    tDiffuse:{value:null},
-    aberration:{value:.003},
-    time:{value:0},
-    coldness:{value:.0},
-  },
+  uniforms:{tDiffuse:{value:null},aberration:{value:.003},time:{value:0},coldness:{value:0}},
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
   fragmentShader:`
-    uniform sampler2D tDiffuse;
-    uniform float aberration;
-    uniform float time;
-    uniform float coldness;
-    varying vec2 vUv;
+    uniform sampler2D tDiffuse;uniform float aberration,time,coldness;varying vec2 vUv;
     void main(){
-      vec2 c=vec2(.5);
-      vec2 d=vUv-c;
-      float dist=length(d);
+      vec2 c=vec2(.5),d=vUv-c;float dist=length(d);
       float ab=aberration*(1.+dist*dist*2.2);
-      vec2 off=d*ab;
-
-      float r=texture2D(tDiffuse,clamp(vUv+off,0.,1.)).r;
-      float g=texture2D(tDiffuse,clamp(vUv    ,0.,1.)).g;
-      float b=texture2D(tDiffuse,clamp(vUv-off,0.,1.)).b;
-
-      // Vignette
-      float vig=1.-dist*.8;
-      vig=smoothstep(0.,1.,vig);
-
-      // Frost edges
+      float r=texture2D(tDiffuse,clamp(vUv+d*ab,0.,1.)).r;
+      float g=texture2D(tDiffuse,clamp(vUv      ,0.,1.)).g;
+      float b=texture2D(tDiffuse,clamp(vUv-d*ab,0.,1.)).b;
+      float vig=smoothstep(0.,1.,1.-dist*.8);
       float frost=pow(dist,2.4)*.2;
-      vec3 frostC=vec3(.65,.82,1.);
-
-      // Cold color grade
       vec3 col=vec3(r,g,b)*vig;
-      col=mix(col,frostC,frost);
-      col.b+=coldness*.08;
-      col.r-=coldness*.03;
-
-      // Subtle scan line
-      float scan=sin(vUv.y*innerHeight*1.2)*.5+.5;
-      col*=1.-(scan*.018);
-
+      col=mix(col,vec3(.65,.82,1.),frost);
+      col.b+=coldness*.08;col.r-=coldness*.03;
+      float scan=sin(vUv.y*800.)*.5+.5;col*=1.-scan*.015;
       gl_FragColor=vec4(col,1.);
     }`,
 });
 composer.addPass(chromaPass);
 
-// ─── Input ───────────────────────────────────────────────────────────────────
+// ─── Keyboard input ───────────────────────────────────────────────────────────
 const keys={};
-document.addEventListener('keydown',e=>{ keys[e.code]=true; });
+document.addEventListener('keydown',e=>{ keys[e.code]=true; e.preventDefault(); });
 document.addEventListener('keyup',  e=>{ keys[e.code]=false; });
 
-// Mouse look (no pointer lock — just track position)
-let mouseX=.5,mouseY=.5;
-document.addEventListener('mousemove',e=>{
-  mouseX=e.clientX/innerWidth;
-  mouseY=e.clientY/innerHeight;
-});
+// ─── Mouse look (desktop) ─────────────────────────────────────────────────────
+let mouseX=.5, mouseY=.5;
+if(!isMobile){
+  document.addEventListener('mousemove',e=>{ mouseX=e.clientX/innerWidth; mouseY=e.clientY/innerHeight; });
+}
 
-// Click to crack
-const raycaster=new THREE.Raycaster();
-const clickMouse=new THREE.Vector2();
-document.addEventListener('click',e=>{
-  clickMouse.x=(e.clientX/innerWidth)*2-1;
-  clickMouse.y=-(e.clientY/innerHeight)*2+1;
-  raycaster.setFromCamera(clickMouse,camera);
-  const hits=raycaster.intersectObjects(scene.children, true);
-  if(hits.length){
-    const pt=hits[0].point;
-    const faceNorm=hits[0].face?.normal||new THREE.Vector3(0,1,0);
-    const matCol=hits[0].object?.material?.color||{r:.4,g:.8,b:1};
-    const col=new THREE.Color(matCol.r,matCol.g,matCol.b);
-    spawnCrack(pt,col);
-    playClick(pt);
+// ─── Touch controls (mobile) ──────────────────────────────────────────────────
+const joyEl    = document.getElementById('joy-zone');
+const joyStick = document.getElementById('joy-stick');
+const joyRadius = 55; // half of joy-zone width
+
+let moveTouchId = null, lookTouchId = null;
+let joyOriginX=0, joyOriginY=0;
+let joyDX=0, joyDY=0;
+let lastLookX=0, lastLookY=0;
+
+function joyPos() {
+  const rect = joyEl.getBoundingClientRect();
+  return { cx: rect.left + rect.width/2, cy: rect.top + rect.height/2 };
+}
+
+renderer.domElement.addEventListener('touchstart', e=>{
+  e.preventDefault();
+  for(const t of e.changedTouches){
+    const jc = joyPos();
+    const dx = t.clientX - jc.cx, dy = t.clientY - jc.cy;
+    // If touch is within joystick zone radius or left half of screen — joystick
+    if((Math.sqrt(dx*dx+dy*dy)<joyRadius*1.5 || t.clientX < innerWidth*0.45) && moveTouchId===null){
+      moveTouchId=t.identifier;
+      joyOriginX=t.clientX; joyOriginY=t.clientY;
+      joyDX=0; joyDY=0;
+    } else if(lookTouchId===null){
+      lookTouchId=t.identifier;
+      lastLookX=t.clientX; lastLookY=t.clientY;
+    }
+  }
+},{ passive:false });
+
+renderer.domElement.addEventListener('touchmove', e=>{
+  e.preventDefault();
+  for(const t of e.changedTouches){
+    if(t.identifier===moveTouchId){
+      const dx=(t.clientX-joyOriginX)/joyRadius;
+      const dy=(t.clientY-joyOriginY)/joyRadius;
+      const len=Math.sqrt(dx*dx+dy*dy);
+      const clamped=len>1?1/len:1;
+      joyDX=dx*clamped; joyDY=dy*clamped;
+      // Visually move stick
+      const sx=Math.min(Math.max(dx*joyRadius,-joyRadius),joyRadius);
+      const sy=Math.min(Math.max(dy*joyRadius,-joyRadius),joyRadius);
+      joyStick.style.transform=`translate(calc(-50% + ${sx}px), calc(-50% + ${sy}px))`;
+    } else if(t.identifier===lookTouchId){
+      const dx=t.clientX-lastLookX;
+      const dy=t.clientY-lastLookY;
+      yaw  -=dx*0.004;
+      pitch-=dy*0.004;
+      pitch=Math.max(-Math.PI/2.1, Math.min(Math.PI/2.1, pitch));
+      lastLookX=t.clientX; lastLookY=t.clientY;
+    }
+  }
+},{ passive:false });
+
+renderer.domElement.addEventListener('touchend', e=>{
+  for(const t of e.changedTouches){
+    if(t.identifier===moveTouchId){ moveTouchId=null; joyDX=0; joyDY=0; joyStick.style.transform='translate(-50%,-50%)'; }
+    if(t.identifier===lookTouchId){ lookTouchId=null; }
   }
 });
 
+// Tap to crack (mobile)
+let tapStartX=0, tapStartY=0;
+renderer.domElement.addEventListener('touchstart',e=>{ const t=e.touches[0]; tapStartX=t.clientX; tapStartY=t.clientY; },{ passive:true });
+renderer.domElement.addEventListener('touchend',e=>{
+  const t=e.changedTouches[0];
+  if(Math.abs(t.clientX-tapStartX)<10&&Math.abs(t.clientY-tapStartY)<10){
+    const cm=new THREE.Vector2((t.clientX/innerWidth)*2-1,-(t.clientY/innerHeight)*2+1);
+    const rc=new THREE.Raycaster();rc.setFromCamera(cm,camera);
+    const hits=rc.intersectObjects(scene.children,true);
+    if(hits.length){const col=hits[0].object?.material?.color||{r:.4,g:.8,b:1};spawnCrack(hits[0].point,new THREE.Color(col.r,col.g,col.b));playClick();}
+  }
+},{passive:true});
+
+// Desktop click crack
+const desktopRC=new THREE.Raycaster();
+const clickM=new THREE.Vector2();
+if(!isMobile){
+  document.addEventListener('click',e=>{
+    clickM.x=(e.clientX/innerWidth)*2-1;clickM.y=-(e.clientY/innerHeight)*2+1;
+    desktopRC.setFromCamera(clickM,camera);
+    const hits=desktopRC.intersectObjects(scene.children,true);
+    if(hits.length){const col=hits[0].object?.material?.color||{r:.4,g:.8,b:1};spawnCrack(hits[0].point,new THREE.Color(col.r,col.g,col.b));playClick();}
+  });
+}
+
 // ─── Sound ───────────────────────────────────────────────────────────────────
-let actx=null,masterGain=null,soundOn=false;
-let droneOscs=[],windNoise=null,lastDrip=0;
+let actx=null,masterGain=null,soundOn=false,droneOscs=[],lastDrip=0;
 
 function initAudio(){
   actx=new(window.AudioContext||window.webkitAudioContext)();
-  masterGain=actx.createGain(); masterGain.gain.value=0;
-  masterGain.connect(actx.destination);
-
-  // Deep cave drone
+  masterGain=actx.createGain();masterGain.gain.value=0;masterGain.connect(actx.destination);
   [40,60,80,120].forEach((f,i)=>{
-    const osc=actx.createOscillator();
-    const g=actx.createGain();
-    const flt=actx.createBiquadFilter();
-    osc.type=i===0?'sawtooth':'sine';
-    osc.frequency.value=f;
-    g.gain.value=i===0?.08:.04/(i+1);
-    flt.type='lowpass'; flt.frequency.value=300+i*50;
-    osc.connect(flt); flt.connect(g); g.connect(masterGain);
-    osc.start(); droneOscs.push({osc,g,flt});
+    const osc=actx.createOscillator(),g=actx.createGain(),flt=actx.createBiquadFilter();
+    osc.type=i===0?'sawtooth':'sine';osc.frequency.value=f;
+    g.gain.value=i===0?.08:.04/(i+1);flt.type='lowpass';flt.frequency.value=300+i*50;
+    osc.connect(flt);flt.connect(g);g.connect(masterGain);osc.start();
+    droneOscs.push(osc);
   });
-
-  // Wind — filtered noise via buffer
-  const bufLen=actx.sampleRate*2;
-  const buf=actx.createBuffer(1,bufLen,actx.sampleRate);
-  const data=buf.getChannelData(0);
-  for(let i=0;i<bufLen;i++) data[i]=Math.random()*2-1;
-  windNoise=actx.createBufferSource();
-  windNoise.buffer=buf; windNoise.loop=true;
-  const wFlt=actx.createBiquadFilter();
-  wFlt.type='bandpass'; wFlt.frequency.value=180; wFlt.Q.value=.5;
-  const wGain=actx.createGain(); wGain.gain.value=.04;
-  windNoise.connect(wFlt); wFlt.connect(wGain); wGain.connect(masterGain);
-  windNoise.start();
+  const bufLen=actx.sampleRate*2,buf=actx.createBuffer(1,bufLen,actx.sampleRate);
+  const data=buf.getChannelData(0);for(let i=0;i<bufLen;i++)data[i]=Math.random()*2-1;
+  const ws=actx.createBufferSource();ws.buffer=buf;ws.loop=true;
+  const wf=actx.createBiquadFilter();wf.type='bandpass';wf.frequency.value=180;wf.Q.value=.5;
+  const wg=actx.createGain();wg.gain.value=.04;ws.connect(wf);wf.connect(wg);wg.connect(masterGain);ws.start();
 }
 
-function playClick(pos){
-  if(!actx||!soundOn) return;
-  const now=actx.currentTime;
-  const osc=actx.createOscillator();
-  const g=actx.createGain();
-  osc.type='triangle';
-  osc.frequency.setValueAtTime(800+Math.random()*400,now);
+function playClick(){
+  if(!actx||!soundOn)return;
+  const now=actx.currentTime,osc=actx.createOscillator(),g=actx.createGain();
+  osc.type='triangle';osc.frequency.setValueAtTime(800+Math.random()*400,now);
   osc.frequency.exponentialRampToValueAtTime(200,now+.3);
-  g.gain.setValueAtTime(.3,now);
-  g.gain.exponentialRampToValueAtTime(.001,now+.4);
-  osc.connect(g); g.connect(masterGain);
-  osc.start(now); osc.stop(now+.4);
+  g.gain.setValueAtTime(.3,now);g.gain.exponentialRampToValueAtTime(.001,now+.4);
+  osc.connect(g);g.connect(masterGain);osc.start(now);osc.stop(now+.4);
 }
-
 function playDrip(){
-  if(!actx||!soundOn) return;
-  const now=actx.currentTime;
-  const osc=actx.createOscillator();
-  const g=actx.createGain();
-  osc.type='sine';
-  osc.frequency.setValueAtTime(1200+Math.random()*600,now);
+  if(!actx||!soundOn)return;
+  const now=actx.currentTime,osc=actx.createOscillator(),g=actx.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(1200+Math.random()*600,now);
   osc.frequency.exponentialRampToValueAtTime(400,now+.12);
-  g.gain.setValueAtTime(.08,now);
-  g.gain.exponentialRampToValueAtTime(.001,now+.15);
-  osc.connect(g); g.connect(masterGain);
-  osc.start(now); osc.stop(now+.2);
+  g.gain.setValueAtTime(.08,now);g.gain.exponentialRampToValueAtTime(.001,now+.15);
+  osc.connect(g);g.connect(masterGain);osc.start(now);osc.stop(now+.2);
 }
-
-function updateDroneForDepth(depth){
-  if(!actx||!soundOn) return;
-  const t=Math.max(0,Math.min(1,-depth/160));
-  const baseF=40-t*15;
-  droneOscs.forEach(({osc},i)=>{
-    const mults=[1,1.5,2,3][i];
-    osc.frequency.linearRampToValueAtTime(baseF*mults,actx.currentTime+.3);
-  });
-  masterGain.gain.linearRampToValueAtTime(.45,actx.currentTime+.5);
+function updateDrone(z){
+  if(!actx||!soundOn)return;
+  const t=Math.max(0,Math.min(1,-z/160));
+  [1,1.5,2,3].forEach((m,i)=>droneOscs[i].frequency.linearRampToValueAtTime((40-t*15)*m,actx.currentTime+.3));
 }
 
 window.toggleSound=function(){
   if(!actx)initAudio();
   soundOn=!soundOn;
   const btn=document.getElementById('mute-btn');
-  if(soundOn){
-    masterGain.gain.linearRampToValueAtTime(.45,actx.currentTime+.8);
-    btn.textContent='♪ MUTE';
-  } else {
-    masterGain.gain.linearRampToValueAtTime(0,actx.currentTime+.5);
-    btn.textContent='♪ SOUND';
-  }
+  if(soundOn){masterGain.gain.linearRampToValueAtTime(.45,actx.currentTime+.8);btn.textContent='♪ MUTE';}
+  else{masterGain.gain.linearRampToValueAtTime(0,actx.currentTime+.5);btn.textContent='♪ SOUND';}
 };
 
 // ─── Camera movement ──────────────────────────────────────────────────────────
@@ -712,23 +590,19 @@ const zoneEl=document.getElementById('zone');
 const depthM=document.getElementById('depth-m');
 const depthFill=document.getElementById('depth-fill');
 
-function updateZone(z){
-  const idx=ZONES.reduce((best,zone,i)=>Math.abs(zone.z-z)<Math.abs(ZONES[best].z-z)?i:best,0);
+function updateZoneUI(z){
+  const idx=ZONES.reduce((b,zn,i)=>Math.abs(zn.z-z)<Math.abs(ZONES[b].z-z)?i:b,0);
   if(idx!==prevZone){
-    prevZone=idx;
-    const zn=ZONES[idx];
-    scene.fog.color.setHex(zn.fogColor);
-    scene.fog.density=zn.fogDensity;
+    prevZone=idx;const zn=ZONES[idx];
+    scene.fog.color.setHex(zn.fogColor);scene.fog.density=zn.fogDensity;
     ambientLight.color.setHex(zn.ambient);
-    zoneEl.textContent=zn.name;
-    zoneEl.style.opacity='1';
+    zoneEl.textContent=zn.name;zoneEl.style.opacity='1';
     setTimeout(()=>zoneEl.style.opacity='0',2500);
   }
   const depth=Math.max(0,-z);
   depthM.textContent=Math.round(depth);
-  const pct=Math.min(100,(depth/160)*100);
-  depthFill.style.height=pct+'%';
-  if(soundOn) updateDroneForDepth(z);
+  depthFill.style.height=Math.min(100,(depth/160)*100)+'%';
+  if(soundOn)updateDrone(z);
 }
 
 // ─── Animation loop ───────────────────────────────────────────────────────────
@@ -737,25 +611,28 @@ const clock=new THREE.Clock();
 function animate(){
   requestAnimationFrame(animate);
   const t=clock.getElapsedTime();
-  const dt=Math.min(.05,clock.getDelta());
+  const dt=Math.min(.05, clock.getDelta());
 
-  // Camera yaw/pitch from mouse position
-  const targetYaw  =(mouseX-.5)*Math.PI*1.2;
-  const targetPitch=(mouseY-.5)*(-Math.PI*.55);
-  yaw   =lerp(yaw,   targetYaw,   .04);
-  pitch =lerp(pitch, targetPitch, .04);
+  if(isMobile){
+    // On mobile: yaw/pitch updated directly from touch deltas (already done in touchmove)
+  } else {
+    // Desktop: lerp toward mouse position target
+    const targetYaw  =(mouseX-.5)*Math.PI*1.2;
+    const targetPitch=(mouseY-.5)*(-Math.PI*.55);
+    yaw  =lerp(yaw,   targetYaw,   .04);
+    pitch=lerp(pitch, targetPitch, .04);
+  }
+  pitch=Math.max(-Math.PI/2.1,Math.min(Math.PI/2.1,pitch));
 
-  // Build orientation quaternion
   const qYaw=new THREE.Quaternion().setFromAxisAngle(UP,yaw);
   const RIGHT=new THREE.Vector3(1,0,0).applyQuaternion(qYaw);
   const qPitch=new THREE.Quaternion().setFromAxisAngle(RIGHT,pitch);
   camQuat.multiplyQuaternions(qYaw,qPitch);
 
-  // Forward vector
   const forward=new THREE.Vector3(0,0,-1).applyQuaternion(camQuat);
   const strafe =new THREE.Vector3(1,0,0).applyQuaternion(camQuat);
 
-  // WASD movement
+  // Keyboard
   if(keys['KeyW']||keys['ArrowUp'])    camVel.addScaledVector(forward, SPEED*dt);
   if(keys['KeyS']||keys['ArrowDown'])  camVel.addScaledVector(forward,-SPEED*dt);
   if(keys['KeyA']||keys['ArrowLeft'])  camVel.addScaledVector(strafe, -SPEED*dt);
@@ -763,100 +640,72 @@ function animate(){
   if(keys['KeyQ']) camVel.y+=SPEED*dt*.5;
   if(keys['KeyE']) camVel.y-=SPEED*dt*.5;
 
+  // Joystick (mobile)
+  if(Math.abs(joyDX)>.05||Math.abs(joyDY)>.05){
+    camVel.addScaledVector(forward,-joyDY*SPEED*dt);
+    camVel.addScaledVector(strafe,  joyDX*SPEED*dt);
+  }
+
   camVel.multiplyScalar(DAMP);
   camPos.add(camVel);
-
-  // Clamp vertical
   camPos.y=Math.max(.3,Math.min(6,camPos.y));
-  // Clamp Z range
   camPos.z=Math.min(3,Math.max(-178,camPos.z));
 
   camera.position.copy(camPos);
   camera.quaternion.copy(camQuat);
-
-  // Fill light follows camera
   fillLight.position.copy(camPos).add(forward.clone().multiplyScalar(3));
 
-  // Snow / dust
+  // Dust
   for(let i=0;i<DUST_COUNT;i++){
-    dustPos[i*3]  +=dustVel[i*3];
-    dustPos[i*3+1]+=dustVel[i*3+1];
-    dustPos[i*3+2]+=dustVel[i*3+2];
-    if(dustPos[i*3+1]<0||dustPos[i*3+1]>8){dustVel[i*3+1]*=-1;}
-    if(Math.abs(dustPos[i*3])>10){dustVel[i*3]*=-1;}
+    dustPos[i*3]+=dustVel[i*3];dustPos[i*3+1]+=dustVel[i*3+1];dustPos[i*3+2]+=dustVel[i*3+2];
+    if(dustPos[i*3+1]<0||dustPos[i*3+1]>8)dustVel[i*3+1]*=-1;
+    if(Math.abs(dustPos[i*3])>10)dustVel[i*3]*=-1;
   }
   dustGeo.attributes.position.needsUpdate=true;
 
-  // Caustics
   drawCaustics(t);
 
-  // Crystal lights pulse
-  crystalLights.forEach((l,i)=>{
-    l.intensity=lerp(l.intensity,2.0+Math.sin(t*.9+i*1.3)*1.0,.05);
-  });
-  deepLights.forEach((l,i)=>{
-    l.intensity=lerp(l.intensity,1.5+Math.sin(t*.6+i*1.8)*1.2,.05);
-  });
+  crystalLights.forEach((l,i)=>{ l.intensity=lerp(l.intensity,2.0+Math.sin(t*.9+i*1.3)*1.0,.05); });
+  deepLights.forEach((l,i)=>   { l.intensity=lerp(l.intensity,1.5+Math.sin(t*.6+i*1.8)*1.2,.05); });
   voidLight.intensity=3+Math.sin(t*1.4)*2.5;
-
-  // Void formation spin
-  if(window._voidGroup){
-    window._voidGroup.rotation.y=t*.15;
-    window._voidGroup.children.forEach((c,i)=>{
-      if(i>0&&i<9) { // orbiting shards
-        const ang=(i/8)*Math.PI*2+t*.2;
-        const r=2.5+Math.sin(t*.4+i)*.5;
-        c.position.x=Math.cos(ang)*r;
-        c.position.z=Math.sin(ang)*r;
-      }
-    });
-  }
-
-  // Ice glow pulse on entry light
   entryLight.intensity=3.5+Math.sin(t*.3)*.5;
 
-  // Crack particles
-  for(let ci=crackParts.length-1;ci>=0;ci--){
-    const cp=crackParts[ci];
-    cp.life-=.025;
-    const pa2=cp.geo.attributes.position.array;
-    for(let j=0;j<cp.v.length;j++){
-      pa2[j*3]  +=cp.v[j].x*.08;
-      pa2[j*3+1]+=cp.v[j].y*.08;
-      pa2[j*3+2]+=cp.v[j].z*.08;
+  if(window._voidGroup){
+    window._voidGroup.rotation.y=t*.15;
+    // children[1..8] are the 8 orbiting shards
+    for(let i=1;i<=8;i++){
+      const ang=(i/8)*Math.PI*2+t*.2,r=2.5+Math.sin(t*.4+i)*.5;
+      window._voidGroup.children[i].position.x=Math.cos(ang)*r;
+      window._voidGroup.children[i].position.z=Math.sin(ang)*r;
     }
+  }
+
+  for(let ci=crackParts.length-1;ci>=0;ci--){
+    const cp=crackParts[ci];cp.life-=.025;
+    const pa=cp.geo.attributes.position.array;
+    for(let j=0;j<cp.v.length;j++){pa[j*3]+=cp.v[j].x*.08;pa[j*3+1]+=cp.v[j].y*.08;pa[j*3+2]+=cp.v[j].z*.08;}
     cp.geo.attributes.position.needsUpdate=true;
     cp.mesh.material.opacity=cp.life*.9;
     if(cp.life<=0){scene.remove(cp.mesh);crackParts.splice(ci,1);}
   }
 
-  // Drip sound
   if(soundOn&&t-lastDrip>rand(2,6)){lastDrip=t;playDrip();}
 
-  // Post-processing params
   const speed=camVel.length();
   chromaPass.uniforms.aberration.value=lerp(chromaPass.uniforms.aberration.value,.002+speed*.08,.15);
   chromaPass.uniforms.time.value=t;
-  const coldT=Math.min(1,-camPos.z/160);
-  chromaPass.uniforms.coldness.value=lerp(chromaPass.uniforms.coldness.value,coldT,.02);
+  chromaPass.uniforms.coldness.value=lerp(chromaPass.uniforms.coldness.value,Math.min(1,-camPos.z/160),.02);
 
-  // Zone UI
-  updateZone(camPos.z);
-
+  updateZoneUI(camPos.z);
   composer.render();
 }
 animate();
 
 // ─── Resize ──────────────────────────────────────────────────────────────────
 window.addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-  composer.setSize(innerWidth,innerHeight);
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);
 });
-
-console.log('%c FROZEN DEEP — ice cave explorer','color:#7ec8f0;font-size:14px;font-weight:bold;');
-console.log('%c WASD to move · mouse to look · click to crack','color:#4080a0;font-size:10px;');
 </script>
 </body>
 </html>
