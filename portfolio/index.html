@@ -1,252 +1,678 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>REIN.DEV — QUICK LINKS</title>
-  <meta name="description" content="Have you tried turning it off and on again?"/>
+  <title>REIN.DEV — PORTFOLIO</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000; color: #4ade80; font-family: 'Courier New', Courier, monospace; min-height: 100vh; }
-    a { color: inherit; text-decoration: none; }
-    body::before { content: ''; position: fixed; inset: 0; z-index: 30; pointer-events: none; background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #000 3px, #000 4px); opacity: .04; }
-    body::after  { content: ''; position: fixed; inset: 0; z-index: 20; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
-    .wrap { max-width: 768px; margin: 0 auto; padding: 2.5rem 1rem 4rem; position: relative; z-index: 10; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;background:#04080f;overflow-x:hidden;}
+    #canvas-container{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;}
+    canvas{display:block;}
+    #scroll-spacer{position:relative;z-index:1;pointer-events:none;height:700vh;}
 
-    /* BOOT */
-    .boot { border: 1px solid #14532d; padding: 1.25rem; margin-bottom: 2rem; }
-    .boot-topbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; font-size: .7rem; letter-spacing: .15em; color: #166534; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #14532d55; }
-    .pulse { animation: pulse 2s infinite; } @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
-    .terminal { font-size: .85rem; line-height: 1.8; }
-    .prompt { color: #166534; } .cmd { color: #86efac; }
-    .out { color: #bbf7d0; padding-left: 1rem; } .out strong { color: #fff; }
-    .cursor::after { content: '█'; animation: pulse 1s infinite; }
-    .boot-links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #14532d55; }
-    .boot-links a { font-size: .7rem; border: 1px solid #166534; padding: .4rem 1rem; transition: border-color .2s, background .2s, color .2s; }
-    .boot-links a:hover { border-color: #4ade80; background: #052e16; color: #d1fae5; }
+    /* nav */
+    #back{position:fixed;top:1.1rem;left:1.1rem;z-index:30;color:#8fc8ef;
+      text-decoration:none;font-family:'Courier New',monospace;font-size:.65rem;
+      letter-spacing:.2em;opacity:.65;pointer-events:all;transition:opacity .3s;}
+    #back:hover{opacity:1;}
+    #snd-btn{position:fixed;top:1rem;right:1rem;z-index:30;
+      font-family:'Courier New',monospace;font-size:.65rem;letter-spacing:.2em;
+      color:#8fc8ef;background:none;border:1px solid #8fc8ef44;
+      padding:.35rem .8rem;cursor:pointer;pointer-events:all;transition:all .3s;}
+    #snd-btn:hover{border-color:#8fc8ef;color:#d0eeff;}
 
-    /* SECTION */
-    .section { margin-bottom: 1.75rem; }
-    .sec-header { display: flex; align-items: center; gap: .75rem; font-size: .7rem; color: #166534; margin-bottom: .5rem; }
-    .sec-header .line { flex: 1; border-top: 1px solid #14532d55; }
+    /* dots */
+    #dots{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);
+      display:flex;gap:.55rem;z-index:30;}
+    .dot{width:5px;height:5px;border-radius:50%;background:#8fc8ef22;
+      transition:background .5s,transform .3s;}
+    .dot.active{background:#8fc8ef;transform:scale(1.4);}
 
-    /* LINK ROWS */
-    .link-block { border: 1px solid #14532d99; }
-    .link-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .55rem .75rem; border-bottom: 1px solid #14532d22; transition: background .15s; }
-    .link-row:last-child { border-bottom: none; }
-    .link-row:hover { background: #052e1640; }
-    .link-row.dimmed { opacity: .4; cursor: default; }
-    .row-left { display: flex; align-items: center; gap: .5rem; min-width: 0; }
-    .row-arrow { color: #166534; font-size: .75rem; flex-shrink: 0; }
-    .row-label { font-size: .75rem; font-weight: bold; color: #86efac; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .15s; }
-    .link-row:hover .row-label { color: #d1fae5; }
-    .row-label.api { color: #166534; font-family: 'Courier New', monospace; }
-    .row-lock { font-size: .65rem; flex-shrink: 0; }
-    .row-right { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
-    .row-note { font-size: .6rem; color: #14532d; white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: none; }
-    @media (min-width: 540px) { .row-note { display: block; } }
-    .row-tag { font-size: .6rem; color: #166534; border: 1px solid #14532d66; padding: .1rem .35rem; white-space: nowrap; }
-    .row-open { font-size: .65rem; color: #166534; transition: color .15s; }
-    .link-row:hover .row-open { color: #4ade80; }
+    /* scroll hint */
+    #hint{position:fixed;bottom:4rem;left:50%;transform:translateX(-50%);
+      color:#8fc8ef55;font-family:'Courier New',monospace;font-size:.55rem;
+      letter-spacing:.3em;animation:float 2.4s ease-in-out infinite;}
+    @keyframes float{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0);}
+      50%{opacity:.9;transform:translateX(-50%) translateY(-5px);}}
 
-    /* STACK */
-    .stack-box { border: 1px solid #14532d99; padding: 1rem; font-size: .7rem; color: #166534; display: flex; flex-wrap: wrap; gap: .2rem .5rem; margin-bottom: 1.75rem; }
-    .stack-box span { cursor: default; transition: color .2s; } .stack-box span:hover { color: #4ade80; }
-    .stack-box span + span::before { content: ' · '; color: #14532d; }
+    /* project card */
+    #pcard{position:fixed;bottom:5.5rem;right:1.8rem;z-index:30;
+      text-align:right;opacity:0;transform:translateY(8px);
+      transition:opacity .5s,transform .5s;pointer-events:all;}
+    #pcard.on{opacity:1;transform:translateY(0);}
+    #ptitle{color:#e8f4fd;font-family:'Courier New',monospace;font-size:.85rem;
+      letter-spacing:.15em;margin-bottom:.25rem;}
+    #ptag{color:#7ab8df;font-family:'Courier New',monospace;font-size:.55rem;
+      letter-spacing:.2em;margin-bottom:.8rem;}
+    #plink{color:#8fc8ef;font-family:'Courier New',monospace;font-size:.6rem;
+      letter-spacing:.18em;text-decoration:none;border:1px solid #8fc8ef55;
+      padding:.3rem .75rem;display:inline-block;transition:all .25s;}
+    #plink:hover{background:#8fc8ef18;border-color:#8fc8ef;color:#d8f0ff;}
 
-    /* FOOTER */
-    footer { border-top: 1px solid #14532d55; padding-top: 1.25rem; font-size: .7rem; color: #14532d; }
-    .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-bottom: .25rem; }
-    footer a:hover { color: #4ade80; }
-    .tip { font-size: .6rem; opacity: .5; margin-top: .25rem; }
+    /* footer click hint */
+    #fhint{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);
+      z-index:30;color:#8fc8ef44;font-family:'Courier New',monospace;
+      font-size:.55rem;letter-spacing:.2em;opacity:0;transition:opacity .5s;
+      pointer-events:none;text-align:center;}
+    #fhint.on{opacity:1;}
   </style>
 </head>
 <body>
-<div class="wrap">
+<div id="canvas-container"></div>
+<div id="scroll-spacer"></div>
 
-  <!-- BOOT HEADER -->
-  <div class="boot">
-    <div class="boot-topbar">
-      <span>REIN.DEV SYSTEEM v2.0 &mdash; QUICK LINKS</span>
-      <span>STATUS: <span class="pulse" style="color:#4ade80">&#9679; ONLINE</span></span>
-    </div>
-    <div class="terminal">
-      <div><span class="prompt">C:\REIN&gt; </span><span class="cmd">whoami</span></div>
-      <div class="out">GEBRUIKER........... REIN</div>
-      <div class="out">ROL................. FULL-STACK DEVELOPER</div>
-      <div class="out">STATUS............. <strong>BESCHIKBAAR VOOR PROJECTEN</strong></div>
-      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cmd">ls -la --all</span></div>
-      <div class="out">TOTAAL.............. <strong>27 LINKS GEVONDEN</strong></div>
-      <div class="out">SECTIES............. <strong>6 MAPPEN</strong></div>
-      <div style="margin-top:.4rem"><span class="prompt">C:\REIN&gt; </span><span class="cursor cmd"></span></div>
-    </div>
-    <div class="boot-links">
-      <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer" style="color:#166534">[ GITHUB &#8594; ]</a>
-    </div>
-  </div>
+<a href="/" id="back">← USELESSSITE.NL</a>
+<button id="snd-btn" onclick="toggleSound()">♪ SOUND</button>
 
-  <!-- PROJECTEN -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; PROJECTEN</span><span class="line"></span><span>5 bestanden</span></div>
-    <div class="link-block">
-      <a class="link-row" href="/eemlandbouw/">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">EEMLANDBOUW WEBSITE</span><span class="row-lock">&#128274;</span></div>
-        <div class="row-right"><span class="row-note">Concept site voor eemlandbouw.nl &middot; wachtwoord beveiligd</span><span class="row-tag">AGRARISCH</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/airsoft/">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">3D AIRSOFT PATCHES</span></div>
-        <div class="row-right"><span class="row-note">Webshop voor custom 3D-geprinte PLA airsoft patches</span><span class="row-tag">WEBSHOP</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/feed">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">USELESSSITE COMMUNITY</span></div>
-        <div class="row-right"><span class="row-note">Community om setups te delen en te beoordelen</span><span class="row-tag">PLATFORM</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/scrum">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SCRUM GUIDE NL</span></div>
-        <div class="row-right"><span class="row-note">Nederlandstalige uitleg van het Scrum-framework</span><span class="row-tag">ARTIKEL</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/padi/">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">PADI DIPLOMA</span></div>
-        <div class="row-right"><span class="row-note">Open Water Diver certificering &middot; interactieve e-card</span><span class="row-tag">DUIKEN</span><span class="row-open">&#8594;</span></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- COMMUNITY -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; COMMUNITY</span><span class="line"></span><span>3 paginas</span></div>
-    <div class="link-block">
-      <a class="link-row" href="/feed">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">FEED</span></div>
-        <div class="row-right"><span class="row-note">Alle setup-posts van de community</span><span class="row-tag">OVERZICHT</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/leaderboard">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">LEADERBOARD</span></div>
-        <div class="row-right"><span class="row-note">Gebruikers gerangschikt op score en activiteit</span><span class="row-tag">RANGLIJST</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/submit">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SUBMIT</span></div>
-        <div class="row-right"><span class="row-note">Dien een nieuwe post in met jouw setup</span><span class="row-tag">FORMULIER</span><span class="row-open">&#8594;</span></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- TOOLS -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; TOOLS</span><span class="line"></span><span>6 executables</span></div>
-    <div class="link-block">
-      <a class="link-row" href="/tools/json">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">JSON FORMATTER</span></div>
-        <div class="row-right"><span class="row-note">Format, minify of valideer JSON in de browser</span><span class="row-tag">DEV</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/tools/sap">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SAP IMPORT GENERATOR</span></div>
-        <div class="row-right"><span class="row-note">Genereer SAP-compatibele CSV-importbestanden</span><span class="row-tag">BEDRIJF</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/tools/sprint">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">SPRINT PLANNER</span></div>
-        <div class="row-right"><span class="row-note">Plan sprint-capaciteit op basis van team en velocity</span><span class="row-tag">AGILE</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/tools/wachtwoord">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">WACHTWOORD GENERATOR</span></div>
-        <div class="row-right"><span class="row-note">Veilige wachtwoorden via crypto.getRandomValues()</span><span class="row-tag">SECURITY</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/tools/signature">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">EMAIL HANDTEKENING GEN.</span></div>
-        <div class="row-right"><span class="row-note">Maak een Outlook-klare e-mailhandtekening</span><span class="row-tag">PRODUCTIVITEIT</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/tools/wipe">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">DISK WIPE SCRIPT</span><span class="row-lock">&#128274;</span></div>
-        <div class="row-right"><span class="row-note">PowerShell diskpart wipe script &middot; wachtwoord vereist</span><span class="row-tag">PRIV&Eacute;</span><span class="row-open">&#8594;</span></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- ACCOUNT -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; ACCOUNT</span><span class="line"></span><span>5 paginas</span></div>
-    <div class="link-block">
-      <a class="link-row" href="/login">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">INLOGGEN</span></div>
-        <div class="row-right"><span class="row-note">Log in op je UselessSite account</span><span class="row-tag">AUTH</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/register">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">REGISTREREN</span></div>
-        <div class="row-right"><span class="row-note">Maak een nieuw account aan</span><span class="row-tag">AUTH</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/settings">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">INSTELLINGEN</span></div>
-        <div class="row-right"><span class="row-note">Beheer profiel, avatar en voorkeuren</span><span class="row-tag">ACCOUNT</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/bookmarks">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">BLADWIJZERS</span></div>
-        <div class="row-right"><span class="row-note">Bekijk opgeslagen posts</span><span class="row-tag">ACCOUNT</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <div class="link-row dimmed">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">GEBRUIKERSPROFIEL</span></div>
-        <div class="row-right"><span class="row-note">Publiek profiel van een gebruiker &middot; /u/{naam}</span><span class="row-tag">PROFIEL</span><span class="row-open">&#8594;</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADMIN -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; ADMIN</span><span class="line"></span><span>4 paginas</span></div>
-    <div class="link-block">
-      <a class="link-row" href="/admin">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">ADMIN DASHBOARD</span></div>
-        <div class="row-right"><span class="row-note">Overzicht statistieken en beheer</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/admin/users">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">GEBRUIKERSBEHEER</span></div>
-        <div class="row-right"><span class="row-note">Gebruikers inzien en modereren</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/admin/posts">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">POSTBEHEER</span></div>
-        <div class="row-right"><span class="row-note">Posts beoordelen en verwijderen</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
-      </a>
-      <a class="link-row" href="/admin/reports">
-        <div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label">RAPPORTENBEHEER</span></div>
-        <div class="row-right"><span class="row-note">Gerapporteerde content afhandelen</span><span class="row-tag">ADMIN</span><span class="row-open">&#8594;</span></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- API -->
-  <div class="section">
-    <div class="sec-header"><span>&#9552;&#9552; API</span><span class="line"></span><span>14 endpoints</span></div>
-    <div class="link-block">
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|POST /api/posts</span></div><div class="row-right"><span class="row-note">Posts ophalen of aanmaken</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH|DELETE /api/posts/[id]</span></div><div class="row-right"><span class="row-note">Specifieke post beheren</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/rate</span></div><div class="row-right"><span class="row-note">Post beoordelen</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|POST /api/posts/[id]/comments</span></div><div class="row-right"><span class="row-note">Reacties ophalen of plaatsen</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/bookmark</span></div><div class="row-right"><span class="row-note">Post opslaan als bladwijzer</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/posts/[id]/report</span></div><div class="row-right"><span class="row-note">Post rapporteren</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/users/me</span></div><div class="row-right"><span class="row-note">Huidig ingelogde gebruiker</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/users/[id]/follow</span></div><div class="row-right"><span class="row-note">Gebruiker volgen / ontvolgen</span><span class="row-tag">REST</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/auth/register</span></div><div class="row-right"><span class="row-note">Nieuw account aanmaken</span><span class="row-tag">AUTH</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">POST /api/upload</span></div><div class="row-right"><span class="row-note">Afbeeldingen uploaden via Cloudinary</span><span class="row-tag">MEDIA</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET /api/admin/stats</span></div><div class="row-right"><span class="row-note">Platformstatistieken voor admins</span><span class="row-tag">ADMIN</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/posts</span></div><div class="row-right"><span class="row-note">Posts beheren als admin</span><span class="row-tag">ADMIN</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/users</span></div><div class="row-right"><span class="row-note">Gebruikers beheren als admin</span><span class="row-tag">ADMIN</span></div></div>
-      <div class="link-row dimmed"><div class="row-left"><span class="row-arrow">&#8250;</span><span class="row-label api">GET|PATCH /api/admin/reports</span></div><div class="row-right"><span class="row-note">Rapportages afhandelen als admin</span><span class="row-tag">ADMIN</span></div></div>
-    </div>
-  </div>
-
-  <!-- TECH STACK -->
-  <div class="stack-box">
-    <span>NEXT.JS</span><span>TYPESCRIPT</span><span>REACT</span><span>TAILWIND</span><span>PRISMA</span><span>POSTGRESQL</span><span>NODE.JS</span><span>GIT</span>
-  </div>
-
-  <footer>
-    <div class="footer-top">
-      <span>&copy; 2026 REIN &mdash; ALL RIGHTS RESERVED</span>
-      <a href="https://github.com/Rein033" target="_blank" rel="noopener noreferrer">GITHUB.COM/REIN033</a>
-    </div>
-    <div>VOOR NOODGEVALLEN: 0118 999 881 999 119 725 3</div>
-    <div class="tip">TIP: PROBEER DE KONAMI CODE &#8593;&#8593;&#8595;&#8595;&#8592;&#8594;&#8592;&#8594;BA</div>
-  </footer>
-
+<div id="dots">
+  <div class="dot active"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
 </div>
+
+<div id="hint">SCROLL TO EXPLORE ↓</div>
+
+<div id="pcard">
+  <div id="ptitle"></div>
+  <div id="ptag"></div>
+  <a id="plink" href="#">[ VIEW PROJECT → ]</a>
+</div>
+
+<div id="fhint">CLICK TO MORPH PARTICLES</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass }      from 'three/addons/postprocessing/ShaderPass.js';
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+const PROJECTS = [
+  { title:'EEMLANDBOUW',          tag:'AGRARISCH · WEBDESIGN',   url:'/eemlandbouw/', col:new THREE.Color(.28,.68,.92) },
+  { title:'3D AIRSOFT PATCHES',   tag:'WEBSHOP · E-COMMERCE',    url:'/airsoft/',      col:new THREE.Color(.35,.82,.58) },
+  { title:'USELESSSITE COMMUNITY',tag:'PLATFORM · SOCIAL',        url:'/feed',          col:new THREE.Color(.62,.48,.95) },
+  { title:'SCRUM GUIDE NL',       tag:'ARTIKEL · KENNISBANK',    url:'/scrum',         col:new THREE.Color(.92,.58,.28) },
+  { title:'PADI DIPLOMA',         tag:'DUIKEN · INTERACTIEF',    url:'/padi/',         col:new THREE.Color(.18,.62,.97) },
+];
+const N_SCENES = PROJECTS.length + 2; // intro + projects + footer = 7
+
+// ─── Camera keyframes (one per scene) ────────────────────────────────────────
+const CAM_POS = [
+  new THREE.Vector3( 0,   4,  14),
+  new THREE.Vector3(-9,   2,  -6),
+  new THREE.Vector3( 8,   3, -21),
+  new THREE.Vector3(-7,   2, -36),
+  new THREE.Vector3( 9, 2.5, -51),
+  new THREE.Vector3(-6,   2, -66),
+  new THREE.Vector3( 0,   9, -78),
+];
+const CAM_TAR = [
+  new THREE.Vector3( 0,   1,   0),
+  new THREE.Vector3(-7, 1.5, -10),
+  new THREE.Vector3( 6, 1.5, -25),
+  new THREE.Vector3(-5, 1.5, -40),
+  new THREE.Vector3( 7, 1.5, -55),
+  new THREE.Vector3(-4, 1.5, -70),
+  new THREE.Vector3( 0,   0, -88),
+];
+
+// ─── Renderer ────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+// ─── Scene & camera ──────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x06101c, 0.032);
+scene.background = new THREE.Color(0x04080f);
+
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, .1, 300);
+camera.position.copy(CAM_POS[0]);
+
+// ─── Lights ──────────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x152840, 1.0));
+
+const sun = new THREE.DirectionalLight(0x90c4f0, 1.4);
+sun.position.set(12, 24, -8);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 200;
+sun.shadow.camera.left = sun.shadow.camera.bottom = -80;
+sun.shadow.camera.right = sun.shadow.camera.top = 80;
+scene.add(sun);
+
+const rim = new THREE.DirectionalLight(0x3070b0, .6);
+rim.position.set(-15, 6, 6);
+scene.add(rim);
+
+const iceGlow = new THREE.PointLight(0x5090e0, 1.0, 30);
+iceGlow.position.set(0, 6, 6);
+scene.add(iceGlow);
+
+// ─── Ground (frozen tundra) ───────────────────────────────────────────────────
+(function buildGround() {
+  const geo = new THREE.PlaneGeometry(250, 250, 80, 80);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    pos.setY(i,
+      Math.sin(x * .28) * .45 +
+      Math.cos(z * .22) * .38 +
+      Math.sin(x * .6 + z * .5) * .18 +
+      (Math.random() - .5) * .12
+    );
+  }
+  pos.needsUpdate = true;
+  geo.computeVertexNormals();
+
+  // Draw subtle crack/frost pattern on canvas
+  const tc = document.createElement('canvas'); tc.width = tc.height = 1024;
+  const tctx = tc.getContext('2d');
+  tctx.fillStyle = '#8ab8d8'; tctx.fillRect(0,0,1024,1024);
+  tctx.strokeStyle = 'rgba(180,220,255,0.3)'; tctx.lineWidth = 1;
+  for (let i = 0; i < 60; i++) {
+    tctx.beginPath();
+    let px = Math.random()*1024, py = Math.random()*1024;
+    tctx.moveTo(px,py);
+    for (let j = 0; j < 8; j++) {
+      px += (Math.random()-.5)*80; py += (Math.random()-.5)*80;
+      tctx.lineTo(px,py);
+    }
+    tctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(tc);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(12,12);
+
+  const mat = new THREE.MeshStandardMaterial({
+    map:tex, color:0x7aacc8, roughness:.25, metalness:.08,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI/2;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+})();
+
+// ─── Mountains ───────────────────────────────────────────────────────────────
+(function buildMountains() {
+  for (let m = 0; m < 24; m++) {
+    const h = 10 + Math.random()*18;
+    const geo = new THREE.ConeGeometry(3+Math.random()*5, h, 5+Math.floor(Math.random()*4));
+    const mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(.04+Math.random()*.08, .08+Math.random()*.1, .18+Math.random()*.14),
+      roughness:.95,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    const ang = Math.random()*Math.PI*2;
+    const dist = 45+Math.random()*35;
+    mesh.position.set(Math.sin(ang)*dist, h/2-1.2, Math.cos(ang)*dist - 40);
+    mesh.rotation.y = Math.random()*Math.PI;
+    scene.add(mesh);
+  }
+})();
+
+// ─── Snow ────────────────────────────────────────────────────────────────────
+const SNOW_COUNT = 4000;
+const snowGeo = new THREE.BufferGeometry();
+const snowPos = new Float32Array(SNOW_COUNT*3);
+const snowVel = new Float32Array(SNOW_COUNT*3);
+for (let i = 0; i < SNOW_COUNT; i++) {
+  snowPos[i*3]   = (Math.random()-.5)*100;
+  snowPos[i*3+1] = Math.random()*32;
+  snowPos[i*3+2] = (Math.random()-.5)*100 - 30;
+  snowVel[i*3]   = (Math.random()-.5)*.022;
+  snowVel[i*3+1] = -(Math.random()*.055+.01);
+  snowVel[i*3+2] = (Math.random()-.5)*.018;
+}
+snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos,3));
+const snowMesh = new THREE.Points(snowGeo,
+  new THREE.PointsMaterial({color:0xc8e4ff,size:.07,transparent:true,opacity:.75}));
+scene.add(snowMesh);
+
+// ─── Canvas-texture helper ────────────────────────────────────────────────────
+function makeProjectTex(proj, W=512, H=256) {
+  const c = document.createElement('canvas'); c.width=W; c.height=H;
+  const cx = c.getContext('2d');
+
+  // Frost gradient bg
+  const gr = cx.createRadialGradient(W/2,H/2,8,W/2,H/2,W*.6);
+  const r=Math.round(proj.col.r*255), g=Math.round(proj.col.g*255), b=Math.round(proj.col.b*255);
+  gr.addColorStop(0,`rgba(${r},${g},${b},.18)`); gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr; cx.fillRect(0,0,W,H);
+
+  // Crack lines
+  cx.strokeStyle=`rgba(${r},${g},${b},.25)`; cx.lineWidth=.8;
+  for (let i=0;i<12;i++) {
+    cx.beginPath(); let px=W/2+((Math.random()-.5)*W*.6), py=H/2+((Math.random()-.5)*H*.5);
+    cx.moveTo(px,py);
+    for (let j=0;j<6;j++){px+=(Math.random()-.5)*40;py+=(Math.random()-.5)*30;cx.lineTo(px,py);}
+    cx.stroke();
+  }
+
+  // Title
+  cx.font='bold 34px "Courier New",monospace';
+  cx.textAlign='center'; cx.shadowColor=`rgb(${r},${g},${b})`; cx.shadowBlur=22;
+  cx.fillStyle='#ecf6ff'; cx.fillText(proj.title, W/2, H/2-6);
+
+  // Tag
+  cx.font='14px "Courier New",monospace';
+  cx.fillStyle=`rgba(${r},${g},${b},.95)`; cx.shadowBlur=10;
+  cx.fillText(proj.tag, W/2, H/2+26);
+
+  // Border
+  cx.shadowBlur=0;
+  cx.strokeStyle=`rgba(${r},${g},${b},.4)`; cx.lineWidth=1.5;
+  cx.strokeRect(6,6,W-12,H-12);
+
+  return new THREE.CanvasTexture(c);
+}
+
+// ─── Ice block ───────────────────────────────────────────────────────────────
+function makeIceBlock(proj, idx) {
+  const grp = new THREE.Group();
+  const W=4.5+Math.random()*.8, H=3.2+Math.random()*.6, D=2.2+Math.random()*.4;
+
+  // Main crystal body
+  const geo = new THREE.BoxGeometry(W,H,D,5,5,3);
+  const pa = geo.attributes.position;
+  for (let i=0;i<pa.count;i++) {
+    const ny = pa.getY(i)/(H/2);
+    const taper = Math.max(.25, 1-Math.abs(ny)*.25);
+    pa.setX(i, pa.getX(i)*taper + (Math.random()-.5)*.2);
+    pa.setZ(i, pa.getZ(i)*taper + (Math.random()-.5)*.15);
+    pa.setY(i, pa.getY(i) + (Math.random()-.5)*.12);
+  }
+  pa.needsUpdate=true; geo.computeVertexNormals();
+
+  const mat = new THREE.MeshPhysicalMaterial({
+    color:0xaad4f8, transparent:true, opacity:.42,
+    roughness:.04, metalness:0,
+    transmission:.82, thickness:2.2, ior:1.31,
+    envMapIntensity:1.6, side:THREE.DoubleSide,
+    emissive:proj.col, emissiveIntensity:.1,
+  });
+  const body = new THREE.Mesh(geo,mat);
+  body.castShadow=true; body.receiveShadow=true;
+  grp.add(body);
+
+  // Inner glow core
+  const coreGeo = new THREE.BoxGeometry(W*.55,H*.65,D*.55);
+  const core = new THREE.Mesh(coreGeo, new THREE.MeshBasicMaterial({
+    color:proj.col, transparent:true, opacity:.07,
+  }));
+  grp.add(core);
+
+  // Text plane
+  const tex = makeProjectTex(proj);
+  const tp = new THREE.Mesh(
+    new THREE.PlaneGeometry(W*.88, H*.52),
+    new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:.9,depthWrite:false})
+  );
+  tp.position.z = D*.48;
+  grp.add(tp);
+
+  // Ice spikes
+  for (let s=0;s<4;s++) {
+    const sh=.7+Math.random()*.9;
+    const spike = new THREE.Mesh(
+      new THREE.ConeGeometry(.08+Math.random()*.06, sh, 5),
+      new THREE.MeshPhysicalMaterial({
+        color:0xd0eaff, transparent:true, opacity:.55, roughness:.02, transmission:.88,
+      })
+    );
+    spike.position.set((s-1.5)*(W*.22), H/2+sh/2, (Math.random()-.5)*D*.3);
+    spike.rotation.z = (Math.random()-.5)*.35;
+    grp.add(spike);
+  }
+
+  // World placement — spiral path
+  const t = idx/PROJECTS.length;
+  const zOffset = -(idx+1)*15;
+  grp.position.set(
+    Math.sin(t*Math.PI*1.2)*10*(idx%2===0?1:-1),
+    1.6,
+    zOffset
+  );
+  grp.rotation.y = (Math.random()-.5)*.4;
+  scene.add(grp);
+  return grp;
+}
+
+const iceBlocks = PROJECTS.map(makeIceBlock);
+
+// ─── Intro title ─────────────────────────────────────────────────────────────
+(function makeIntroTitle() {
+  const c=document.createElement('canvas'); c.width=1024; c.height=300;
+  const cx=c.getContext('2d');
+
+  const gr=cx.createLinearGradient(0,0,1024,0);
+  gr.addColorStop(0,'#3070a8'); gr.addColorStop(.5,'#a0d8ef'); gr.addColorStop(1,'#3070a8');
+  cx.font='bold 80px "Courier New",monospace';
+  cx.textAlign='center'; cx.fillStyle=gr;
+  cx.shadowColor='#60aaff'; cx.shadowBlur=40;
+  cx.fillText('REIN.DEV',512,130);
+
+  cx.font='22px "Courier New",monospace';
+  cx.fillStyle='#5890b8'; cx.shadowBlur=12;
+  cx.fillText('FULL-STACK DEVELOPER — SCROLL TO EXPLORE',512,185);
+
+  const tex = new THREE.CanvasTexture(c);
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(13,3.8),
+    new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:.92,depthWrite:false})
+  );
+  mesh.position.set(0,5.5,7);
+  scene.add(mesh);
+})();
+
+// ─── Particle footer ──────────────────────────────────────────────────────────
+const F_COUNT = 1000;
+const fGeo = new THREE.BufferGeometry();
+const fPos = new Float32Array(F_COUNT*3);
+const fCol = new Float32Array(F_COUNT*3);
+const fSiz = new Float32Array(F_COUNT);
+
+for (let i=0;i<F_COUNT;i++) {
+  fPos[i*3]   = (Math.random()-.5)*28;
+  fPos[i*3+1] = -2+Math.random()*3;
+  fPos[i*3+2] = -78+Math.random()*4;
+  fCol[i*3]   = .4+Math.random()*.6;
+  fCol[i*3+1] = .65+Math.random()*.35;
+  fCol[i*3+2] = 1;
+  fSiz[i]     = 1.5+Math.random()*2.5;
+}
+fGeo.setAttribute('position', new THREE.BufferAttribute(fPos,3));
+fGeo.setAttribute('color',    new THREE.BufferAttribute(fCol,3));
+fGeo.setAttribute('size',     new THREE.BufferAttribute(fSiz,1));
+
+const fMat = new THREE.ShaderMaterial({
+  uniforms:{ time:{value:0} },
+  vertexShader:`
+    attribute float size;
+    attribute vec3 color;
+    varying vec3 vCol;
+    uniform float time;
+    void main(){
+      vCol=color;
+      vec4 mv=modelViewMatrix*vec4(position,1.);
+      gl_PointSize=size*(320./-mv.z);
+      gl_Position=projectionMatrix*mv;
+    }`,
+  fragmentShader:`
+    varying vec3 vCol;
+    void main(){
+      float d=length(gl_PointCoord-.5)*2.;
+      if(d>1.)discard;
+      float a=(1.-d)*.85;
+      gl_FragColor=vec4(vCol,a);
+    }`,
+  transparent:true, vertexColors:false,
+  depthWrite:false, blending:THREE.AdditiveBlending,
+});
+const footerPts = new THREE.Points(fGeo, fMat);
+scene.add(footerPts);
+
+// Footer morph targets
+const SHAPES = {
+  circle:(i,n)=>{ const a=(i/n)*Math.PI*2,r=4+Math.sin(i*.8)*.6; return [Math.cos(a)*r,Math.sin(a)*r,0]; },
+  star:  (i,n)=>{ const a=(i/n)*Math.PI*2,r=i%3===0?4.5:2; return [Math.cos(a)*r,Math.sin(a)*r,0]; },
+  grid:  (i,n)=>{ const cols=Math.ceil(Math.sqrt(n)),row=Math.floor(i/cols)-cols/2,col=(i%cols)-cols/2; return [col*.55,row*.55,0]; },
+  wave:  (i,n)=>{ const x=(i/n)*9-4.5,y=Math.sin(x*1.8)*2.2+Math.cos(x*3.1)*.6; return [x,y,0]; },
+  helix: (i,n)=>{ const a=(i/n)*Math.PI*6,r=3.5,h=(i/n)*6-3; return [Math.cos(a)*r,h,Math.sin(a)*r]; },
+};
+const SHAPE_KEYS = Object.keys(SHAPES);
+let shapeIdx=0, morphing=false, morphT=0;
+let morphSrc=null, morphDst=null;
+
+function startMorph() {
+  shapeIdx=(shapeIdx+1)%SHAPE_KEYS.length;
+  morphing=true; morphT=0;
+  const fn=SHAPES[SHAPE_KEYS[shapeIdx]];
+  const cur=fGeo.attributes.position.array;
+  morphSrc=new Float32Array(F_COUNT*3);
+  morphDst=new Float32Array(F_COUNT*3);
+  for(let i=0;i<F_COUNT;i++){
+    morphSrc[i*3]=cur[i*3]; morphSrc[i*3+1]=cur[i*3+1]; morphSrc[i*3+2]=cur[i*3+2];
+    const [tx,ty,tz]=fn(i,F_COUNT);
+    morphDst[i*3]=tx; morphDst[i*3+1]=-80+ty; morphDst[i*3+2]=-80+tz;
+  }
+}
+
+renderer.domElement.addEventListener('click', ()=>{ if(currentScene>=N_SCENES-1) startMorph(); });
+
+// ─── Post-processing: chromatic aberration + vignette + frost ────────────────
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const chromaPass = new ShaderPass({
+  uniforms:{
+    tDiffuse:{value:null},
+    offset:{value:.003},
+    time:{value:0},
+    shake:{value:0},
+  },
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`
+    uniform sampler2D tDiffuse;
+    uniform float offset;
+    uniform float time;
+    uniform float shake;
+    varying vec2 vUv;
+    void main(){
+      vec2 center=vec2(.5);
+      vec2 d=vUv-center;
+      float dist=length(d);
+      float str=offset*(1.+dist*dist*2.);
+
+      // Camera micro-shake
+      float sx=sin(time*2.31)*shake*.0008+cos(time*1.73)*shake*.0005;
+      float sy=cos(time*1.97)*shake*.0006;
+      vec2 uv=vUv+vec2(sx,sy);
+
+      float r=texture2D(tDiffuse,clamp(uv+d*str,0.,1.)).r;
+      float g=texture2D(tDiffuse,clamp(uv        ,0.,1.)).g;
+      float b=texture2D(tDiffuse,clamp(uv-d*str,0.,1.)).b;
+
+      // Vignette
+      float vig=1.-dist*.75;
+      vig=smoothstep(0.,1.,vig);
+
+      // Edge frost
+      float frost=pow(dist,2.8)*.18;
+      vec3 frostCol=vec3(.68,.84,1.);
+
+      vec3 col=vec3(r,g,b)*vig;
+      col=mix(col,frostCol,frost);
+      gl_FragColor=vec4(col,1.);
+    }`,
+});
+composer.addPass(chromaPass);
+
+// ─── UI refs ─────────────────────────────────────────────────────────────────
+const pcard  = document.getElementById('pcard');
+const ptitle = document.getElementById('ptitle');
+const ptag   = document.getElementById('ptag');
+const plink  = document.getElementById('plink');
+const hint   = document.getElementById('hint');
+const fhint  = document.getElementById('fhint');
+const dots   = [...document.querySelectorAll('.dot')];
+
+let currentScene = 0;
+function updateUI(s) {
+  dots.forEach((d,i)=>d.classList.toggle('active',i===s));
+  if (s===0) {
+    pcard.classList.remove('on'); hint.style.opacity='1'; fhint.classList.remove('on');
+  } else if (s>=1 && s<=PROJECTS.length) {
+    const p=PROJECTS[s-1];
+    ptitle.textContent=p.title; ptag.textContent=p.tag; plink.href=p.url;
+    pcard.classList.add('on'); hint.style.opacity='0'; fhint.classList.remove('on');
+  } else {
+    pcard.classList.remove('on'); fhint.classList.add('on');
+  }
+}
+
+// ─── Sound ───────────────────────────────────────────────────────────────────
+let actx=null, masterGain=null, soundOn=false, oscs=[];
+
+function initAudio(){
+  actx=new(window.AudioContext||window.webkitAudioContext)();
+  masterGain=actx.createGain(); masterGain.gain.value=0;
+  masterGain.connect(actx.destination);
+  const freqs=[55,82.5,110,165,220,330];
+  freqs.forEach((f,i)=>{
+    const osc=actx.createOscillator();
+    const g=actx.createGain();
+    const flt=actx.createBiquadFilter();
+    osc.type=i===0?'sawtooth':'sine';
+    osc.frequency.value=f;
+    g.gain.value=i===0?.07:.032/(i+1);
+    flt.type='lowpass'; flt.frequency.value=500+i*80;
+    osc.connect(flt); flt.connect(g); g.connect(masterGain);
+    osc.start(); oscs.push(osc);
+  });
+}
+
+window.toggleSound=function(){
+  if(!actx)initAudio();
+  soundOn=!soundOn;
+  const btn=document.getElementById('snd-btn');
+  if(soundOn){masterGain.gain.linearRampToValueAtTime(.4,actx.currentTime+.6);btn.textContent='♪ MUTE';}
+  else{masterGain.gain.linearRampToValueAtTime(0,actx.currentTime+.5);btn.textContent='♪ SOUND';}
+};
+
+function updateSound(scr, vel){
+  if(!actx||!soundOn) return;
+  const base=50+scr*100;
+  const mults=[1,1.5,2,3,4,6];
+  oscs.forEach((o,i)=>o.frequency.linearRampToValueAtTime(base*mults[i],actx.currentTime+.12));
+  if(vel>.01) masterGain.gain.linearRampToValueAtTime(Math.min(.5,.35+vel*1.5),actx.currentTime+.04);
+}
+
+// ─── Mouse ───────────────────────────────────────────────────────────────────
+const mouse=new THREE.Vector2();
+const raycaster=new THREE.Raycaster();
+document.addEventListener('mousemove',e=>{
+  mouse.x=(e.clientX/innerWidth)*2-1;
+  mouse.y=-(e.clientY/innerHeight)*2+1;
+});
+
+// ─── Scroll ──────────────────────────────────────────────────────────────────
+let scrollProgress=0, targetScroll=0, prevScroll=0;
+window.addEventListener('scroll',()=>{
+  const maxS=document.body.scrollHeight-innerHeight;
+  targetScroll=maxS>0?window.scrollY/maxS:0;
+});
+
+// ─── Animation ───────────────────────────────────────────────────────────────
+const clock=new THREE.Clock();
+function lerp(a,b,t){return a+(b-a)*t;}
+function ease(t){return t<.5?2*t*t:-1+(4-2*t)*t;}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const time=clock.getElapsedTime();
+
+  // Scroll lerp
+  prevScroll=scrollProgress;
+  scrollProgress=lerp(scrollProgress,targetScroll,.055);
+  const vel=Math.abs(targetScroll-scrollProgress);
+
+  // Scene index
+  const rawS = scrollProgress*(N_SCENES-1);
+  const sNew = Math.round(rawS);
+  if(sNew!==currentScene){ currentScene=sNew; updateUI(currentScene); }
+
+  // Camera interpolation
+  const sA=Math.floor(rawS), sB=Math.min(sA+1,CAM_POS.length-1);
+  const frac=ease(rawS-sA);
+  const cp=new THREE.Vector3().lerpVectors(CAM_POS[sA],CAM_POS[sB],frac);
+  const ct=new THREE.Vector3().lerpVectors(CAM_TAR[sA],CAM_TAR[sB],frac);
+
+  // Mouse drift + subtle camera sway
+  const dx=Math.sin(time*.28)*.25+mouse.x*.6;
+  const dy=Math.cos(time*.19)*.15+mouse.y*.22;
+  camera.position.lerp(new THREE.Vector3(cp.x+dx,cp.y+dy,cp.z),.06);
+  camera.lookAt(new THREE.Vector3(ct.x+dx*.15,ct.y,ct.z));
+
+  // Chromatic aberration — spikes on fast scroll
+  chromaPass.uniforms.offset.value=lerp(chromaPass.uniforms.offset.value,.002+vel*.06,.12);
+  chromaPass.uniforms.time.value=time;
+  chromaPass.uniforms.shake.value=lerp(chromaPass.uniforms.shake.value,vel,.1);
+
+  // Snow
+  for(let i=0;i<SNOW_COUNT;i++){
+    snowPos[i*3]  +=snowVel[i*3];
+    snowPos[i*3+1]+=snowVel[i*3+1];
+    snowPos[i*3+2]+=snowVel[i*3+2];
+    if(snowPos[i*3+1]<-1){ snowPos[i*3+1]=28; snowPos[i*3]=(Math.random()-.5)*100; }
+  }
+  snowGeo.attributes.position.needsUpdate=true;
+
+  // Ice block hover + float
+  raycaster.setFromCamera(mouse,camera);
+  const bodies=iceBlocks.map(g=>g.children[0]);
+  const hits=raycaster.intersectObjects(bodies);
+  iceBlocks.forEach((blk,i)=>{
+    const hovered=hits.length>0&&hits[0].object===blk.children[0];
+    const mat=blk.children[0].material;
+    mat.opacity     =lerp(mat.opacity,     hovered?.68:.42,.1);
+    mat.emissiveIntensity=lerp(mat.emissiveIntensity,hovered?.45:.1,.1);
+    blk.position.y =1.6+Math.sin(time*.45+i*1.4)*.18;
+    blk.rotation.y +=lerp(0, Math.sin(time*.18+i*.9)*.0015, .1);
+  });
+
+  // Footer morph
+  if(morphing){
+    morphT=Math.min(1,morphT+.018);
+    const e=ease(morphT);
+    const pa=fGeo.attributes.position.array;
+    for(let i=0;i<F_COUNT;i++){
+      pa[i*3]  =lerp(morphSrc[i*3],  morphDst[i*3],  e);
+      pa[i*3+1]=lerp(morphSrc[i*3+1],morphDst[i*3+1],e);
+      pa[i*3+2]=lerp(morphSrc[i*3+2],morphDst[i*3+2],e);
+    }
+    fGeo.attributes.position.needsUpdate=true;
+    if(morphT>=1) morphing=false;
+  }
+  fMat.uniforms.time.value=time;
+
+  // Ice glow drift
+  iceGlow.intensity=.7+Math.sin(time*1.3)*.35;
+  iceGlow.position.x=Math.sin(time*.38)*6;
+  iceGlow.position.z=-scrollProgress*90+8;
+
+  updateSound(scrollProgress,vel);
+  composer.render();
+}
+animate();
+
+// ─── Resize ──────────────────────────────────────────────────────────────────
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  composer.setSize(innerWidth,innerHeight);
+});
+
+console.log('%cREIN.DEV — WebGL Portfolio','color:#a0d8ef;font-size:14px;font-weight:bold;');
+console.log('%c type 0101 on the home page to get here','color:#4080c0;font-size:10px;');
+</script>
 </body>
 </html>
