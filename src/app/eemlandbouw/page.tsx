@@ -368,7 +368,7 @@ export default function EemlandbouwPage() {
                   </div>
                 ))}
               </div>
-              <form className="eb-form" onSubmit="return false">
+              <form className="eb-form" action="#">
                 <div className="eb-form-row">
                   <div className="eb-field"><label>Naam</label><input type="text" placeholder="Jan de Vries" /></div>
                   <div className="eb-field"><label>E-mail</label><input type="email" placeholder="jan@voorbeeld.nl" /></div>
