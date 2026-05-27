@@ -387,6 +387,12 @@ export default function CVPage() {
     setTimeout(function(){w.print();},400);
   });
 
+  // Fill personal form fields from state
+  ['name','title','email','phone','location','website','linkedin','summary'].forEach(function(f){
+    var el=document.getElementById('cv-'+f);
+    if(el)el.value=state.personal[f]||'';
+  });
+
   renderExperience();renderEducation();renderSkills();renderLanguages();render();
 })();
 `
