@@ -1,0 +1,397 @@
+3:I[9275,[],""]
+4:I[1343,[],""]
+5:I[9833,["231","static/chunks/231-96d3195ae08b35fb.js","377","static/chunks/377-68eb3d73a62a3966.js","863","static/chunks/863-16923bc72c215b1b.js","424","static/chunks/424-c2ee88011b09539d.js","185","static/chunks/app/layout-c00d0f60d3d1ad53.js"],"Providers"]
+7:I[1872,["231","static/chunks/231-96d3195ae08b35fb.js","377","static/chunks/377-68eb3d73a62a3966.js","863","static/chunks/863-16923bc72c215b1b.js","424","static/chunks/424-c2ee88011b09539d.js","185","static/chunks/app/layout-c00d0f60d3d1ad53.js"],"Toaster"]
+2:T577d,
+(function(){
+  var state={
+    personal:{name:'Jan de Vries',title:'Software Developer',email:'jan@example.nl',phone:'+31 6 12345678',location:'Amsterdam, Nederland',website:'',linkedin:'',summary:'Enthousiaste software developer met 5 jaar ervaring in het bouwen van moderne web applicaties. Ik werk graag in teamverband en ben altijd op zoek naar nieuwe uitdagingen.'},
+    experience:[
+      {company:'Tech Bedrijf B.V.',position:'Senior Developer',startDate:'2022-01',endDate:'',current:true,description:'• Ontwikkelen van React-applicaties\n• Samenwerken met cross-functionele teams\n• Code reviews en mentoring van junior developers'},
+      {company:'Startup XYZ',position:'Junior Developer',startDate:'2020-01',endDate:'2021-12',current:false,description:'• Bouwen van RESTful APIs met Node.js\n• Onderhouden van bestaande codebases'}
+    ],
+    education:[
+      {school:'Hogeschool van Amsterdam',degree:'Bachelor ICT',startDate:'2016-09',endDate:'2020-06',description:'Specialisatie Software Engineering'}
+    ],
+    skills:['JavaScript','TypeScript','React','Node.js','SQL','Git','Docker','Agile/Scrum'],
+    languages:[{language:'Nederlands',level:'Moedertaal'},{language:'Engels',level:'Vloeiend'}],
+    color:'#6366f1',
+    theme:'modern'
+  };
+
+  function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+
+  function formatDate(d){
+    if(!d)return'';
+    var p=d.split('-');
+    var months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+    if(p.length>=2)return months[parseInt(p[1])-1]+' '+p[0];
+    return p[0];
+  }
+
+  function sectionHeader(label,color){
+    return '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:'+color+';border-bottom:2px solid '+color+';padding-bottom:5px;margin-bottom:12px;">'+label+'</div>';
+  }
+
+  function buildModern(){
+    var s=state,c=s.color;
+    var h='<div style="font-family:Arial,sans-serif;font-size:13px;color:#333;max-width:800px;margin:0 auto;">';
+    h+='<div style="background:'+c+';color:white;padding:32px;">';
+    h+='<div style="font-size:28px;font-weight:700;margin-bottom:4px;">'+esc(s.personal.name)+'</div>';
+    if(s.personal.title)h+='<div style="font-size:15px;opacity:.85;margin-bottom:14px;">'+esc(s.personal.title)+'</div>';
+    var ci=[];
+    if(s.personal.email)ci.push('✉ '+esc(s.personal.email));
+    if(s.personal.phone)ci.push('☎ '+esc(s.personal.phone));
+    if(s.personal.location)ci.push('⌖ '+esc(s.personal.location));
+    if(s.personal.website)ci.push('⬡ '+esc(s.personal.website));
+    if(s.personal.linkedin)ci.push('in '+esc(s.personal.linkedin));
+    if(ci.length)h+='<div style="display:flex;flex-wrap:wrap;gap:14px;font-size:11px;opacity:.9;">'+ci.map(function(x){return'<span>'+x+'</span>';}).join('')+'</div>';
+    h+='</div>';
+    h+='<div style="padding:24px;background:#fff;">';
+    if(s.personal.summary){
+      h+=sectionHeader('Profiel',c);
+      h+='<p style="line-height:1.65;color:#555;margin:0 0 22px;">'+esc(s.personal.summary)+'</p>';
+    }
+    if(s.experience.length){
+      h+=sectionHeader('Werkervaring',c);
+      s.experience.forEach(function(e){
+        h+='<div style="margin-bottom:14px;">';
+        h+='<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">';
+        h+='<div><span style="font-weight:700;font-size:13px;">'+esc(e.position)+'</span>';
+        if(e.company)h+='<span style="color:#666;"> — '+esc(e.company)+'</span>';
+        h+='</div>';
+        h+='<span style="color:#999;font-size:11px;white-space:nowrap;">'+formatDate(e.startDate)+' – '+(e.current?'heden':formatDate(e.endDate))+'</span>';
+        h+='</div>';
+        if(e.description)h+='<div style="margin-top:5px;color:#555;line-height:1.6;font-size:12px;">'+esc(e.description)+'</div>';
+        h+='</div>';
+      });
+      h+='<div style="margin-bottom:22px;"></div>';
+    }
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">';
+    if(s.education.length){
+      h+='<div>';
+      h+=sectionHeader('Opleiding',c);
+      s.education.forEach(function(e){
+        h+='<div style="margin-bottom:12px;">';
+        h+='<div style="font-weight:700;font-size:13px;">'+esc(e.degree)+'</div>';
+        if(e.school)h+='<div style="color:#666;font-size:12px;">'+esc(e.school)+'</div>';
+        var ds=formatDate(e.startDate)+(e.endDate?' – '+formatDate(e.endDate):'');
+        if(ds)h+='<div style="color:#aaa;font-size:11px;">'+ds+'</div>';
+        if(e.description)h+='<div style="color:#555;font-size:12px;margin-top:2px;">'+esc(e.description)+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    h+='<div>';
+    if(s.skills.length){
+      h+=sectionHeader('Vaardigheden',c);
+      h+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;">';
+      s.skills.forEach(function(sk){h+='<span style="background:#f3f4f6;border:1px solid #e5e7eb;padding:3px 8px;border-radius:4px;font-size:11px;">'+esc(sk)+'</span>';});
+      h+='</div>';
+    }
+    if(s.languages.length){
+      h+=sectionHeader('Talen',c);
+      s.languages.forEach(function(l){
+        h+='<div style="font-size:12px;margin-bottom:3px;"><span style="font-weight:600;">'+esc(l.language)+'</span><span style="color:#888;"> — '+esc(l.level)+'</span></div>';
+      });
+    }
+    h+='</div>';
+    h+='</div></div></div>';
+    return h;
+  }
+
+  function buildClassic(){
+    var s=state,c=s.color;
+    var h='<div style="font-family:Georgia,serif;font-size:13px;color:#2c2c2c;max-width:800px;margin:0 auto;padding:36px;">';
+    h+='<div style="text-align:center;border-bottom:3px double '+c+';padding-bottom:20px;margin-bottom:24px;">';
+    h+='<div style="font-size:30px;font-weight:700;color:#1a1a1a;margin-bottom:5px;">'+esc(s.personal.name)+'</div>';
+    if(s.personal.title)h+='<div style="font-size:14px;color:'+c+';font-style:italic;margin-bottom:10px;">'+esc(s.personal.title)+'</div>';
+    var ci=[];
+    if(s.personal.email)ci.push(esc(s.personal.email));
+    if(s.personal.phone)ci.push(esc(s.personal.phone));
+    if(s.personal.location)ci.push(esc(s.personal.location));
+    if(s.personal.website)ci.push(esc(s.personal.website));
+    if(ci.length)h+='<div style="font-size:12px;color:#666;">'+ci.join(' · ')+'</div>';
+    h+='</div>';
+    if(s.personal.summary){
+      h+='<div style="margin-bottom:22px;">';
+      h+='<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+c+';margin-bottom:8px;">Profiel</div>';
+      h+='<p style="line-height:1.7;color:#444;font-style:italic;margin:0;">'+esc(s.personal.summary)+'</p>';
+      h+='</div>';
+    }
+    if(s.experience.length){
+      h+='<div style="margin-bottom:22px;">';
+      h+='<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+c+';margin-bottom:10px;">Werkervaring</div>';
+      s.experience.forEach(function(e){
+        h+='<div style="margin-bottom:14px;padding-left:14px;border-left:2px solid '+c+'44;">';
+        h+='<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">';
+        h+='<div><strong>'+esc(e.position)+'</strong>';
+        if(e.company)h+=', <em>'+esc(e.company)+'</em>';
+        h+='</div><span style="color:#aaa;font-size:11px;">'+formatDate(e.startDate)+' – '+(e.current?'heden':formatDate(e.endDate))+'</span></div>';
+        if(e.description)h+='<div style="margin-top:5px;color:#555;line-height:1.6;font-size:12px;">'+esc(e.description)+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    if(s.education.length){
+      h+='<div style="margin-bottom:22px;">';
+      h+='<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+c+';margin-bottom:10px;">Opleiding</div>';
+      s.education.forEach(function(e){
+        h+='<div style="margin-bottom:12px;padding-left:14px;border-left:2px solid '+c+'44;">';
+        h+='<div><strong>'+esc(e.degree)+'</strong>';
+        if(e.school)h+=', <em>'+esc(e.school)+'</em>';
+        h+='</div>';
+        var ds=formatDate(e.startDate)+(e.endDate?' – '+formatDate(e.endDate):'');
+        if(ds)h+='<div style="color:#aaa;font-size:11px;">'+ds+'</div>';
+        if(e.description)h+='<div style="color:#555;font-size:12px;margin-top:2px;">'+esc(e.description)+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">';
+    if(s.skills.length){
+      h+='<div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+c+';margin-bottom:8px;">Vaardigheden</div>';
+      h+='<p style="font-size:12px;color:#555;line-height:1.8;margin:0;">'+s.skills.map(function(sk){return esc(sk);}).join(' · ')+'</p></div>';
+    }
+    if(s.languages.length){
+      h+='<div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:'+c+';margin-bottom:8px;">Talen</div>';
+      s.languages.forEach(function(l){h+='<div style="font-size:12px;margin-bottom:3px;"><strong>'+esc(l.language)+'</strong> — '+esc(l.level)+'</div>';});
+      h+='</div>';
+    }
+    h+='</div></div>';
+    return h;
+  }
+
+  function buildMinimal(){
+    var s=state,c=s.color;
+    var h='<div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#1a1a1a;max-width:800px;margin:0 auto;padding:40px;">';
+    h+='<div style="margin-bottom:32px;">';
+    h+='<div style="font-size:34px;font-weight:300;letter-spacing:-1px;">'+esc(s.personal.name)+'</div>';
+    if(s.personal.title)h+='<div style="font-size:15px;color:'+c+';margin-top:4px;font-weight:500;">'+esc(s.personal.title)+'</div>';
+    var ci=[];
+    if(s.personal.email)ci.push(esc(s.personal.email));
+    if(s.personal.phone)ci.push(esc(s.personal.phone));
+    if(s.personal.location)ci.push(esc(s.personal.location));
+    if(ci.length)h+='<div style="font-size:12px;color:#999;margin-top:7px;">'+ci.join('  ·  ')+'</div>';
+    h+='</div>';
+
+    function sec(title,content){
+      h+='<div style="display:grid;grid-template-columns:130px 1fr;gap:24px;margin-bottom:22px;border-top:1px solid #eee;padding-top:18px;">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:'+c+';padding-top:2px;">'+title+'</div>';
+      h+='<div>'+content+'</div>';
+      h+='</div>';
+    }
+
+    if(s.personal.summary)sec('Profiel','<p style="line-height:1.7;color:#555;margin:0;font-size:13px;">'+esc(s.personal.summary)+'</p>');
+
+    if(s.experience.length){
+      var eh='';
+      s.experience.forEach(function(e){
+        eh+='<div style="margin-bottom:14px;">';
+        eh+='<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">';
+        eh+='<div><span style="font-weight:600;">'+esc(e.position)+'</span>';
+        if(e.company)eh+='<span style="color:#888;"> · '+esc(e.company)+'</span>';
+        eh+='</div><span style="font-size:11px;color:#bbb;">'+formatDate(e.startDate)+' – '+(e.current?'heden':formatDate(e.endDate))+'</span></div>';
+        if(e.description)eh+='<div style="margin-top:5px;color:#666;line-height:1.6;font-size:12px;">'+esc(e.description)+'</div>';
+        eh+='</div>';
+      });
+      sec('Ervaring',eh);
+    }
+
+    if(s.education.length){
+      var edh='';
+      s.education.forEach(function(e){
+        edh+='<div style="margin-bottom:10px;">';
+        edh+='<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">';
+        edh+='<div><span style="font-weight:600;">'+esc(e.degree)+'</span>';
+        if(e.school)edh+='<span style="color:#888;"> · '+esc(e.school)+'</span>';
+        edh+='</div><span style="font-size:11px;color:#bbb;">'+formatDate(e.startDate)+(e.endDate?' – '+formatDate(e.endDate):'')+'</span></div>';
+        if(e.description)edh+='<div style="color:#666;font-size:12px;margin-top:2px;">'+esc(e.description)+'</div>';
+        edh+='</div>';
+      });
+      sec('Opleiding',edh);
+    }
+
+    if(s.skills.length){
+      var skh='<div style="display:flex;flex-wrap:wrap;gap:5px;">';
+      s.skills.forEach(function(sk){skh+='<span style="font-size:11px;padding:2px 8px;border:1px solid #ddd;border-radius:2px;">'+esc(sk)+'</span>';});
+      skh+='</div>';
+      sec('Vaardigheden',skh);
+    }
+
+    if(s.languages.length){
+      var lh='';
+      s.languages.forEach(function(l){lh+='<div style="font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">'+esc(l.language)+'</span><span style="color:#aaa;"> — '+esc(l.level)+'</span></div>';});
+      sec('Talen',lh);
+    }
+
+    h+='</div>';
+    return h;
+  }
+
+  function buildCV(){
+    if(state.theme==='classic')return buildClassic();
+    if(state.theme==='minimal')return buildMinimal();
+    return buildModern();
+  }
+
+  function render(){
+    document.getElementById('cv-preview').innerHTML=buildCV();
+  }
+
+  var iStyle='width:100%;background:var(--background);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--foreground);outline:none;box-sizing:border-box;';
+  var taStyle=iStyle+'resize:vertical;';
+
+  function renderExperience(){
+    var c=document.getElementById('cv-exp-list');
+    if(!c)return;
+    c.innerHTML='';
+    state.experience.forEach(function(e,i){
+      var d=document.createElement('div');
+      d.style.cssText='border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--secondary);';
+      d.innerHTML=
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+        '<span style="font-size:11px;font-weight:600;color:var(--muted-foreground);">Ervaring '+(i+1)+'</span>'+
+        '<button onclick="cvRmExp('+i+')" style="font-size:11px;color:#ef4444;background:none;border:none;cursor:pointer;padding:0;">✕ Verwijder</button>'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Functie</label>'+
+        '<input oninput="cvSetExp('+i+','position',this.value)" value="'+esc(e.position)+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Bedrijf</label>'+
+        '<input oninput="cvSetExp('+i+','company',this.value)" value="'+esc(e.company)+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Van</label>'+
+        '<input type="month" oninput="cvSetExp('+i+','startDate',this.value)" value="'+e.startDate+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Tot &nbsp;<label style="font-size:10px;font-weight:400;"><input type="checkbox" onchange="cvSetExp('+i+','current',this.checked)"'+(e.current?' checked':'')+' /> Huidig</label></label>'+
+        '<input type="month" oninput="cvSetExp('+i+','endDate',this.value)" value="'+e.endDate+'" '+(e.current?'disabled':'')+' style="'+iStyle+'" /></div>'+
+        '</div>'+
+        '<div style="margin-top:8px;"><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Omschrijving</label>'+
+        '<textarea oninput="cvSetExp('+i+','description',this.value)" rows="3" style="'+taStyle+'">'+((e.description||''))+'</textarea></div>';
+      c.appendChild(d);
+    });
+  }
+
+  function renderEducation(){
+    var c=document.getElementById('cv-edu-list');
+    if(!c)return;
+    c.innerHTML='';
+    state.education.forEach(function(e,i){
+      var d=document.createElement('div');
+      d.style.cssText='border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--secondary);';
+      d.innerHTML=
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+        '<span style="font-size:11px;font-weight:600;color:var(--muted-foreground);">Opleiding '+(i+1)+'</span>'+
+        '<button onclick="cvRmEdu('+i+')" style="font-size:11px;color:#ef4444;background:none;border:none;cursor:pointer;padding:0;">✕ Verwijder</button>'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Opleiding / Graad</label>'+
+        '<input oninput="cvSetEdu('+i+','degree',this.value)" value="'+esc(e.degree)+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">School / Instelling</label>'+
+        '<input oninput="cvSetEdu('+i+','school',this.value)" value="'+esc(e.school)+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Van</label>'+
+        '<input type="month" oninput="cvSetEdu('+i+','startDate',this.value)" value="'+e.startDate+'" style="'+iStyle+'" /></div>'+
+        '<div><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Tot</label>'+
+        '<input type="month" oninput="cvSetEdu('+i+','endDate',this.value)" value="'+e.endDate+'" style="'+iStyle+'" /></div>'+
+        '</div>'+
+        '<div style="margin-top:8px;"><label style="font-size:11px;color:var(--muted-foreground);display:block;margin-bottom:3px;">Toelichting</label>'+
+        '<input oninput="cvSetEdu('+i+','description',this.value)" value="'+esc(e.description||'')+'" style="'+iStyle+'" /></div>';
+      c.appendChild(d);
+    });
+  }
+
+  function renderSkills(){
+    var c=document.getElementById('cv-skills-list');
+    if(!c)return;
+    c.innerHTML='';
+    state.skills.forEach(function(sk,i){
+      var sp=document.createElement('span');
+      sp.style.cssText='display:inline-flex;align-items:center;gap:3px;background:var(--secondary);border:1px solid var(--border);padding:3px 8px;border-radius:20px;font-size:12px;margin:2px;';
+      sp.innerHTML=esc(sk)+'<button onclick="cvRmSkill('+i+')" style="background:none;border:none;cursor:pointer;color:var(--muted-foreground);font-size:14px;line-height:1;padding:0 0 0 2px;">×</button>';
+      c.appendChild(sp);
+    });
+  }
+
+  function renderLanguages(){
+    var c=document.getElementById('cv-lang-list');
+    if(!c)return;
+    c.innerHTML='';
+    state.languages.forEach(function(l,i){
+      var d=document.createElement('div');
+      d.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:6px;';
+      d.innerHTML=
+        '<input oninput="cvSetLang('+i+','language',this.value)" value="'+esc(l.language)+'" placeholder="Taal" style="'+iStyle+'flex:1;" />'+
+        '<input oninput="cvSetLang('+i+','level',this.value)" value="'+esc(l.level)+'" placeholder="Niveau (bijv. Vloeiend)" style="'+iStyle+'flex:1;" />'+
+        '<button onclick="cvRmLang('+i+')" style="background:none;border:none;cursor:pointer;color:#ef4444;font-size:18px;line-height:1;padding:0;flex-shrink:0;">×</button>';
+      c.appendChild(d);
+    });
+  }
+
+  window.cvRmExp=function(i){state.experience.splice(i,1);renderExperience();render();};
+  window.cvSetExp=function(i,f,v){state.experience[i][f]=v;if(f==='current'){renderExperience();}render();};
+  window.cvRmEdu=function(i){state.education.splice(i,1);renderEducation();render();};
+  window.cvSetEdu=function(i,f,v){state.education[i][f]=v;render();};
+  window.cvRmSkill=function(i){state.skills.splice(i,1);renderSkills();render();};
+  window.cvRmLang=function(i){state.languages.splice(i,1);renderLanguages();render();};
+  window.cvSetLang=function(i,f,v){state.languages[i][f]=v;render();};
+
+  ['name','title','email','phone','location','website','linkedin','summary'].forEach(function(f){
+    var el=document.getElementById('cv-'+f);
+    if(el)el.addEventListener('input',function(){state.personal[f]=this.value;render();});
+  });
+
+  document.getElementById('cv-color').addEventListener('input',function(){state.color=this.value;render();});
+
+  ['modern','classic','minimal'].forEach(function(t){
+    var btn=document.getElementById('cv-theme-'+t);
+    if(btn)btn.addEventListener('click',function(){
+      state.theme=t;
+      ['modern','classic','minimal'].forEach(function(x){
+        var b=document.getElementById('cv-theme-'+x);
+        if(x===t){b.setAttribute('data-active','1');b.style.background='var(--primary)';b.style.color='var(--primary-foreground)';}
+        else{b.removeAttribute('data-active');b.style.background='var(--secondary)';b.style.color='var(--muted-foreground)';}
+      });
+      render();
+    });
+  });
+
+  document.getElementById('cv-add-exp').addEventListener('click',function(){
+    state.experience.push({company:'',position:'',startDate:'',endDate:'',current:false,description:''});
+    renderExperience();render();
+  });
+  document.getElementById('cv-add-edu').addEventListener('click',function(){
+    state.education.push({school:'',degree:'',startDate:'',endDate:'',description:''});
+    renderEducation();render();
+  });
+
+  var skillInput=document.getElementById('cv-skill-input');
+  function addSkill(){
+    var v=skillInput.value.trim();
+    if(!v)return;
+    state.skills.push(v);
+    skillInput.value='';
+    renderSkills();render();
+  }
+  document.getElementById('cv-add-skill-btn').addEventListener('click',addSkill);
+  skillInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addSkill();}});
+
+  document.getElementById('cv-add-lang').addEventListener('click',function(){
+    state.languages.push({language:'',level:''});
+    renderLanguages();
+  });
+
+  document.getElementById('cv-print').addEventListener('click',function(){
+    var style='<style>*{box-sizing:border-box;}body{margin:0;padding:0;}@media print{*{-webkit-print-color-adjust:exact!important;color-adjust:exact!important;print-color-adjust:exact!important;}}</style>';
+    var w=window.open('','_blank','width=900,height=700');
+    w.document.write('<html><head>'+style+'</head><body>'+document.getElementById('cv-preview').innerHTML+'</body></html>');
+    w.document.close();
+    w.focus();
+    setTimeout(function(){w.print();},400);
+  });
+
+  renderExperience();renderEducation();renderSkills();renderLanguages();render();
+})();
+0:["r31C-5Qt0mdXpuMEPn5l_",[[["",{"children":["tools",{"children":["cv",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",{"children":["tools",{"children":["cv",{"children":["__PAGE__",{},[["$L1",["$","div",null,{"className":"max-w-7xl mx-auto px-4 py-10 space-y-8","children":[["$","div",null,{"children":[["$","p",null,{"className":"text-sm text-muted-foreground uppercase tracking-widest mb-2","children":"Tool"}],["$","h1",null,{"className":"text-3xl font-black mb-1","children":"CV Generator"}],["$","p",null,{"className":"text-muted-foreground","children":"Maak een professioneel CV. Sla op als PDF via de printfunctie van je browser."}]]}],["$","div",null,{"className":"grid grid-cols-1 xl:grid-cols-2 gap-8","children":[["$","div",null,{"className":"space-y-4","children":[["$","div",null,{"className":"bg-card border border-border rounded-xl p-5 space-y-3","children":[["$","h2",null,{"className":"font-semibold","children":"Persoonsgegevens"}],[["$","div","name",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Volledige naam"}],["$","input",null,{"id":"cv-name","type":"text","placeholder":"Jan de Vries","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","title",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Functietitel"}],["$","input",null,{"id":"cv-title","type":"text","placeholder":"Software Developer","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","email",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"E-mail"}],["$","input",null,{"id":"cv-email","type":"email","placeholder":"jan@example.nl","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","phone",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Telefoon"}],["$","input",null,{"id":"cv-phone","type":"tel","placeholder":"+31 6 12345678","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","location",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Locatie"}],["$","input",null,{"id":"cv-location","type":"text","placeholder":"Amsterdam, Nederland","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","website",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Website (optioneel)"}],["$","input",null,{"id":"cv-website","type":"url","placeholder":"https://mijnsite.nl","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}],["$","div","linkedin",{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"LinkedIn (optioneel)"}],["$","input",null,{"id":"cv-linkedin","type":"text","placeholder":"linkedin.com/in/naam","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"}]]}]],["$","div",null,{"children":[["$","label",null,{"className":"text-xs text-muted-foreground mb-1 block","children":"Profiel omschrijving"}],["$","textarea",null,{"id":"cv-summary","rows":3,"placeholder":"Korte beschrijving over jezelf…","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors resize-none"}]]}]]}],["$","div",null,{"className":"bg-card border border-border rounded-xl p-5","children":[["$","div",null,{"className":"flex justify-between items-center mb-3","children":[["$","h2",null,{"className":"font-semibold","children":"Werkervaring"}],["$","button",null,{"id":"cv-add-exp","className":"text-xs bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors","children":"+ Toevoegen"}]]}],["$","div",null,{"id":"cv-exp-list"}]]}],["$","div",null,{"className":"bg-card border border-border rounded-xl p-5","children":[["$","div",null,{"className":"flex justify-between items-center mb-3","children":[["$","h2",null,{"className":"font-semibold","children":"Opleiding"}],["$","button",null,{"id":"cv-add-edu","className":"text-xs bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors","children":"+ Toevoegen"}]]}],["$","div",null,{"id":"cv-edu-list"}]]}],["$","div",null,{"className":"bg-card border border-border rounded-xl p-5","children":[["$","h2",null,{"className":"font-semibold mb-3","children":"Vaardigheden"}],["$","div",null,{"id":"cv-skills-list","className":"mb-3 flex flex-wrap"}],["$","div",null,{"className":"flex gap-2","children":[["$","input",null,{"id":"cv-skill-input","type":"text","placeholder":"Bijv. React, Python, Photoshop (Enter)","className":"w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors flex-1"}],["$","button",null,{"id":"cv-add-skill-btn","className":"px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors","children":"+"}]]}]]}],["$","div",null,{"className":"bg-card border border-border rounded-xl p-5","children":[["$","div",null,{"className":"flex justify-between items-center mb-3","children":[["$","h2",null,{"className":"font-semibold","children":"Talen"}],["$","button",null,{"id":"cv-add-lang","className":"text-xs bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors","children":"+ Toevoegen"}]]}],["$","div",null,{"id":"cv-lang-list"}]]}]]}],["$","div",null,{"className":"space-y-4","children":[["$","div",null,{"className":"bg-card border border-border rounded-xl p-5","children":[["$","div",null,{"className":"flex justify-between items-center flex-wrap gap-3 mb-4","children":[["$","h2",null,{"className":"font-semibold","children":"Voorbeeld"}],["$","button",null,{"id":"cv-print","className":"px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors","children":"Afdrukken / PDF"}]]}],["$","div",null,{"className":"flex flex-wrap gap-3 items-center mb-4","children":[["$","div",null,{"className":"flex gap-2","children":[["$","button",null,{"id":"cv-theme-modern","style":{"padding":"6px 14px","borderRadius":"8px","fontSize":"13px","fontWeight":500,"cursor":"pointer","border":"none","background":"var(--primary)","color":"var(--primary-foreground)"},"children":"Modern"}],["$","button",null,{"id":"cv-theme-classic","style":{"padding":"6px 14px","borderRadius":"8px","fontSize":"13px","fontWeight":500,"cursor":"pointer","border":"none","background":"var(--secondary)","color":"var(--muted-foreground)"},"children":"Classic"}],["$","button",null,{"id":"cv-theme-minimal","style":{"padding":"6px 14px","borderRadius":"8px","fontSize":"13px","fontWeight":500,"cursor":"pointer","border":"none","background":"var(--secondary)","color":"var(--muted-foreground)"},"children":"Minimal"}]]}],["$","div",null,{"className":"flex items-center gap-2","children":[["$","label",null,{"className":"text-xs text-muted-foreground","children":"Accentkleur:"}],["$","input",null,{"id":"cv-color","type":"color","defaultValue":"#6366f1","className":"h-8 w-12 rounded border border-border cursor-pointer bg-secondary"}]]}]]}],["$","div",null,{"id":"cv-preview","className":"bg-white rounded-lg overflow-auto border border-border","style":{"minHeight":"620px"}}]]}],["$","div",null,{"className":"bg-secondary/30 border border-border rounded-xl p-4 text-sm text-muted-foreground space-y-1","children":[["$","p",null,{"className":"font-medium text-foreground","children":"PDF opslaan"}],["$","p",null,{"children":["1. Klik op ",["$","strong",null,{"children":"Afdrukken / PDF"}]," hierboven."]}],["$","p",null,{"children":["2. Kies ",["$","strong",null,{"children":"“Opslaan als PDF”"}]," als printer in je browser."]}],["$","p",null,{"children":["3. Zet marges op ",["$","strong",null,{"children":"“Geen”"}]," voor het beste resultaat."]}]]}]]}]]}],["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$2"}}]]}]],null],null]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","tools","children","cv","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}],null]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","tools","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}],null]},[["$","html",null,{"lang":"en","className":"dark","suppressHydrationWarning":true,"children":["$","body",null,{"className":"font-sans antialiased","children":["$","$L5",null,{"children":[["$","div",null,{"className":"min-h-screen flex flex-col","children":["$L6",["$","main",null,{"className":"flex-1","children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[],"styles":null}]}],["$","footer",null,{"className":"border-t border-border py-8 mt-16","children":["$","div",null,{"className":"max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground","children":["© ",2026," UselessSite. Built by the community, for the community."]}]}]]}],["$","$L7",null,{}]]}]}]}],null],null],[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/839da6720762d34d.css","precedence":"next","crossOrigin":"$undefined"}]],"$L8"]]]]
+9:I[231,["231","static/chunks/231-96d3195ae08b35fb.js","931","static/chunks/app/page-3da96de60970731e.js"],""]
+a:I[5196,["231","static/chunks/231-96d3195ae08b35fb.js","377","static/chunks/377-68eb3d73a62a3966.js","863","static/chunks/863-16923bc72c215b1b.js","424","static/chunks/424-c2ee88011b09539d.js","185","static/chunks/app/layout-c00d0f60d3d1ad53.js"],"NavClient"]
+6:["$","header",null,{"className":"sticky top-0 z-50 w-full border-b border-border/60 glass","children":["$","div",null,{"className":"max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4","children":[["$","$L9",null,{"href":"/","className":"flex items-center gap-2 font-bold text-lg shrink-0","children":[["$","span",null,{"className":"text-2xl","children":"📌"}],["$","span",null,{"className":"bg-gradient-to-r from-primary to-violet-400 bg-clip-text text-transparent","children":"UselessSite"}]]}],["$","nav",null,{"className":"hidden md:flex items-center gap-1 text-sm","children":[["$","$L9",null,{"href":"/","className":"px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors","children":"Portfolio"}],["$","$L9",null,{"href":"/feed","className":"px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors","children":"Feed"}],["$","$L9",null,{"href":"/leaderboard","className":"px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors","children":"Leaderboard"}],["$","$L9",null,{"href":"/scrum","className":"px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors","children":"Scrum"}]]}],["$","$La",null,{"session":null}]]}]}]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"CV Generator | UselessSite | UselessSite"}],["$","meta","3",{"name":"description","content":"Community platform for IT setups, gaming rigs and developer workspaces. Post your build, get graded by the community."}],["$","meta","4",{"name":"keywords","content":"gaming setup,battlestation,desk setup,PC build,developer workspace"}],["$","meta","5",{"property":"og:title","content":"UselessSite — Rate & Share Your Setup"}],["$","meta","6",{"property":"og:description","content":"Post your rig. Get graded by the community."}],["$","meta","7",{"property":"og:url","content":"https://uselesssite.nl/"}],["$","meta","8",{"property":"og:site_name","content":"UselessSite"}],["$","meta","9",{"property":"og:locale","content":"en_US"}],["$","meta","10",{"property":"og:image","content":"https://uselesssite.nl/og.png"}],["$","meta","11",{"property":"og:image:width","content":"1200"}],["$","meta","12",{"property":"og:image:height","content":"630"}],["$","meta","13",{"property":"og:type","content":"website"}],["$","meta","14",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","15",{"name":"twitter:title","content":"UselessSite"}],["$","meta","16",{"name":"twitter:description","content":"Post your rig. Get graded by the community."}],["$","meta","17",{"name":"twitter:image","content":"https://uselesssite.nl/og.png"}],["$","meta","18",{"name":"twitter:image:width","content":"1200"}],["$","meta","19",{"name":"twitter:image:height","content":"630"}]]
+1:null
