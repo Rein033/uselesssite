@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ti.To Dienstverlening — Hoveniers & Tuinaanleg</title>
+  <meta name="description" content="Ti.To Dienstverlening — uw specialist voor hoveniers, tuinaanleg, onderhoud en groenvoorziening."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-50:   #f0faf0;
+      --green-100:  #dcf5dc;
+      --green-200:  #b5ebb5;
+      --green-400:  #4caf50;
+      --green-500:  #2e7d32;
+      --green-600:  #1b5e20;
+      --green-700:  #145214;
+      --earth:      #8B6914;
+      --earth-light:#c49a3c;
+      --cream:      #fafaf5;
+      --white:      #ffffff;
+      --gray-100:   #f5f5f0;
+      --gray-300:   #d0cfc8;
+      --gray-500:   #7a7a70;
+      --gray-900:   #1a1a14;
+      --shadow-sm:  0 2px 8px rgba(0,0,0,.08);
+      --shadow-md:  0 8px 24px rgba(0,0,0,.12);
+      --shadow-lg:  0 16px 48px rgba(0,0,0,.16);
+      --radius:     12px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body  { font-family: 'Inter', system-ui, sans-serif; color: var(--gray-900); background: var(--white); line-height: 1.6; }
+    a     { color: inherit; text-decoration: none; }
+    img   { max-width: 100%; }
+
+    /* ── UTILITY ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      background: var(--green-100);
+      color: var(--green-600);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-primary   { background: var(--green-500); color: var(--white); }
+    .btn-primary:hover { background: var(--green-600); }
+    .btn-outline   { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline:hover { background: rgba(255,255,255,.15); border-color: var(--white); }
+    .btn-earth     { background: var(--earth); color: var(--white); }
+    .btn-earth:hover { background: #6e540f; }
+
+    /* ── HEADER / NAV ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: background .3s, box-shadow .3s;
+      padding: 0;
+    }
+    header.scrolled { background: var(--white); box-shadow: var(--shadow-sm); }
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo svg { width: 48px; height: 48px; }
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .nav-logo-text span { display: block; font-size: .65rem; font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; margin-top: 2px; }
+    header:not(.scrolled) .nav-logo-text  { color: var(--white); }
+    header.scrolled  .nav-logo-text  { color: var(--green-600); }
+
+    .nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
+    header:not(.scrolled) .nav-links a { color: rgba(255,255,255,.9); }
+    header.scrolled  .nav-links a { color: var(--gray-900); }
+    .nav-links a { font-size: .9rem; font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--green-500) !important; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-500); color: var(--white);
+      padding: 10px 20px; border-radius: 8px;
+      font-size: .875rem; font-weight: 600;
+      transition: background .15s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--green-600); transform: translateY(-1px); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: currentColor; border-radius: 2px; transition: .3s; }
+    header:not(.scrolled) .hamburger { color: var(--white); }
+    header.scrolled  .hamburger { color: var(--gray-900); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background:
+        linear-gradient(to bottom, rgba(20,82,20,.72) 0%, rgba(27,94,32,.55) 60%, rgba(0,0,0,.3) 100%),
+        url("https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1800&q=80") center/cover no-repeat;
+      display: flex; align-items: center;
+      padding-top: 72px;
+    }
+    .hero-inner {
+      padding: 80px 0 100px;
+      max-width: 700px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--green-200); }
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.88);
+      max-width: 540px;
+      margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-badges { display: flex; gap: 24px; margin-top: 56px; flex-wrap: wrap; }
+    .hero-badge {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      backdrop-filter: blur(8px);
+      border-radius: 8px;
+      padding: 10px 16px;
+      color: var(--white);
+    }
+    .hero-badge svg { opacity: .85; }
+    .hero-badge strong { font-size: .85rem; display: block; }
+    .hero-badge span  { font-size: .75rem; opacity: .75; }
+
+    /* ── STRIP ── */
+    .strip {
+      background: var(--green-600);
+      color: var(--white);
+      padding: 18px 0;
+      overflow: hidden;
+    }
+    .strip-track {
+      display: flex; gap: 48px; align-items: center;
+      animation: scroll-left 28s linear infinite;
+      width: max-content;
+    }
+    .strip-item { display: flex; align-items: center; gap: 10px; white-space: nowrap; font-size: .9rem; font-weight: 500; }
+    .strip-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--green-200); }
+    @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 96px 0; }
+    .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-sub { color: var(--gray-500); max-width: 560px; font-size: 1.05rem; }
+
+    /* ── OVER ONS ── */
+    .about { background: var(--cream); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 64px; }
+    .about-img-wrap { position: relative; }
+    .about-img {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover;
+      border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    }
+    .about-badge-float {
+      position: absolute; bottom: -24px; right: -24px;
+      background: var(--green-500); color: var(--white);
+      border-radius: var(--radius); padding: 20px 24px;
+      box-shadow: var(--shadow-md); text-align: center;
+    }
+    .about-badge-float strong { font-size: 2.4rem; font-family: 'Playfair Display', serif; display: block; line-height: 1; }
+    .about-badge-float span  { font-size: .8rem; opacity: .85; }
+    .about-text { display: flex; flex-direction: column; gap: 20px; }
+    .about-text p { color: var(--gray-500); }
+    .about-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .about-list li { display: flex; align-items: flex-start; gap: 12px; font-size: .95rem; }
+    .about-list li .icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--green-100); color: var(--green-600);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── DIENSTEN ── */
+    .services { background: var(--white); }
+    .services-head { text-align: center; margin-bottom: 56px; }
+    .services-head .section-sub { margin: 0 auto; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+    .service-card {
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .service-img { width: 100%; height: 200px; object-fit: cover; }
+    .service-body { padding: 24px; }
+    .service-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--green-50); color: var(--green-600);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+    .service-body h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .service-body p  { font-size: .9rem; color: var(--gray-500); }
+
+    /* ── WERKWIJZE ── */
+    .process { background: var(--green-600); color: var(--white); }
+    .process .section-heading { color: var(--white); }
+    .process .section-sub     { color: rgba(255,255,255,.75); }
+    .process-head { margin-bottom: 64px; }
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; }
+    .step { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.35);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--green-200);
+    }
+    .step h3 { font-size: 1.05rem; font-weight: 600; }
+    .step p  { font-size: .9rem; color: rgba(255,255,255,.72); }
+
+    /* ── PROJECTEN ── */
+    .projects { background: var(--gray-100); }
+    .projects-head { margin-bottom: 48px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+    .projects-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+    .project-card { border-radius: var(--radius); overflow: hidden; position: relative; cursor: pointer; }
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-card:hover .project-img { transform: scale(1.04); }
+    .project-card.large  { grid-column: span 7; }
+    .project-card.medium { grid-column: span 5; }
+    .project-card.half   { grid-column: span 6; }
+    .project-img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; display: block; min-height: 260px; }
+    .project-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(20,82,20,.85) 0%, transparent 60%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
+      color: var(--white);
+    }
+    .project-overlay h3 { font-size: 1.1rem; font-weight: 700; }
+    .project-overlay span { font-size: .8rem; opacity: .8; }
+
+    /* ── GETUIGENISSEN ── */
+    .reviews { background: var(--white); }
+    .reviews-head { text-align: center; margin-bottom: 56px; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+    .review-card {
+      background: var(--cream);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .stars { color: var(--earth-light); font-size: 1.1rem; margin-bottom: 14px; }
+    .review-text { font-size: .95rem; color: var(--gray-500); margin-bottom: 20px; font-style: italic; }
+    .reviewer { display: flex; align-items: center; gap: 12px; }
+    .reviewer-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--green-200); color: var(--green-700);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem;
+    }
+    .reviewer-name { font-weight: 600; font-size: .9rem; }
+    .reviewer-loc  { font-size: .8rem; color: var(--gray-500); }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--cream); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 56px; }
+    .contact-info { display: flex; flex-direction: column; gap: 28px; }
+    .contact-item { display: flex; align-items: flex-start; gap: 16px; }
+    .contact-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--green-100); color: var(--green-600);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-item strong { display: block; font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-500); margin-bottom: 4px; }
+    .contact-item span   { font-size: 1rem; }
+    .form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+    .form input, .form select, .form textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 8px; font-family: inherit; font-size: .95rem;
+      background: var(--white); color: var(--gray-900);
+      transition: border-color .15s;
+      outline: none;
+    }
+    .form input:focus, .form select:focus, .form textarea:focus { border-color: var(--green-500); }
+    .form textarea { resize: vertical; min-height: 120px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--green-700);
+      color: rgba(255,255,255,.8);
+      padding: 64px 0 32px;
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-brand .nav-logo-text { color: var(--white); margin-top: 16px; margin-bottom: 12px; }
+    .footer-brand p { font-size: .9rem; line-height: 1.7; opacity: .75; }
+    .footer-col h4 { color: var(--white); font-size: .9rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { font-size: .875rem; transition: color .15s; }
+    .footer-col ul li a:hover { color: var(--green-200); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+      font-size: .825rem; opacity: .6;
+    }
+    .social-links { display: flex; gap: 12px; margin-top: 20px; }
+    .social-link {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white); transition: background .15s;
+    }
+    .social-link:hover { background: var(--green-500); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .about-grid    { grid-template-columns: 1fr; }
+      .contact-grid  { grid-template-columns: 1fr; }
+      .footer-grid   { grid-template-columns: 1fr 1fr; }
+      .project-card.large, .project-card.medium, .project-card.half { grid-column: span 12; }
+      .about-badge-float { bottom: 12px; right: 12px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .hero-actions .btn { padding: 12px 20px; font-size: .875rem; }
+      section { padding: 64px 0; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--white);
+      flex-direction: column;
+      padding: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .mobile-menu nav { display: flex; flex-direction: column; gap: 8px; }
+    .mobile-menu a {
+      display: block; padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 1.2rem; font-weight: 600; color: var(--gray-900);
+    }
+    .mobile-menu a:hover { color: var(--green-500); }
+    .close-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--gray-900); }
+  </style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-top">
+    <div class="nav-logo">
+      <!-- INLINE LOGO -->
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+        <circle cx="28" cy="28" r="28" fill="#2e7d32"/>
+        <!-- Shovel -->
+        <rect x="26.5" y="14" width="3" height="20" rx="1.5" fill="#b5ebb5"/>
+        <path d="M24 34 Q28 40 32 34 Z" fill="#b5ebb5"/>
+        <!-- Left leaf -->
+        <path d="M23 24 Q16 20 18 14 Q22 18 23 24Z" fill="#81c784"/>
+        <!-- Right leaf -->
+        <path d="M33 24 Q40 20 38 14 Q34 18 33 24Z" fill="#81c784"/>
+        <!-- Ground line -->
+        <line x1="16" y1="38" x2="40" y2="38" stroke="#c8e6c9" stroke-width="2" stroke-linecap="round"/>
+        <!-- Grass tufts -->
+        <path d="M19 38 Q20 34 21 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M27 38 Q28 33 29 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M35 38 Q36 34 37 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="nav-logo-text" style="color:#2e7d32">Ti.To<span>Dienstverlening</span></div>
+    </div>
+    <button class="close-btn" onclick="document.getElementById('mobileMenu').classList.remove('open')">✕</button>
+  </div>
+  <nav>
+    <a href="#over-ons" onclick="document.getElementById('mobileMenu').classList.remove('open')">Over Ons</a>
+    <a href="#diensten" onclick="document.getElementById('mobileMenu').classList.remove('open')">Diensten</a>
+    <a href="#projecten" onclick="document.getElementById('mobileMenu').classList.remove('open')">Projecten</a>
+    <a href="#reviews" onclick="document.getElementById('mobileMenu').classList.remove('open')">Reviews</a>
+    <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open')">Contact</a>
+  </nav>
+  <a href="#contact" class="btn btn-primary" style="margin-top:24px" onclick="document.getElementById('mobileMenu').classList.remove('open')">Gratis Offerte</a>
+</div>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="container">
+    <nav>
+      <a href="#" class="nav-logo">
+        <!-- TI.TO SVG LOGO -->
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="28" fill="#2e7d32"/>
+          <!-- Shovel handle -->
+          <rect x="26.5" y="14" width="3" height="20" rx="1.5" fill="#b5ebb5"/>
+          <!-- Shovel blade -->
+          <path d="M24 34 Q28 40 32 34 Z" fill="#b5ebb5"/>
+          <!-- Left leaf -->
+          <path d="M23 24 Q16 20 18 14 Q22 18 23 24Z" fill="#81c784"/>
+          <!-- Right leaf -->
+          <path d="M33 24 Q40 20 38 14 Q34 18 33 24Z" fill="#81c784"/>
+          <!-- Ground line -->
+          <line x1="16" y1="38" x2="40" y2="38" stroke="#c8e6c9" stroke-width="2" stroke-linecap="round"/>
+          <!-- Grass tufts -->
+          <path d="M19 38 Q20 34 21 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M27 38 Q28 33 29 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M35 38 Q36 34 37 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="nav-logo-text">Ti.To<span>Dienstverlening</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#over-ons">Over Ons</a></li>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#projecten">Projecten</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <a href="#contact" class="nav-cta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6.29 6.29l.94-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Gratis Offerte
+      </a>
+
+      <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="tag">Hoveniersdienstverlening</div>
+      <h1>Uw tuin in <em>perfecte handen</em> — van ontwerp tot onderhoud</h1>
+      <p>Ti.To Dienstverlening is uw betrouwbare partner voor hoveniers, tuinaanleg, groenonderhoud en landschapsinrichting. Kwaliteit die je ziet, vakmanschap dat blijft.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          Vraag een offerte aan
+        </a>
+        <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
+      </div>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div><strong>15+ jaar ervaring</strong><span>Vakmanschap & kwaliteit</span></div>
+        </div>
+        <div class="hero-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div><strong>500+ tevreden klanten</strong><span>Regio Amersfoort e.o.</span></div>
+        </div>
+        <div class="hero-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div><strong>Snel & betrouwbaar</strong><span>Binnen 48 uur reactie</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLLING STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <div class="strip-item"><span class="strip-dot"></span>Tuinaanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Groenonderhoud</div>
+    <div class="strip-item"><span class="strip-dot"></span>Bestrating</div>
+    <div class="strip-item"><span class="strip-dot"></span>Hagen snoeien</div>
+    <div class="strip-item"><span class="strip-dot"></span>Gazon aanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Vijver aanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Boomverzorging</div>
+    <div class="strip-item"><span class="strip-dot"></span>Landschapsinrichting</div>
+    <!-- duplicate for infinite loop -->
+    <div class="strip-item"><span class="strip-dot"></span>Tuinaanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Groenonderhoud</div>
+    <div class="strip-item"><span class="strip-dot"></span>Bestrating</div>
+    <div class="strip-item"><span class="strip-dot"></span>Hagen snoeien</div>
+    <div class="strip-item"><span class="strip-dot"></span>Gazon aanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Vijver aanleg</div>
+    <div class="strip-item"><span class="strip-dot"></span>Boomverzorging</div>
+    <div class="strip-item"><span class="strip-dot"></span>Landschapsinrichting</div>
+  </div>
+</div>
+
+<!-- OVER ONS -->
+<section class="about" id="over-ons">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img
+          class="about-img"
+          src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80"
+          alt="Ti.To hovenier aan het werk"
+          loading="lazy"
+        />
+        <div class="about-badge-float">
+          <strong>15+</strong>
+          <span>Jaar ervaring</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="tag">Over Ti.To</div>
+        <h2 class="section-heading">Passie voor groen,<br/>trots op elk project</h2>
+        <p>Ti.To Dienstverlening is opgericht vanuit een diepe liefde voor de natuur en het vak van hovenier. Wij geloven dat een mooie tuin niet alleen het huis completeert, maar ook bijdraagt aan uw welzijn en leefplezier.</p>
+        <p>Met een team van enthousiaste vakmensen leveren wij maatwerk — van de eerste schets tot het laatste plantje. Elk project behandelen wij met dezelfde zorg en aandacht voor detail.</p>
+        <ul class="about-list">
+          <li>
+            <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span>Erkend en gecertificeerd hovenier</span>
+          </li>
+          <li>
+            <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span>Volledig verzekerd en WKA-gecertificeerd</span>
+          </li>
+          <li>
+            <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span>Ecologisch verantwoord werken</span>
+          </li>
+          <li>
+            <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span>Scherpe prijzen zonder concessies aan kwaliteit</span>
+          </li>
+        </ul>
+        <div>
+          <a href="#contact" class="btn btn-primary">Neem contact op</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIENSTEN -->
+<section class="services" id="diensten">
+  <div class="container">
+    <div class="services-head">
+      <div class="tag">Onze Diensten</div>
+      <h2 class="section-heading">Wat wij voor u kunnen doen</h2>
+      <p class="section-sub">Van complete tuinaanleg tot wekelijks onderhoud — wij ontzorgen u volledig.</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&q=75" alt="Tuinaanleg" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <h3>Tuinaanleg & Ontwerp</h3>
+          <p>Van schets tot werkelijkheid. Wij ontwerpen en leggen tuinen aan die passen bij uw woning en wensen.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=75" alt="Tuinonderhoud" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <h3>Groen & Tuinonderhoud</h3>
+          <p>Regelmatig onderhoud zodat uw tuin er het hele jaar door prachtig bij staat. Maatwerk abonnementen mogelijk.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=75" alt="Bestrating" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Bestrating & Verharding</h3>
+          <p>Opritten, terrassen en paden in diverse materialen. Duurzaam gelegd met oog voor afwatering en esthetiek.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1567748157439-651aca2ff064?w=600&q=75" alt="Hagen snoeien" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7c0 5.25 7.5 10.25 7.5 10.25S21 15.25 21 10V3"/><line x1="3" y1="3" x2="21" y2="3"/></svg>
+          </div>
+          <h3>Snoeiwerk & Hagen</h3>
+          <p>Bomen, struiken en hagen professioneel gesnoeid en in vorm gehouden. Veilig en vakkundig uitgevoerd.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=75" alt="Vijver" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <h3>Vijver & Waterpartijen</h3>
+          <p>Aanleg en onderhoud van vijvers, waterpartijen en fonteinen. Rust en natuur in uw eigen achtertuin.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img class="service-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=75" alt="Gazon" loading="lazy"/>
+        <div class="service-body">
+          <div class="service-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12"/><path d="M5 12c0-4 3-7 7-7s7 3 7 7"/><path d="M5 12H2"/><path d="M22 12h-3"/></svg>
+          </div>
+          <h3>Gazon & Begrazing</h3>
+          <p>Aanleg van nieuw gazon of herstel van bestaand gazon. Doorzaaien, bemesten en onkruidbestrijding.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WERKWIJZE -->
+<section class="process">
+  <div class="container">
+    <div class="process-head">
+      <div class="tag" style="background:rgba(255,255,255,.15); color:var(--green-200)">Onze Werkwijze</div>
+      <h2 class="section-heading">Zo werken wij</h2>
+      <p class="section-sub">Helder, transparant en zonder verrassingen achteraf.</p>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Vrijblijvend kennismakingsgesprek</h3>
+        <p>Wij komen langs om uw wensen te bespreken en de situatie ter plaatse te bekijken. Geheel kosteloos.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Ontwerp & offerte op maat</h3>
+        <p>U ontvangt een duidelijke offerte met eventueel een schets of 3D-visualisatie van het resultaat.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Uitvoering door vakmensen</h3>
+        <p>Na akkoord plannen wij de uitvoering in. Wij werken netjes, efficiënt en houden u op de hoogte.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Oplevering & nazorg</h3>
+        <p>Wij leveren het werk op en geven advies voor onderhoud. Uw tevredenheid is onze garantie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTEN -->
+<section class="projects" id="projecten">
+  <div class="container">
+    <div class="projects-head">
+      <div>
+        <div class="tag">Portfolio</div>
+        <h2 class="section-heading">Recente projecten</h2>
+      </div>
+      <a href="#contact" class="btn btn-earth">Bekijk alle projecten</a>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card large">
+        <img class="project-img" src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=900&q=80" alt="Project tuinaanleg Amersfoort" loading="lazy"/>
+        <div class="project-overlay">
+          <h3>Tuinaanleg Amersfoort</h3>
+          <span>Complete herinrichting — 2024</span>
+        </div>
+      </div>
+      <div class="project-card medium">
+        <img class="project-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80" alt="Terras bestrating Soest" loading="lazy"/>
+        <div class="project-overlay">
+          <h3>Terras Bestrating Soest</h3>
+          <span>Oprit & terras — 2024</span>
+        </div>
+      </div>
+      <div class="project-card half">
+        <img class="project-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=700&q=80" alt="Vijver aanleg" loading="lazy"/>
+        <div class="project-overlay">
+          <h3>Vijver & Waterpartij</h3>
+          <span>Bunschoten — 2023</span>
+        </div>
+      </div>
+      <div class="project-card half">
+        <img class="project-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=700&q=80" alt="Gazon aanleg" loading="lazy"/>
+        <div class="project-overlay">
+          <h3>Nieuw Gazon & Borders</h3>
+          <span>Baarn — 2023</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="reviews-head">
+      <div class="tag">Beoordelingen</div>
+      <h2 class="section-heading">Wat onze klanten zeggen</h2>
+      <p class="section-sub" style="margin:0 auto">Tevreden klanten zijn onze beste reclame.</p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Ti.To heeft onze achtertuin compleet getransformeerd. Alles is precies zoals we ons hadden voorgesteld — en zelfs beter. Super vakmanschap en een fijne samenwerking!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">M</div>
+          <div>
+            <div class="reviewer-name">Martine van den Berg</div>
+            <div class="reviewer-loc">Amersfoort</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Uitstekende service, altijd stipt op tijd en het werk wordt prima afgeleverd. Al twee jaar ons vaste onderhoudsbedrijf en geen enkele klacht. Echt een aanrader!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">J</div>
+          <div>
+            <div class="reviewer-name">Jan-Willem Hoekstra</div>
+            <div class="reviewer-loc">Soest</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">"Geweldige aanpak, meedenkend en eerlijk. De offerte klopte precies, geen verrassingen. De tuin ziet er prachtig uit en de kinderen spelen er elke dag in. Top gedaan!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">S</div>
+          <div>
+            <div class="reviewer-name">Sandra Pietersen</div>
+            <div class="reviewer-loc">Bunschoten</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="tag">Contact</div>
+    <h2 class="section-heading">Vraag een gratis offerte aan</h2>
+    <p class="section-sub">Vul het formulier in of neem direct contact op. Wij reageren binnen 48 uur.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6.29 6.29l.94-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <strong>Bel ons</strong>
+            <span>+31 (0)6 12 34 56 78</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <strong>Stuur een e-mail</strong>
+            <span>info@tito-dienstverlening.nl</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <strong>Werkgebied</strong>
+            <span>Amersfoort, Soest, Baarn, Bunschoten & omstreken</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <strong>Openingstijden</strong>
+            <span>Ma–Vr: 07:30–17:30 | Za: 08:00–13:00</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="form" action="#" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div>
+            <label for="naam">Naam *</label>
+            <input type="text" id="naam" name="naam" placeholder="Jan Jansen" required/>
+          </div>
+          <div>
+            <label for="tel">Telefoonnummer *</label>
+            <input type="tel" id="tel" name="tel" placeholder="+31 6 12 34 56 78" required/>
+          </div>
+        </div>
+        <div>
+          <label for="email">E-mailadres *</label>
+          <input type="email" id="email" name="email" placeholder="jan@voorbeeld.nl" required/>
+        </div>
+        <div>
+          <label for="dienst">Gewenste dienst</label>
+          <select id="dienst" name="dienst">
+            <option value="">Selecteer een dienst…</option>
+            <option>Tuinaanleg & Ontwerp</option>
+            <option>Groen & Tuinonderhoud</option>
+            <option>Bestrating & Verharding</option>
+            <option>Snoeiwerk & Hagen</option>
+            <option>Vijver & Waterpartijen</option>
+            <option>Gazon & Begrazing</option>
+            <option>Anders / Meerdere diensten</option>
+          </select>
+        </div>
+        <div>
+          <label for="bericht">Uw bericht</label>
+          <textarea id="bericht" name="bericht" placeholder="Beschrijf uw wensen, de grootte van de tuin of andere relevante informatie…"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Verstuur aanvraag
+        </button>
+        <p style="font-size:.8rem; color:var(--gray-500); text-align:center">Wij bellen u terug binnen 48 uur. Geen spam, beloofd.</p>
+        <div id="form-success" style="display:none; background:var(--green-100); color:var(--green-700); border-radius:8px; padding:14px; text-align:center; font-weight:600">
+          ✓ Bedankt! Wij nemen zo snel mogelijk contact met u op.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+            <circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.12)"/>
+            <rect x="26.5" y="14" width="3" height="20" rx="1.5" fill="#b5ebb5"/>
+            <path d="M24 34 Q28 40 32 34 Z" fill="#b5ebb5"/>
+            <path d="M23 24 Q16 20 18 14 Q22 18 23 24Z" fill="#81c784"/>
+            <path d="M33 24 Q40 20 38 14 Q34 18 33 24Z" fill="#81c784"/>
+            <line x1="16" y1="38" x2="40" y2="38" stroke="#c8e6c9" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 38 Q20 34 21 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M27 38 Q28 33 29 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M35 38 Q36 34 37 38" stroke="#a5d6a7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div class="nav-logo-text">Ti.To<span>Dienstverlening</span></div>
+        </div>
+        <p>Uw specialist voor hoveniers, tuinaanleg en groenonderhoud in de regio Amersfoort. Vakmanschap met een groen hart.</p>
+        <div class="social-links">
+          <a class="social-link" href="#" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a class="social-link" href="#" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a class="social-link" href="#" aria-label="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Diensten</h4>
+        <ul>
+          <li><a href="#diensten">Tuinaanleg</a></li>
+          <li><a href="#diensten">Tuinonderhoud</a></li>
+          <li><a href="#diensten">Bestrating</a></li>
+          <li><a href="#diensten">Snoeiwerk</a></li>
+          <li><a href="#diensten">Vijver aanleg</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Navigatie</h4>
+        <ul>
+          <li><a href="#over-ons">Over ons</a></li>
+          <li><a href="#projecten">Projecten</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+31612345678">+31 6 12 34 56 78</a></li>
+          <li><a href="mailto:info@tito-dienstverlening.nl">info@tito-dienstverlening.nl</a></li>
+          <li><a href="#contact">Offerte aanvragen</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Ti.To Dienstverlening. Alle rechten voorbehouden.</span>
+      <span>KvK: 12345678 · BTW: NL123456789B01</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header scroll effect
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Contact form demo handler
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Verzenden…';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('form-success').style.display = 'block';
+      e.target.reset();
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Verstuurd!';
+    }, 1200);
+  }
+</script>
+</body>
+</html>
