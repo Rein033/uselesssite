@@ -29,8 +29,9 @@ const SECTIONS = [
   },
   {
     id: 'TOOLS',
-    count: '6 executables',
+    count: '7 executables',
     items: [
+      { path: '/tools/fitness',    label: 'SPORT & SPIER SCHEMA',    tag: 'FITNESS',        note: 'Voedings- en trainingsschema op basis van lengte en gewicht', external: false, locked: false },
       { path: '/tools/json',       label: 'JSON FORMATTER',          tag: 'DEV',            note: 'Format, minify of valideer JSON in de browser',       external: false, locked: false },
       { path: '/tools/sap',        label: 'SAP IMPORT GENERATOR',    tag: 'BEDRIJF',        note: 'Genereer SAP-compatibele CSV-importbestanden',         external: false, locked: false },
       { path: '/tools/sprint',     label: 'SPRINT PLANNER',          tag: 'AGILE',          note: 'Plan sprint-capaciteit op basis van team en velocity', external: false, locked: false },
