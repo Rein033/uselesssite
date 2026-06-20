@@ -143,7 +143,56 @@ function setAdjust(exp: Experience) {
   return 0
 }
 
+type Tab = 'overzicht' | 'voeding' | 'schema'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'overzicht', label: 'Overzicht' },
+  { id: 'voeding', label: 'Voedingsschema' },
+  { id: 'schema', label: 'Trainingsschema' },
+]
+
+// macro's per 100g (NEVO/algemene voedingswaarden)
+const FOODS: Record<string, { kcal: number; eiwit: number; koolhydraten: number; vet: number; label: string }> = {
+  havermout:        { label: 'Havermout', kcal: 375, eiwit: 13, koolhydraten: 62, vet: 7 },
+  banaan:           { label: 'Banaan', kcal: 95, eiwit: 1.1, koolhydraten: 23, vet: 0.3 },
+  kwark:            { label: 'Magere kwark', kcal: 60, eiwit: 11, koolhydraten: 4, vet: 0.3 },
+  volkorenbrood:    { label: 'Volkoren brood', kcal: 250, eiwit: 9, koolhydraten: 41, vet: 3.5 },
+  kipfilet:         { label: 'Kipfilet (gegrild)', kcal: 165, eiwit: 31, koolhydraten: 0, vet: 3.6 },
+  amandelen:        { label: 'Amandelen', kcal: 579, eiwit: 21, koolhydraten: 22, vet: 50 },
+  appel:            { label: 'Appel', kcal: 52, eiwit: 0.3, koolhydraten: 14, vet: 0.2 },
+  zalm:             { label: 'Zalm', kcal: 208, eiwit: 20, koolhydraten: 0, vet: 13 },
+  zilvervliesrijst: { label: 'Zilvervliesrijst (gekookt)', kcal: 123, eiwit: 2.6, koolhydraten: 26, vet: 1 },
+  broccoli:         { label: 'Broccoli', kcal: 35, eiwit: 2.4, koolhydraten: 7, vet: 0.4 },
+  olijfolie:        { label: 'Olijfolie', kcal: 884, eiwit: 0, koolhydraten: 0, vet: 100 },
+}
+
+const MEAL_TEMPLATE: { meal: string; items: { food: keyof typeof FOODS; g: number }[] }[] = [
+  { meal: 'Ontbijt', items: [{ food: 'havermout', g: 60 }, { food: 'banaan', g: 100 }, { food: 'kwark', g: 150 }] },
+  { meal: 'Lunch', items: [{ food: 'volkorenbrood', g: 90 }, { food: 'kipfilet', g: 100 }, { food: 'broccoli', g: 80 }] },
+  { meal: 'Tussendoor', items: [{ food: 'amandelen', g: 20 }, { food: 'appel', g: 150 }] },
+  { meal: 'Diner', items: [{ food: 'zalm', g: 150 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+]
+
+function foodAt(food: keyof typeof FOODS, grams: number) {
+  const f = FOODS[food]
+  const r = grams / 100
+  return { label: f.label, grams, kcal: Math.round(f.kcal * r), eiwit: Math.round(f.eiwit * r), koolhydraten: Math.round(f.koolhydraten * r), vet: Math.round(f.vet * r) }
+}
+
+function buildMealPlan(targetCalories: number) {
+  const referenceKcal = MEAL_TEMPLATE.reduce((sum, m) => sum + m.items.reduce((s, it) => s + FOODS[it.food].kcal * (it.g / 100), 0), 0)
+  const scale = targetCalories / referenceKcal
+  return MEAL_TEMPLATE.map(m => {
+    const items = m.items.map(it => foodAt(it.food, Math.max(5, Math.round((it.g * scale) / 5) * 5)))
+    const subtotal = items.reduce((acc, it) => ({
+      kcal: acc.kcal + it.kcal, eiwit: acc.eiwit + it.eiwit, koolhydraten: acc.koolhydraten + it.koolhydraten, vet: acc.vet + it.vet,
+    }), { kcal: 0, eiwit: 0, koolhydraten: 0, vet: 0 })
+    return { meal: m.meal, items, subtotal }
+  })
+}
+
 export default function FitnessClient() {
+  const [tab, setTab] = useState<Tab>('overzicht')
   const [gender, setGender] = useState<Gender>('man')
   const [age, setAge] = useState(25)
   const [height, setHeight] = useState(180)
@@ -180,6 +229,7 @@ export default function FitnessClient() {
   const strengthSchedule = useMemo(() => SCHEDULES[days].map((focus, i) => ({ name: DAY_NAMES[i], focus })), [days])
   const militarySchedule = useMemo(() => militaryWeekSchedule(militaryWeek, gender, experience), [militaryWeek, gender, experience])
   const militaryFinal = MILITARY_NORMS[gender]
+  const mealPlan = useMemo(() => buildMealPlan(calories), [calories])
 
   const caloriesLabel = isMilitary
     ? 'Onderhoud (brandstof voor trainingsopbouw)'
@@ -205,6 +255,12 @@ export default function FitnessClient() {
       `  Eiwit: ${proteinG} g`,
       `  Vet: ${fatG} g`,
       `  Koolhydraten: ${carbsG} g`,
+      '',
+      'Voedingsschema:',
+      ...mealPlan.flatMap(m => [
+        `  ${m.meal} (${m.subtotal.kcal} kcal):`,
+        ...m.items.map(it => `    - ${it.label}: ${it.grams}g (${it.kcal} kcal)`),
+      ]),
       '',
     ]
 
@@ -299,6 +355,20 @@ export default function FitnessClient() {
         </div>
       </div>
 
+      <div className="flex gap-1 border-b border-border">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${tab === t.id ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'overzicht' && (
+      <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="text-2xl font-black">{bmi.toFixed(1)}</div>
@@ -342,7 +412,34 @@ export default function FitnessClient() {
           )
         })}
       </div>
+      </>
+      )}
 
+      {tab === 'voeding' && (
+        <div className="space-y-3">
+          <h2 className="font-semibold text-lg">Voedingsschema</h2>
+          <p className="text-sm text-muted-foreground">Voorbeeld dagmenu, geschaald naar jouw calorieëndoel van {calories} kcal. Vervang gerust producten door iets met vergelijkbare macro's.</p>
+          <div className="space-y-3">
+            {mealPlan.map(m => (
+              <div key={m.meal} className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold">{m.meal}</span>
+                  <span className="text-xs text-muted-foreground">{m.subtotal.kcal} kcal · E {m.subtotal.eiwit}g · K {m.subtotal.koolhydraten}g · V {m.subtotal.vet}g</span>
+                </div>
+                {m.items.map(it => (
+                  <div key={it.label} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
+                    <span>{it.label}</span>
+                    <span className="text-muted-foreground">{it.grams}g · {it.kcal} kcal</span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'schema' && (
+      <>
       {isMilitary ? (
         <div className="space-y-3">
           <h2 className="font-semibold text-lg">12-weken programma: van 0 naar militaire fitheid</h2>
@@ -410,6 +507,8 @@ export default function FitnessClient() {
             ))}
           </div>
         </div>
+      )}
+      </>
       )}
 
       <button onClick={copySummary} className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all">
