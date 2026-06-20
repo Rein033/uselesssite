@@ -296,6 +296,11 @@ export default function FitnessClient() {
     : goal === 'opbouw' ? 'Calorieoverschot (+12%)'
     : 'Onderhoud'
 
+  const dailyDelta = tdee - calories
+  const weeklyKgChange = (dailyDelta * 7) / 7700
+  const projected12wk = weight - weeklyKgChange * 12
+  const projected16wk = weight - weeklyKgChange * 16
+
   function copySummary() {
     const lines = [
       'Sport & Spier Schema',
@@ -456,6 +461,29 @@ export default function FitnessClient() {
           <span className="text-foreground font-medium">Wanneer zie je een sixpack?</span> Vooral een laag vetpercentage maakt buikspieren zichtbaar: bij mannen vanaf ~10-12% (duidelijke six-pack bij 6-9%), bij vrouwen vanaf ~16-19%. Dat bereik je met een consistent calorietekort — dit schema voegt daarom standaard een core-afsluiter toe aan elke trainingsdag voor spierdefinitie onder dat lagere vetpercentage.
         </p>
       </div>
+
+      {!isMilitary && goal !== 'behoud' && (
+        <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+          <h2 className="font-semibold">Verwacht resultaat in 3-4 maanden</h2>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <div className="text-xl font-black">{Math.abs(weeklyKgChange).toFixed(2)} kg</div>
+              <div className="text-xs text-muted-foreground mt-0.5">per week ({goal === 'afvallen' ? 'verlies' : 'aankomst'})</div>
+            </div>
+            <div>
+              <div className="text-xl font-black">{projected12wk.toFixed(1)} kg</div>
+              <div className="text-xs text-muted-foreground mt-0.5">na 12 weken (~3 mnd)</div>
+            </div>
+            <div>
+              <div className="text-xl font-black">{projected16wk.toFixed(1)} kg</div>
+              <div className="text-xs text-muted-foreground mt-0.5">na 16 weken (~4 mnd)</div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Gebaseerd op een dagelijks calorie{goal === 'afvallen' ? 'tekort' : 'overschot'} van {Math.abs(Math.round(dailyDelta))} kcal (1 kg lichaamsvet ≈ 7700 kcal). Voor echt resultaat binnen 3-4 maanden: weeg jezelf 1x per week op een vast moment (vocht/glycogeen laten dagcijfers schommelen), houd je aan het calorieëndoel hierboven, en blijf de krachttraining + eiwitdoel volgen om spiermassa te behouden terwijl je vet verliest. Stagneert je gewicht 2-3 weken op rij? Verlaag (bij afvallen) of verhoog (bij opbouw) je calorieëndoel met ~10%.
+          </p>
+        </div>
+      )}
 
       <div className="bg-card border border-border rounded-xl p-5 space-y-4">
         <h2 className="font-semibold">Macro-verdeling per dag</h2>
