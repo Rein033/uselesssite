@@ -164,13 +164,68 @@ const FOODS: Record<string, { kcal: number; eiwit: number; koolhydraten: number;
   zilvervliesrijst: { label: 'Zilvervliesrijst (gekookt)', kcal: 123, eiwit: 2.6, koolhydraten: 26, vet: 1 },
   broccoli:         { label: 'Broccoli', kcal: 35, eiwit: 2.4, koolhydraten: 7, vet: 0.4 },
   olijfolie:        { label: 'Olijfolie', kcal: 884, eiwit: 0, koolhydraten: 0, vet: 100 },
+  eieren:           { label: 'Eieren (gekookt)', kcal: 155, eiwit: 13, koolhydraten: 1.1, vet: 11 },
+  volkorenpasta:    { label: 'Volkoren pasta (gekookt)', kcal: 124, eiwit: 5, koolhydraten: 25, vet: 1.1 },
+  griekseyoghurt:   { label: 'Griekse yoghurt (magere)', kcal: 59, eiwit: 10, koolhydraten: 3.6, vet: 0.4 },
+  kalkoenfilet:     { label: 'Kalkoenfilet (gegrild)', kcal: 135, eiwit: 30, koolhydraten: 0, vet: 1 },
+  walnoten:         { label: 'Walnoten', kcal: 654, eiwit: 15, koolhydraten: 14, vet: 65 },
+  quinoa:           { label: 'Quinoa (gekookt)', kcal: 120, eiwit: 4.4, koolhydraten: 21, vet: 1.9 },
+  spinazie:         { label: 'Spinazie', kcal: 23, eiwit: 2.9, koolhydraten: 3.6, vet: 0.4 },
+  paprika:          { label: 'Paprika', kcal: 31, eiwit: 1, koolhydraten: 6, vet: 0.3 },
+  tonijn:           { label: 'Tonijn (in water)', kcal: 116, eiwit: 26, koolhydraten: 0, vet: 0.8 },
+  pindakaas:        { label: 'Pindakaas', kcal: 588, eiwit: 25, koolhydraten: 20, vet: 50 },
+  rundergehakt:     { label: 'Rundergehakt (15% vet, gebakken)', kcal: 215, eiwit: 26, koolhydraten: 0, vet: 12 },
+  zoeteaardappel:   { label: 'Zoete aardappel (gekookt)', kcal: 90, eiwit: 2, koolhydraten: 21, vet: 0.1 },
+  komkommer:        { label: 'Komkommer', kcal: 16, eiwit: 0.7, koolhydraten: 3.6, vet: 0.1 },
+  sinaasappel:      { label: 'Sinaasappel', kcal: 47, eiwit: 0.9, koolhydraten: 12, vet: 0.1 },
+  avocado:          { label: 'Avocado', kcal: 160, eiwit: 2, koolhydraten: 9, vet: 15 },
 }
 
-const MEAL_TEMPLATE: { meal: string; items: { food: keyof typeof FOODS; g: number }[] }[] = [
-  { meal: 'Ontbijt', items: [{ food: 'havermout', g: 60 }, { food: 'banaan', g: 100 }, { food: 'kwark', g: 150 }] },
-  { meal: 'Lunch', items: [{ food: 'volkorenbrood', g: 90 }, { food: 'kipfilet', g: 100 }, { food: 'broccoli', g: 80 }] },
-  { meal: 'Tussendoor', items: [{ food: 'amandelen', g: 20 }, { food: 'appel', g: 150 }] },
-  { meal: 'Diner', items: [{ food: 'zalm', g: 150 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+type MealTemplate = { meal: string; items: { food: keyof typeof FOODS; g: number }[] }[]
+
+const WEEK_MEAL_TEMPLATES: MealTemplate[] = [
+  [ // Maandag
+    { meal: 'Ontbijt', items: [{ food: 'havermout', g: 60 }, { food: 'banaan', g: 100 }, { food: 'kwark', g: 150 }] },
+    { meal: 'Lunch', items: [{ food: 'volkorenbrood', g: 90 }, { food: 'kipfilet', g: 100 }, { food: 'broccoli', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'amandelen', g: 20 }, { food: 'appel', g: 150 }] },
+    { meal: 'Diner', items: [{ food: 'zalm', g: 150 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Dinsdag
+    { meal: 'Ontbijt', items: [{ food: 'eieren', g: 120 }, { food: 'volkorenbrood', g: 60 }, { food: 'spinazie', g: 50 }] },
+    { meal: 'Lunch', items: [{ food: 'kalkoenfilet', g: 120 }, { food: 'quinoa', g: 150 }, { food: 'paprika', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'griekseyoghurt', g: 150 }, { food: 'walnoten', g: 20 }] },
+    { meal: 'Diner', items: [{ food: 'rundergehakt', g: 130 }, { food: 'zoeteaardappel', g: 200 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Woensdag
+    { meal: 'Ontbijt', items: [{ food: 'havermout', g: 60 }, { food: 'appel', g: 100 }, { food: 'griekseyoghurt', g: 150 }] },
+    { meal: 'Lunch', items: [{ food: 'tonijn', g: 120 }, { food: 'volkorenbrood', g: 90 }, { food: 'komkommer', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'amandelen', g: 20 }, { food: 'sinaasappel', g: 150 }] },
+    { meal: 'Diner', items: [{ food: 'kipfilet', g: 150 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'spinazie', g: 100 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Donderdag
+    { meal: 'Ontbijt', items: [{ food: 'eieren', g: 120 }, { food: 'volkorenbrood', g: 60 }, { food: 'paprika', g: 50 }] },
+    { meal: 'Lunch', items: [{ food: 'kipfilet', g: 120 }, { food: 'quinoa', g: 150 }, { food: 'spinazie', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'kwark', g: 150 }, { food: 'banaan', g: 100 }] },
+    { meal: 'Diner', items: [{ food: 'zalm', g: 150 }, { food: 'zoeteaardappel', g: 200 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Vrijdag
+    { meal: 'Ontbijt', items: [{ food: 'havermout', g: 60 }, { food: 'banaan', g: 100 }, { food: 'pindakaas', g: 20 }] },
+    { meal: 'Lunch', items: [{ food: 'kalkoenfilet', g: 120 }, { food: 'volkorenbrood', g: 90 }, { food: 'komkommer', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'walnoten', g: 20 }, { food: 'appel', g: 150 }] },
+    { meal: 'Diner', items: [{ food: 'rundergehakt', g: 130 }, { food: 'volkorenpasta', g: 200 }, { food: 'spinazie', g: 100 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Zaterdag
+    { meal: 'Ontbijt', items: [{ food: 'griekseyoghurt', g: 150 }, { food: 'havermout', g: 50 }, { food: 'walnoten', g: 15 }] },
+    { meal: 'Lunch', items: [{ food: 'tonijn', g: 120 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'paprika', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'amandelen', g: 20 }, { food: 'sinaasappel', g: 150 }] },
+    { meal: 'Diner', items: [{ food: 'kipfilet', g: 150 }, { food: 'quinoa', g: 150 }, { food: 'broccoli', g: 150 }, { food: 'olijfolie', g: 10 }] },
+  ],
+  [ // Zondag
+    { meal: 'Ontbijt', items: [{ food: 'eieren', g: 120 }, { food: 'volkorenbrood', g: 60 }, { food: 'avocado', g: 50 }] },
+    { meal: 'Lunch', items: [{ food: 'kalkoenfilet', g: 120 }, { food: 'zilvervliesrijst', g: 150 }, { food: 'broccoli', g: 80 }] },
+    { meal: 'Tussendoor', items: [{ food: 'kwark', g: 150 }, { food: 'appel', g: 150 }] },
+    { meal: 'Diner', items: [{ food: 'zalm', g: 150 }, { food: 'quinoa', g: 150 }, { food: 'spinazie', g: 100 }, { food: 'olijfolie', g: 10 }] },
+  ],
 ]
 
 function foodAt(food: keyof typeof FOODS, grams: number) {
@@ -179,16 +234,20 @@ function foodAt(food: keyof typeof FOODS, grams: number) {
   return { label: f.label, grams, kcal: Math.round(f.kcal * r), eiwit: Math.round(f.eiwit * r), koolhydraten: Math.round(f.koolhydraten * r), vet: Math.round(f.vet * r) }
 }
 
-function buildMealPlan(targetCalories: number) {
-  const referenceKcal = MEAL_TEMPLATE.reduce((sum, m) => sum + m.items.reduce((s, it) => s + FOODS[it.food].kcal * (it.g / 100), 0), 0)
+function buildDayMealPlan(template: MealTemplate, targetCalories: number) {
+  const referenceKcal = template.reduce((sum, m) => sum + m.items.reduce((s, it) => s + FOODS[it.food].kcal * (it.g / 100), 0), 0)
   const scale = targetCalories / referenceKcal
-  return MEAL_TEMPLATE.map(m => {
+  return template.map(m => {
     const items = m.items.map(it => foodAt(it.food, Math.max(5, Math.round((it.g * scale) / 5) * 5)))
     const subtotal = items.reduce((acc, it) => ({
       kcal: acc.kcal + it.kcal, eiwit: acc.eiwit + it.eiwit, koolhydraten: acc.koolhydraten + it.koolhydraten, vet: acc.vet + it.vet,
     }), { kcal: 0, eiwit: 0, koolhydraten: 0, vet: 0 })
     return { meal: m.meal, items, subtotal }
   })
+}
+
+function buildWeekMealPlan(targetCalories: number) {
+  return DAY_NAMES.map((day, i) => ({ day, meals: buildDayMealPlan(WEEK_MEAL_TEMPLATES[i], targetCalories) }))
 }
 
 export default function FitnessClient() {
@@ -229,7 +288,7 @@ export default function FitnessClient() {
   const strengthSchedule = useMemo(() => SCHEDULES[days].map((focus, i) => ({ name: DAY_NAMES[i], focus })), [days])
   const militarySchedule = useMemo(() => militaryWeekSchedule(militaryWeek, gender, experience), [militaryWeek, gender, experience])
   const militaryFinal = MILITARY_NORMS[gender]
-  const mealPlan = useMemo(() => buildMealPlan(calories), [calories])
+  const weekMealPlan = useMemo(() => buildWeekMealPlan(calories), [calories])
 
   const caloriesLabel = isMilitary
     ? 'Onderhoud (brandstof voor trainingsopbouw)'
@@ -256,10 +315,13 @@ export default function FitnessClient() {
       `  Vet: ${fatG} g`,
       `  Koolhydraten: ${carbsG} g`,
       '',
-      'Voedingsschema:',
-      ...mealPlan.flatMap(m => [
-        `  ${m.meal} (${m.subtotal.kcal} kcal):`,
-        ...m.items.map(it => `    - ${it.label}: ${it.grams}g (${it.kcal} kcal)`),
+      'Voedingsschema (week):',
+      ...weekMealPlan.flatMap(d => [
+        `  ${d.day}:`,
+        ...d.meals.flatMap(m => [
+          `    ${m.meal} (${m.subtotal.kcal} kcal):`,
+          ...m.items.map(it => `      - ${it.label}: ${it.grams}g (${it.kcal} kcal)`),
+        ]),
       ]),
       '',
     ]
@@ -417,21 +479,25 @@ export default function FitnessClient() {
 
       {tab === 'voeding' && (
         <div className="space-y-3">
-          <h2 className="font-semibold text-lg">Voedingsschema</h2>
-          <p className="text-sm text-muted-foreground">Voorbeeld dagmenu, geschaald naar jouw calorieëndoel van {calories} kcal. Vervang gerust producten door iets met vergelijkbare macro's.</p>
+          <h2 className="font-semibold text-lg">Voedingsschema — hele week</h2>
+          <p className="text-sm text-muted-foreground">Voorbeeld weekmenu, elke dag geschaald naar jouw calorieëndoel van {calories} kcal. Vervang gerust producten door iets met vergelijkbare macro's.</p>
           <div className="space-y-3">
-            {mealPlan.map(m => (
-              <div key={m.meal} className="bg-card border border-border rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold">{m.meal}</span>
-                  <span className="text-xs text-muted-foreground">{m.subtotal.kcal} kcal · E {m.subtotal.eiwit}g · K {m.subtotal.koolhydraten}g · V {m.subtotal.vet}g</span>
+            {weekMealPlan.map(d => (
+              <div key={d.day} className="bg-card border border-border rounded-xl p-4">
+                <div className="font-semibold mb-2">{d.day}</div>
+                <div className="space-y-1.5">
+                  {d.meals.map(m => (
+                    <div key={m.meal}>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">{m.meal}</span>
+                        <span className="text-xs text-muted-foreground">{m.subtotal.kcal} kcal</span>
+                      </div>
+                      <div className="text-xs text-muted-foreground/70">
+                        {m.items.map(it => `${it.label} ${it.grams}g`).join(' · ')}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                {m.items.map(it => (
-                  <div key={it.label} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
-                    <span>{it.label}</span>
-                    <span className="text-muted-foreground">{it.grams}g · {it.kcal} kcal</span>
-                  </div>
-                ))}
               </div>
             ))}
           </div>
