@@ -6,17 +6,17 @@ type Goal = 'afvallen' | 'behoud' | 'opbouw' | 'militair'
 type Experience = 'beginner' | 'gemiddeld' | 'gevorderd'
 
 const EXERCISES: Record<string, [string, number, string][]> = {
-  FullBody: [['Squat', 4, '6-10'], ['Bench Press', 3, '8-12'], ['Bent-over Row', 3, '8-12'], ['Overhead Press', 3, '8-12']],
-  Push:     [['Bench Press', 4, '6-10'], ['Overhead Press', 3, '8-12'], ['Dips', 3, '10-15'], ['Triceps Pushdown', 3, '12-15']],
-  Pull:     [['Lat Pulldown / Pull-up', 4, '6-10'], ['Barbell Row', 3, '8-12'], ['Face Pull', 3, '15-20'], ['Biceps Curl', 3, '10-15']],
-  Legs:     [['Squat', 4, '6-10'], ['Romanian Deadlift', 3, '8-12'], ['Leg Press', 3, '10-15'], ['Calf Raise', 3, '15-20']],
-  Upper:    [['Bench Press', 3, '8-12'], ['Barbell Row', 3, '8-12'], ['Overhead Press', 3, '8-12'], ['Lat Pulldown', 3, '10-15'], ['Biceps Curl', 2, '10-15']],
-  Lower:    [['Squat', 4, '6-10'], ['Deadlift', 3, '6-10'], ['Leg Press', 3, '10-15'], ['Hip Thrust', 3, '10-15'], ['Calf Raise', 3, '15-20']],
+  FullBody: [['Squat', 4, '6-8'], ['Bench Press', 3, '6-8'], ['Bent-over Row', 3, '6-8'], ['Overhead Press', 3, '6-8']],
+  Push:     [['Bench Press', 4, '6-8'], ['Overhead Press', 3, '6-8'], ['Dips', 3, '6-8'], ['Triceps Pushdown', 3, '6-8']],
+  Pull:     [['Lat Pulldown / Pull-up', 4, '6-8'], ['Barbell Row', 3, '6-8'], ['Face Pull', 3, '6-8'], ['Biceps Curl', 3, '6-8']],
+  Legs:     [['Squat', 4, '6-8'], ['Romanian Deadlift', 3, '6-8'], ['Leg Press', 3, '6-8'], ['Calf Raise', 3, '6-8']],
+  Upper:    [['Bench Press', 3, '6-8'], ['Barbell Row', 3, '6-8'], ['Overhead Press', 3, '6-8'], ['Lat Pulldown', 3, '6-8'], ['Biceps Curl', 2, '6-8']],
+  Lower:    [['Squat', 4, '6-8'], ['Deadlift', 3, '6-8'], ['Leg Press', 3, '6-8'], ['Hip Thrust', 3, '6-8'], ['Calf Raise', 3, '6-8']],
 }
 
 const CORE_FINISHER: [string, number, string][] = [
-  ['Hanging Knee Raise', 3, '12-15'],
-  ['Cable Crunch', 3, '12-15'],
+  ['Hanging Knee Raise', 3, '6-8'],
+  ['Cable Crunch', 3, '6-8'],
   ['Plank', 3, '45-60s'],
 ]
 
